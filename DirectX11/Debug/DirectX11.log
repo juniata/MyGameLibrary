@@ -1,42 +1,5 @@
 ﻿  DX_2DObject.cpp
-  DX_Audio.cpp
-  DX_Buffer.cpp
-  DX_ComputeShader.cpp
-  DX_Debug.cpp
-  DX_Font.cpp
-  DX_FramwWork.cpp
-  DX_GeometryShader.cpp
-  DX_Graphics.cpp
-  DX_Input.cpp
   DX_InstanceMesh.cpp
   DX_instanceSkinMesh.cpp
-  DX_Lighting.cpp
-  DX_Mesh.cpp
-  DX_Particle.cpp
-  DX_PixelShader.cpp
-  DX_RenderState.cpp
-  DX_Resource.cpp
-  DX_ResourceManager.cpp
-  DX_SceneManager.cpp
-  コードを生成中...
-  コンパイル中...
-  DX_Shader.cpp
-  DX_ShaderManager.cpp
-  DX_SkinMesh.cpp
-  DX_System.cpp
-  DX_Texture.cpp
-  DX_VertexShader.cpp
-  DX_View.cpp
-  DX_XInput.cpp
-  IEMLoader.cpp
-  IMOLoader.cpp
-  SceneMain.cpp
-  ALManager.cpp
-  AutoProfile.cpp
-c:\users\健太\desktop\directx11\__friends_dg\directx11\source\user_helper_class\autoprofile.cpp(23): warning C4477: 'printf_s' : 書式文字列 '%ld' には、型 'long' の引数が必要ですが、可変個引数 2 は型 '__int64' です
-  c:\users\健太\desktop\directx11\__friends_dg\directx11\source\user_helper_class\autoprofile.cpp(23): note: 書式文字列に '%lld' を使用することをお勧めします
-  c:\users\健太\desktop\directx11\__friends_dg\directx11\source\user_helper_class\autoprofile.cpp(23): note: 書式文字列に '%I64d' を使用することをお勧めします
-  OGGManager.cpp
-  WAVManager.cpp
   コードを生成中...
   DirectX11.vcxproj -> C:\Users\健太\Desktop\DirectX11\__friends_dg\DirectX11\Debug\DirectX11.exe

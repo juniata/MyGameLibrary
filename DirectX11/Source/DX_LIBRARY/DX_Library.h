@@ -59,8 +59,7 @@ struct tagRect{
 #include	<wrl.h>
 using namespace Microsoft::WRL;
 
-//	dx_library
-namespace dx_library{
+
 #include	"DX_Scene.h"
 #include	"DX_SceneManager.h"
 #include	"DX_System.h"
@@ -88,50 +87,7 @@ namespace dx_library{
 #include	"DX_XInput.h"
 #include	"DX_Particle.h"
 #include	"DX_Font.h"
-};
 
-//	型名定義(クラス)
-typedef dx_library::Scene				DX_Scene;
-typedef dx_library::SceneManager		DX_SceneManager;
-typedef dx_library::System				DX_System;
-typedef dx_library::FrameWork			DX_FrameWork;
-typedef dx_library::Debug				DX_Debug;
-typedef dx_library::Graphics			DX_Graphics;
-typedef dx_library::RenderState			DX_RenderState;
-typedef dx_library::Shader				DX_Shader;
-typedef dx_library::VertexShader		DX_VertexShader;
-typedef dx_library::GeometryShader		DX_GeometryShader;
-typedef dx_library::PixelShader			DX_PixelShader;
-typedef dx_library::ComputeShader		DX_ComputeShader;
-typedef dx_library::ShaderManager		DX_ShaderManager;
-typedef dx_library::ResourceManager		DX_ResourceManager;
-typedef dx_library::View				DX_View;
-typedef dx_library::GameObject			DX_GameObject;
-typedef dx_library::Collider			DX_Collider;
-typedef dx_library::Object2D			DX_2DObject;
-typedef dx_library::Buffer				DX_Buffer;
-typedef dx_library::Resource			DX_Resource;
-typedef dx_library::TextureManager		DX_TextureManager;
-typedef dx_library::Mesh				DX_Mesh;
-typedef dx_library::SkinMesh			DX_SkinMesh;
-typedef dx_library::InstanceMesh		DX_InstanceMesh;
-typedef dx_library::InstanceSkinMesh	DX_InstanceSkinMesh;
-typedef dx_library::Lighting			DX_Lighting;
-typedef dx_library::Audio				DX_Audio;
-typedef dx_library::Input				DX_Input;
-typedef dx_library::XInput				DX_XInput;
-typedef dx_library::Particle			DX_Particle;
-typedef dx_library::ParticleSystem		DX_ParticleSystem;
-typedef dx_library::Font				DX_Font;
-
-//	型名定義(構造体)
-typedef dx_library::tagInstanceMeshInfo DX_INSTANCE_MESH_INFO;
-
-//	型名定義(enum)
-typedef dx_library::INPUT_KEY			DX_INPUT_KEY;
-typedef dx_library::MOUSE_BUTTON_KIND	DX_MOUSE_BUTTON_KIND;
-typedef dx_library::XINPUT_KEY			DX_XINPUT_KEY;
-typedef dx_library::SHADER_TYPE		DX_SHADER_TYPE;
 
 
 #include	"../user_helper_class/AutoProfile.h"

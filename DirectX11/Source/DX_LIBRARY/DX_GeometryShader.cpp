@@ -6,7 +6,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_GeometryShader::GeometryShader()
+DX_GeometryShader::DX_GeometryShader()
 {
 }
 
@@ -15,7 +15,7 @@ DX_GeometryShader::GeometryShader()
 //  À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 //
 //-----------------------------------------------------------------------------------------
-DX_GeometryShader::~GeometryShader()
+DX_GeometryShader::~DX_GeometryShader()
 {
 }
 

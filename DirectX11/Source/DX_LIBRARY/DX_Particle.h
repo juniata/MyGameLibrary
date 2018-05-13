@@ -11,7 +11,7 @@ struct tagParticleInfo{
 //	Particle
 //
 //****************************************************************************************************
-class Particle
+class DX_Particle
 {
 private:
 	ID3D11Buffer*	m_pVeretxBuffer;
@@ -21,7 +21,7 @@ private:
 	DirectX::XMFLOAT4 m_color;	//	頂点色
 	float	m_size;		//	パーティクルサイズ
 
-	Particle();
+	DX_Particle();
 public:
 };
 
@@ -31,7 +31,7 @@ public:
 //	ParticleSystem
 //
 //****************************************************************************************************
-class ParticleSystem
+class DX_ParticleSystem
 {
 private:
 

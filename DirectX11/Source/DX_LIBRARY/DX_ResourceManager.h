@@ -7,7 +7,7 @@
 //	ê›íËÇµÇ‹Ç∑
 //
 //****************************************************************************************************
-class ResourceManager
+class DX_ResourceManager
 {
 private:
 	struct tagResourceInfo{
@@ -41,7 +41,7 @@ public:
 		const int					registerNum,
 		const int					viewCount,
 		ID3D11Buffer* const*		pBuffers,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public:
 		const int							registerNum, 
 		const int							viewCount, 
 		ID3D11ShaderResourceView* const*	pShaderResourceView, 
-		dx_library::SHADER_TYPE			shaderType
+		DX_SHADER_TYPE			shaderType
 		);
 
 private:
@@ -76,7 +76,7 @@ private:
 		const int					registerNum,
 		const int					viewCount,
 		ID3D11Buffer* const*		pBuffers,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ private:
 		const int							registerNum,
 		const int							viewCount, 
 		ID3D11ShaderResourceView* const*	pShaderResourceView,
-		dx_library::SHADER_TYPE			shaderType
+		DX_SHADER_TYPE			shaderType
 		);
 };
 

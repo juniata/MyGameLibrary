@@ -13,7 +13,6 @@ DX_Mesh*			g_pMesh		= nullptr;
 DX_2DObject* g_tex = nullptr;
 DX_2DObject* g_tex2 = nullptr;
 
-DX_INSTANCE_MESH_INFO g_meshInfo[ISNTANCE_MESH_MAX];
 SceneMain::SceneMain()
 {
 }

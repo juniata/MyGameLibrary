@@ -6,7 +6,7 @@ using namespace DirectX;
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceMesh::InstanceMesh() : m_instanceCount(0)
+DX_InstanceMesh::DX_InstanceMesh() : m_instanceCount(0)
 {
 	ZeroMemory(&m_resultResource, sizeof(m_resultResource));
 }
@@ -16,7 +16,7 @@ DX_InstanceMesh::InstanceMesh() : m_instanceCount(0)
 //  メンバ変数を初期化、及び生成
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceMesh::InstanceMesh(const char* pFilepath, const int instanceCount) : DX_InstanceMesh()
+DX_InstanceMesh::DX_InstanceMesh(const char* pFilepath, const int instanceCount) : DX_InstanceMesh()
 {
 	auto l_device = DX_System::GetInstance()->GetDevice();
 
@@ -40,7 +40,7 @@ DX_InstanceMesh::InstanceMesh(const char* pFilepath, const int instanceCount) : 
 //  全データ解放
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceMesh::~InstanceMesh()
+DX_InstanceMesh::~DX_InstanceMesh()
 {
 }
 
@@ -49,7 +49,7 @@ DX_InstanceMesh::~InstanceMesh()
 //  行列計算処理
 //
 //-----------------------------------------------------------------------------------------
-void DX_InstanceMesh::Update(DX_INSTANCE_MESH_INFO* pInstanceInfo)
+void DX_InstanceMesh::Update(tagInstanceMeshInfo* pInstanceInfo)
 {
 	//	デバイス、コンテキスト、コンピュートシェーダーを取得
 	auto		l_device			= DX_System::GetInstance()->GetDevice();
@@ -57,7 +57,7 @@ void DX_InstanceMesh::Update(DX_INSTANCE_MESH_INFO* pInstanceInfo)
 	DX_Shader*	l_pComputeShader	= DX_ShaderManager::GetInstanceMeshComputeShader();
 
 	//	StrcutredBufferを作成
-	ComPtr<ID3D11Buffer> l_buffer	= DX_Buffer::CreateStructuredBuffer(l_device, sizeof(DX_INSTANCE_MESH_INFO), m_instanceCount, pInstanceInfo);
+	ComPtr<ID3D11Buffer> l_buffer	= DX_Buffer::CreateStructuredBuffer(l_device, sizeof(tagInstanceMeshInfo), m_instanceCount, pInstanceInfo);
 
 	//	SRVを作成
 	ComPtr<ID3D11ShaderResourceView> l_srv	= DX_Resource::CreateShaderResourceView(l_device, l_buffer.Get());
@@ -84,7 +84,7 @@ void DX_InstanceMesh::Render()
 	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
 	
 	//	インスタンスの数を送る
-	DX_ShaderManager::SetVector(2, XMFLOAT4(CAST_F(m_instanceCount), 0, 0, 0), DX_System::GetInstance()->GetDevice(), l_deviceContext, SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::SetVector(2, XMFLOAT4(CAST_F(m_instanceCount), 0, 0, 0), DX_System::GetInstance()->GetDevice(), l_deviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	DX_Shader* l_pVertexShader		= DX_ShaderManager::GetShader("ShaderFile\\VS_InstanceMesh.hlsl");
 	DX_Shader* l_pGeometryShader	= DX_ShaderManager::GetDefaultGeometryShader3D();

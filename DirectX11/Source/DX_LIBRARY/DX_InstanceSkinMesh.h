@@ -7,7 +7,7 @@
 //	InstanceSkinMesh
 //
 //****************************************************************************************************
-class InstanceSkinMesh : public dx_library::SkinMesh
+class DX_InstanceSkinMesh : public DX_SkinMesh
 {
 private:
 	//	コンピュートで結果を書き込むリソース
@@ -26,9 +26,9 @@ private:
 	int m_instanceCount;
 
 public:
-	InstanceSkinMesh();
-	InstanceSkinMesh(const char* pFilepath, const int instanceCount);
-	~InstanceSkinMesh();
+	DX_InstanceSkinMesh();
+	DX_InstanceSkinMesh(const char* pFilepath, const int instanceCount);
+	~DX_InstanceSkinMesh();
 
 	void Update();
 	void Animation();

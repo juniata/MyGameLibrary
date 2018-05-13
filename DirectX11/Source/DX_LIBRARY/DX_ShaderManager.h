@@ -2,7 +2,7 @@
 #define __DX_SHADER_MANAGER_H_
 
 //	使用するシェーダー(描画パイプラインの順番に設定してある)
-enum class SHADER_TYPE : int{
+enum class DX_SHADER_TYPE : int{
 	VERTEX_SHADER,
 	HULL_SHADER,
 	DOMAIN_SHADER,
@@ -57,10 +57,10 @@ __declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::PIXEL_SHADER	= "Shad
 //	ShaderManager
 //
 //****************************************************************************************************
-class ShaderManager
+class DX_ShaderManager
 {
 private:
-	static std::map<const char*, dx_library::Shader*>		m_shaders;
+	static std::map<const char*, DX_Shader*>		m_shaders;
 
 	static ID3D11InputLayout*	m_pInputLayout2D;
 	static ID3D11InputLayout*	m_pInputLayout3D;
@@ -75,14 +75,14 @@ private:
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	ShaderManager() = delete;
+	DX_ShaderManager() = delete;
 public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	~ShaderManager(){}
+	~DX_ShaderManager(){}
 
 	//------------------------------------------------------------------------------
 	//
@@ -98,7 +98,7 @@ public:
 	//------------------------------------------------------------------------------
 	static void Release();
 
-	static dx_library::Shader*	GetShader(const char* pShaderFileName);
+	static DX_Shader*	GetShader(const char* pShaderFileName);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -106,7 +106,7 @@ public:
 	//	@return		DX_VertexShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader* GetDefaultVertexShader3D();
+	static DX_Shader* GetDefaultVertexShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -114,7 +114,7 @@ public:
 	//	@return		DX_VertexShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader* GetDefaultVertexShaderSkinMesh();
+	static DX_Shader* GetDefaultVertexShaderSkinMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -122,7 +122,7 @@ public:
 	//	@return		DX_GeometryShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader*	GetDefaultGeometryShader3D();
+	static DX_Shader*	GetDefaultGeometryShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -130,7 +130,7 @@ public:
 	//	@return		DX_GeometryShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader*	GetDefaultGeometryShaderRayPick();
+	static DX_Shader*	GetDefaultGeometryShaderRayPick();
 
 	//------------------------------------------------------------------------------
 	//
@@ -138,7 +138,7 @@ public:
 	//	@return		DX_PixelShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader* GetDefaultPixelShader3D();
+	static DX_Shader* GetDefaultPixelShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -146,7 +146,7 @@ public:
 	//	@return		DX_ComputeShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Shader* GetInstanceMeshComputeShader();
+	static DX_Shader* GetInstanceMeshComputeShader();
 
 	//------------------------------------------------------------------------------
 	//
@@ -192,7 +192,7 @@ public:
 	static void SetWorldMat(
 		const DirectX::XMFLOAT4X4&				worldMat,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ public:
 		const DirectX::XMFLOAT4&				vec4,
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -228,7 +228,7 @@ public:
 		const DirectX::XMFLOAT3&				vec3,
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ public:
 		const DirectX::XMFLOAT2&				vec2,
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -262,7 +262,7 @@ public:
 		const unsigned int			regiserNum,
 		const DirectX::XMFLOAT4X4&				mat,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ public:
 		const DirectX::XMFLOAT4X4*				pMat,
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	//------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ public:
 		const DirectX::XMFLOAT4X4*				pMat,
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 	static void SetMatrixResoruce(
@@ -306,7 +306,7 @@ public:
 		ID3D11Buffer*			pBuffer,
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
-		dx_library::SHADER_TYPE	shaderType
+		DX_SHADER_TYPE	shaderType
 		);
 
 

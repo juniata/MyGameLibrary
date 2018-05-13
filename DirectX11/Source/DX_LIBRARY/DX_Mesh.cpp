@@ -20,7 +20,7 @@ using namespace DirectX;
 //	メンバー変数の初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_Mesh::Mesh() :
+DX_Mesh::DX_Mesh() :
 
 //	グループメッシュを初期化
 m_pGroupMesh(nullptr),
@@ -50,7 +50,7 @@ m_bRayPick(false)
 //	メンバ変数を解放
 //
 //-----------------------------------------------------------------------------------------
-DX_Mesh::~Mesh()
+DX_Mesh::~DX_Mesh()
 {
 	//	自身がオリジナルデータなら、解放処理を行う
 	if (IsOriginal()){
@@ -73,7 +73,7 @@ DX_Mesh::~Mesh()
 //	メンバ変数を初期化し、モデルを読み込む
 //
 //-----------------------------------------------------------------------------------------
-DX_Mesh::Mesh(const char* pFilepath) : Mesh()
+DX_Mesh::DX_Mesh(const char* pFilepath) : DX_Mesh()
 {
 	//	モデルを読み込む
 	LoadModel(pFilepath);
@@ -429,7 +429,7 @@ bool DX_Mesh::IsOriginal()const
 //	頂点データをコピー
 //
 //-----------------------------------------------------------------------------------------
-void DX_Mesh::VertexCopy(std::vector<dx_library::tagMeshVertex>* pVertexList, void* pIMOVertex)
+void DX_Mesh::VertexCopy(std::vector<tagMeshVertex>* pVertexList, void* pIMOVertex)
 {
 	LPIMOMESHVERTEX	l_pIMOVertex	= (LPIMOMESHVERTEX)pIMOVertex;
 	LPIMOMESHVERTEX l_pTempVertex	= nullptr;
@@ -547,7 +547,7 @@ void DX_Mesh::Render(
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//	ワールド行列を送る
-	DX_ShaderManager::SetWorldMat(m_worldMatrix, pDeviceContext, SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::SetWorldMat(m_worldMatrix, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	//	ビューに関する行列を送る
 	DX_View::SetMatrixForTheView();

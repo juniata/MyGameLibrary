@@ -1,7 +1,7 @@
 #ifndef __DX_INPUT_KEY_DEFINES_H_
 #define __DX_INPUT_KEY_DEFINES_H_
 
-enum class INPUT_KEY : int
+enum class DX_INPUT_KEY : int
 {
 	DX_LBUTTON	=	VK_LBUTTON,
 	DX_RBUTTON	=	VK_RBUTTON,

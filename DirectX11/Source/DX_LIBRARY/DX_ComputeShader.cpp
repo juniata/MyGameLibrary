@@ -6,7 +6,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_ComputeShader::ComputeShader()
+DX_ComputeShader::DX_ComputeShader()
 {
 }
 
@@ -17,7 +17,7 @@ DX_ComputeShader::ComputeShader()
 //  À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 //
 //-----------------------------------------------------------------------------------------
-DX_ComputeShader::~ComputeShader()
+DX_ComputeShader::~DX_ComputeShader()
 {
 }
 

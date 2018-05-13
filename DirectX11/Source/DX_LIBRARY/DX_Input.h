@@ -5,7 +5,7 @@
 #include	"DX_InputDefines.h"
 
 //	マウスのボタンの種類
-enum class MOUSE_BUTTON_KIND : int{
+enum class DX_MOUSE_BUTTON_KIND : int{
 	BUTTON_L,	//	左ボタン
 	BUTTON_M,	//	中央ボタン
 	BUTTON_R,	//	右ボタン
@@ -16,7 +16,7 @@ enum class MOUSE_BUTTON_KIND : int{
 //	Input
 //
 //****************************************************************************************************
-class Input
+class DX_Input
 {
 private:
 	//	キーボードの受け付け数
@@ -48,7 +48,7 @@ public:
 	//	@return		true:押した	false:押してない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsKey(dx_library::INPUT_KEY key);
+	static bool IsKey(DX_INPUT_KEY key);
 
 	//------------------------------------------------------------------------------
 	//
@@ -57,7 +57,7 @@ public:
 	//	@return		true:押している		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsKeyDown(dx_library::INPUT_KEY key);
+	static bool IsKeyDown(DX_INPUT_KEY key);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -66,7 +66,7 @@ public:
 	//	@return		true:離した		false:離していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsKeyRelease(dx_library::INPUT_KEY key);
+	static bool IsKeyRelease(DX_INPUT_KEY key);
 
 	//------------------------------------------------------------------------------
 	//
@@ -75,7 +75,7 @@ public:
 	//	@return		true:押した		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsKeyHit(dx_library::INPUT_KEY key);
+	static bool IsKeyHit(DX_INPUT_KEY key);
 
 	//------------------------------------------------------------------------------
 	//
@@ -84,7 +84,7 @@ public:
 	//	@return		true:押した		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsMouseButton(dx_library::MOUSE_BUTTON_KIND kind);
+	static bool IsMouseButton(DX_MOUSE_BUTTON_KIND kind);
 
 	//------------------------------------------------------------------------------
 	//
@@ -93,7 +93,7 @@ public:
 	//	@return		true:押している		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsMouseButtonDown(dx_library::MOUSE_BUTTON_KIND kind);
+	static bool IsMouseButtonDown(DX_MOUSE_BUTTON_KIND kind);
 
 	//------------------------------------------------------------------------------
 	//
@@ -102,7 +102,7 @@ public:
 	//	@return		true:離した		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsMouseButtonRelease(dx_library::MOUSE_BUTTON_KIND kind);
+	static bool IsMouseButtonRelease(DX_MOUSE_BUTTON_KIND kind);
 
 	//------------------------------------------------------------------------------
 	//
@@ -112,7 +112,7 @@ public:
 	//	@note		キーのhit関数と同じ効果
 	//
 	//------------------------------------------------------------------------------
-	static bool IsMouseButtonClick(dx_library::MOUSE_BUTTON_KIND kind);
+	static bool IsMouseButtonClick(DX_MOUSE_BUTTON_KIND kind);
 
 	//------------------------------------------------------------------------------
 	//
@@ -121,7 +121,7 @@ public:
 	//	@return		true:押した		false:押していない
 	//
 	//------------------------------------------------------------------------------
-	static bool IsMouseButtonDoubleClick(dx_library::MOUSE_BUTTON_KIND kind);
+	static bool IsMouseButtonDoubleClick(DX_MOUSE_BUTTON_KIND kind);
 
 	//------------------------------------------------------------------------------
 	//

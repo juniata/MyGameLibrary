@@ -292,7 +292,7 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(
 //-----------------------------------------------------------------------------------------
 void DX_Buffer::Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
 {
-	unsigned int l_stride = sizeof(dx_library::tagVertex2D);
+	unsigned int l_stride = sizeof(tagVertex2D);
 	unsigned int l_offset = 0;
 
 	//	デバイスコンテキストを取得

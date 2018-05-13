@@ -14,7 +14,7 @@ struct tagVertex2D{
 //	Object2D
 //
 //****************************************************************************************************
-class Object2D : public dx_library::GameObject
+class DX_2DObject : public DX_GameObject
 {
 private:
 	//	テクスチャ情報
@@ -30,7 +30,7 @@ public:
 	//  @brief		メンバー変数の初期化
 	//
 	//------------------------------------------------------------------------------
-	Object2D();
+	DX_2DObject();
 
 	//------------------------------------------------------------------------------
 	//
@@ -38,7 +38,7 @@ public:
 	//	@param[in]	pFilepath	テクスチャのファイルパス
 	//
 	//------------------------------------------------------------------------------
-	Object2D(
+	DX_2DObject(
 		const char* pFilepath
 		);
 
@@ -47,7 +47,7 @@ public:
 	//  @brief		m_pShaderResourceViewを解放
 	//
 	//------------------------------------------------------------------------------
-	~Object2D();
+	~DX_2DObject();
 
 	//------------------------------------------------------------------------------
 	//
@@ -107,7 +107,7 @@ private:
 	//
 	//------------------------------------------------------------------------------
 	void CreateVertex(
-		dx_library::tagVertex2D*	pVertex,
+		tagVertex2D*	pVertex,
 		const tagRect&	renderPos,
 		const tagRect&	texturePos
 		);

@@ -16,7 +16,7 @@ XMFLOAT4X4  DX_View::m_matViewProj;
 //	staticƒƒ“ƒo•Ï”
 //
 //-----------------------------------------------------------------------------------------
-DX_View::View() :
+DX_View::DX_View() :
 m_pos(0.0f,20,-50.0f),
 m_target(0.0f,20.0f, 0.0f),
 m_upDirection(0.0f, 1.0f, 0.0f),
@@ -163,7 +163,7 @@ void DX_View::SetMatrixForTheView()
 	};
 
 	//	s—ñ‚ð‘—‚é
-	DX_ShaderManager::SetMatrix(0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::SetMatrix(0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
 }
 
 

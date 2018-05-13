@@ -16,7 +16,7 @@ struct tagInstanceMeshInfo{
 //	InstanceMesh
 //
 //****************************************************************************************************
-class InstanceMesh : public dx_library::Mesh
+class DX_InstanceMesh : public DX_Mesh
 {
 private:
 	//	コンピュートで結果を書き込むリソース
@@ -35,12 +35,12 @@ private:
 	int m_instanceCount;
 
 public:
-	InstanceMesh();
-	InstanceMesh(const char* pFilepath, const int instanceCount);
-	~InstanceMesh();
+	DX_InstanceMesh();
+	DX_InstanceMesh(const char* pFilepath, const int instanceCount);
+	~DX_InstanceMesh();
 
 	//	インスタンス情報を更新する
-	void Update(dx_library::tagInstanceMeshInfo* pInstanceInfo);
+	void Update(tagInstanceMeshInfo* pInstanceInfo);
 
 	void Render();
 	

@@ -8,26 +8,26 @@ enum class COLLIDER_TYPE : int
 	SPHERE_COLLIDER,
 };
 
-class Collider
+class DX_Collider
 {
 protected:
-	dx_library::GameObject* m_pGameObject;
+	DX_GameObject* m_pGameObject;
 	COLLIDER_TYPE m_colliderType;
 
 public:
-	Collider(){}
-	virtual ~Collider(){}
-	dx_library::GameObject* GetGameObject();
+	DX_Collider(){}
+	virtual ~DX_Collider(){}
+	DX_GameObject* GetGameObject();
 	COLLIDER_TYPE GetCollider();
 	
 };
 
-class BoxCollider : public dx_library::Collider
+class BoxCollider : public DX_Collider
 {
 
 };
 
-class SphereCollider : public dx_library::Collider
+class SphereCollider : public DX_Collider
 {
 
 };
@@ -37,6 +37,6 @@ class ColliderManager
 private:
 public:
 
-	static void BindGameObject(COLLIDER_TYPE colliderType, dx_library::GameObject* pGameObject);
+	static void BindGameObject(COLLIDER_TYPE colliderType, DX_GameObject* pGameObject);
 };
 #endif // !__DX_COLLIDER_H_

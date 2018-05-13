@@ -53,7 +53,7 @@ void CloseConsoleWindow()
 //	メンバー変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_FrameWork::FrameWork() :
+DX_FrameWork::DX_FrameWork() :
 m_pAppName(nullptr),
 m_hInstance(NULL),
 m_hWnd(NULL)
@@ -67,7 +67,7 @@ m_hWnd(NULL)
 //	ウィンドウクラスを削除し、メモリを解放
 //
 //-----------------------------------------------------------------------------------------
-DX_FrameWork::~FrameWork()
+DX_FrameWork::~DX_FrameWork()
 {
 	UnregisterClass(m_pAppName, m_hInstance);
 }
@@ -80,7 +80,7 @@ DX_FrameWork::~FrameWork()
 bool DX_FrameWork::Initialize()
 {
 	//	スクリーンサイズを設定
-	DX_System::GetInstance()->SetWindowsSize(dx_library::CREATE_WINDOW_SIZE::SCREEN_720p);
+	DX_System::GetInstance()->SetWindowsSize(CREATE_WINDOW_SIZE::SCREEN_720p);
 
 	//	ウィンドウを作成
 	if (!CreateAppWindow("DirectX11", 0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight())){

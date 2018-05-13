@@ -1,7 +1,7 @@
 #ifndef __DX_PIXEL_SHADER_H_
 #define __DX_PIXEL_SHADER_H_
 
-class PixelShader : public dx_library::Shader
+class DX_PixelShader : public DX_Shader
 {
 private:
 	ComPtr<ID3D11PixelShader>	m_pixelShader;
@@ -12,14 +12,14 @@ public:
 	//  @brief		ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 	//
 	//------------------------------------------------------------------------------
-	PixelShader();
+	DX_PixelShader();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 	//
 	//------------------------------------------------------------------------------
-	~PixelShader();
+	~DX_PixelShader();
 
 	//------------------------------------------------------------------------------
 	//

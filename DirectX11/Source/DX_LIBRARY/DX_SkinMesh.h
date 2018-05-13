@@ -59,14 +59,14 @@ struct tagIEMBoneSkinMesh
 //	SkinMesh
 //
 //****************************************************************************************************
-class SkinMesh : public dx_library::Mesh
+class DX_SkinMesh : public DX_Mesh
 {
 private:
 	//	スキンバッファ
 	ComPtr<ID3D11Buffer>	m_skinBuffer;
 
-	dx_library::tagIEMBoneSkinMesh*	m_pBoneInfo;		//	ボーン情報
-	dx_library::tagIEMAnimation*	m_pAnimationInfo;	//	アニメーション情報
+	tagIEMBoneSkinMesh*	m_pBoneInfo;		//	ボーン情報
+	tagIEMAnimation*	m_pAnimationInfo;	//	アニメーション情報
 
 	
 	DirectX::XMFLOAT4X4*	m_pBoneMatrix;	//	パレット行列
@@ -88,7 +88,7 @@ public:
 	//  @brief		メンバ変数を初期化
 	//
 	//------------------------------------------------------------------------------
-	SkinMesh();
+	DX_SkinMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -96,14 +96,14 @@ public:
 	//	@param[in]	pFilepath	モデルのファイルパス
 	//
 	//------------------------------------------------------------------------------
-	SkinMesh(const char* pFilepath);
+	DX_SkinMesh(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		全データ解放
 	//
 	//------------------------------------------------------------------------------
-	~SkinMesh();
+	~DX_SkinMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -111,7 +111,7 @@ public:
 	//	@retrun		ポインタが返る
 	//
 	//------------------------------------------------------------------------------
-	SkinMesh* Clone()const;
+	DX_SkinMesh* Clone()const;
 
 	//------------------------------------------------------------------------------
 	//
@@ -165,7 +165,7 @@ private:
 	//	@param[in]	frame	フレーム
 	//
 	//------------------------------------------------------------------------------
-	void UpdateBonePoseByFrame(const float frame, dx_library::tagIEMBoneSkinMesh* pIEMBoneSkinMesh, dx_library::tagIEMAnimation* pIEMAnimation);
+	void UpdateBonePoseByFrame(const float frame, tagIEMBoneSkinMesh* pIEMBoneSkinMesh, tagIEMAnimation* pIEMAnimation);
 
 	//------------------------------------------------------------------------------
 	//
@@ -173,7 +173,7 @@ private:
 	//	@param[in]	frame	フレーム
 	//
 	//------------------------------------------------------------------------------
-	void UpdateBonePosByFrame(const float frame, dx_library::tagIEMBoneSkinMesh* pIEMBoneSkinMesh, dx_library::tagIEMAnimation* pIEMAnimation);
+	void UpdateBonePosByFrame(const float frame, tagIEMBoneSkinMesh* pIEMBoneSkinMesh, tagIEMAnimation* pIEMAnimation);
 
 	//------------------------------------------------------------------------------
 	//

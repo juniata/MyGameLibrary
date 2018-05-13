@@ -6,7 +6,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_VertexShader::VertexShader()
+DX_VertexShader::DX_VertexShader()
 {
 }
 
@@ -17,7 +17,7 @@ DX_VertexShader::VertexShader()
 //  À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 //
 //-----------------------------------------------------------------------------------------
-DX_VertexShader::~VertexShader()
+DX_VertexShader::~DX_VertexShader()
 {
 }
 

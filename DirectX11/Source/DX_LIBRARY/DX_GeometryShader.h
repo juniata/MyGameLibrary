@@ -1,7 +1,7 @@
 #ifndef __DX_GEOMETRY_SHADER_H_
 #define __DX_GEOMETRY_SHADER_H_
 
-class GeometryShader : public dx_library::Shader
+class DX_GeometryShader : public DX_Shader
 {
 private:
 	ComPtr<ID3D11GeometryShader>	m_geometryShader;
@@ -12,14 +12,14 @@ public:
 	//  @brief		ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 	//
 	//------------------------------------------------------------------------------
-	GeometryShader();
+	DX_GeometryShader();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 	//
 	//------------------------------------------------------------------------------
-	~GeometryShader();
+	~DX_GeometryShader();
 
 	//------------------------------------------------------------------------------
 	//

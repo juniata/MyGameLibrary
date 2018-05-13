@@ -123,16 +123,16 @@ void DX_Debug::CheckSourceCordOfShaderFile(
 //	コンソール画面に出力する文字の色を設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_Debug::SetPrintColor(dx_library::SET_PRINT_COLOR printColor)
+void DX_Debug::SetPrintColor(SET_PRINT_COLOR printColor)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	WORD l_attribute = FOREGROUND_INTENSITY;
 	
 	switch (printColor){
-	case dx_library::SET_PRINT_COLOR::RED:		l_attribute |= FOREGROUND_RED;		break;
-	case dx_library::SET_PRINT_COLOR::BLUE:		l_attribute |= FOREGROUND_BLUE;		break;
-	case dx_library::SET_PRINT_COLOR::GREEN:	l_attribute |= FOREGROUND_GREEN;	break;
-	case dx_library::SET_PRINT_COLOR::DEFAULT:	l_attribute = m_csbi.wAttributes;	break;
+	case SET_PRINT_COLOR::RED:		l_attribute |= FOREGROUND_RED;		break;
+	case SET_PRINT_COLOR::BLUE:		l_attribute |= FOREGROUND_BLUE;		break;
+	case SET_PRINT_COLOR::GREEN:	l_attribute |= FOREGROUND_GREEN;	break;
+	case SET_PRINT_COLOR::DEFAULT:	l_attribute = m_csbi.wAttributes;	break;
 	}
 
 	//ハンドルと色を渡す

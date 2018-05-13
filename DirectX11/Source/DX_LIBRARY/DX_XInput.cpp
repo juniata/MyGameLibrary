@@ -5,7 +5,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_XInput::XInput() :
+DX_XInput::DX_XInput() :
 m_connectCount(0)
 {
 	//	‰Šú‰»
@@ -38,7 +38,7 @@ m_connectCount(0)
 //  Œãn––
 //
 //-----------------------------------------------------------------------------------------
-DX_XInput::~XInput()
+DX_XInput::~DX_XInput()
 {
 
 }
@@ -49,7 +49,7 @@ DX_XInput::~XInput()
 //  ‰Ÿ‚µ‚Ä‚È‚¢ˆÈŠO‚Ì”½‰‚ğ“¾‚é
 //
 //-----------------------------------------------------------------------------------------
-bool DX_XInput::IsKey(dx_library::XINPUT_KEY key, const int id)
+bool DX_XInput::IsKey(XINPUT_KEY key, const int id)
 {
 	const int l_key = CAST_I(key);
 
@@ -66,7 +66,7 @@ bool DX_XInput::IsKey(dx_library::XINPUT_KEY key, const int id)
 //  ‰Ÿ‚µ‚Ä‚¢‚éŠÔ‚Ì”½‰‚ğ“¾‚é
 //
 //-----------------------------------------------------------------------------------------
-bool DX_XInput::IsKeyDown(dx_library::XINPUT_KEY key, const int id)
+bool DX_XInput::IsKeyDown(XINPUT_KEY key, const int id)
 {
 	const int l_key = CAST_I(key);
 
@@ -83,7 +83,7 @@ bool DX_XInput::IsKeyDown(dx_library::XINPUT_KEY key, const int id)
 //  —£‚µ‚½uŠÔ‚Ì”½‰‚ğ“¾‚é
 //
 //-----------------------------------------------------------------------------------------
-bool DX_XInput::IsKeyRelease(dx_library::XINPUT_KEY key, const int id)
+bool DX_XInput::IsKeyRelease(XINPUT_KEY key, const int id)
 {
 	const int l_key = CAST_I(key);
 
@@ -101,7 +101,7 @@ bool DX_XInput::IsKeyRelease(dx_library::XINPUT_KEY key, const int id)
 //  ‰Ÿ‚µ‚½uŠÔ‚Ì”½‰‚ğ“¾‚é
 //
 //-----------------------------------------------------------------------------------------
-bool DX_XInput::IsKeyHit(dx_library::XINPUT_KEY key, const int id)
+bool DX_XInput::IsKeyHit(XINPUT_KEY key, const int id)
 {
 	const int l_key = CAST_I(key);
 

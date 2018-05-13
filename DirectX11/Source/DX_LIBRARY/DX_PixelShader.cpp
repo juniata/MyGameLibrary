@@ -6,7 +6,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_PixelShader::PixelShader()
+DX_PixelShader::DX_PixelShader()
 {
 }
 
@@ -17,7 +17,7 @@ DX_PixelShader::PixelShader()
 //  À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 //
 //-----------------------------------------------------------------------------------------
-DX_PixelShader::~PixelShader()
+DX_PixelShader::~DX_PixelShader()
 {
 }
 

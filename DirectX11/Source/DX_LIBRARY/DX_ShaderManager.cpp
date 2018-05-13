@@ -212,7 +212,7 @@ ID3D11InputLayout* DX_ShaderManager::GetInputLayoutInstanceMesh()
 void DX_ShaderManager::SetWorldMat(
 	const DirectX::XMFLOAT4X4&				worldMat,
 	ID3D11DeviceContext*		pDeviceContext,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	SetMatrix(1, worldMat, pDeviceContext, shaderType);
@@ -228,7 +228,7 @@ void DX_ShaderManager::SetVector(
 	const DirectX::XMFLOAT4&					vec4,
 	ID3D11Device*					pDevice,
 	ID3D11DeviceContext*			pDeviceContext,
-	dx_library::SHADER_TYPE		shaderType
+	DX_SHADER_TYPE		shaderType
 	)
 {
 	//	ローカル変数
@@ -251,7 +251,7 @@ void DX_ShaderManager::SetVector(
 	const DirectX::XMFLOAT3&					vec3,
 	ID3D11Device*					pDevice,
 	ID3D11DeviceContext*			pDeviceContext,
-	dx_library::SHADER_TYPE		shaderType
+	DX_SHADER_TYPE		shaderType
 	)
 {
 	//	ローカル変数
@@ -275,7 +275,7 @@ void DX_ShaderManager::SetVector(
 	const XMFLOAT2&					vec2,
 	ID3D11Device*					pDevice,
 	ID3D11DeviceContext*			pDeviceContext,
-	dx_library::SHADER_TYPE		shaderType
+	DX_SHADER_TYPE		shaderType
 	)
 {
 	//	ローカル変数
@@ -298,7 +298,7 @@ void DX_ShaderManager::SetMatrix(
 	const unsigned int			regiserNum,
 	const XMFLOAT4X4&				mat,
 	ID3D11DeviceContext*		pDeviceContext,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	//	ローカル変数
@@ -322,7 +322,7 @@ void DX_ShaderManager::SetMatrix(
 	const XMFLOAT4X4*				pMat,
 	const unsigned int			matCount,
 	ID3D11DeviceContext*		pDeviceContext,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE shaderType
 	)
 {
 	//	ローカル変数
@@ -345,7 +345,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 	const XMFLOAT4X4*				pMat,
 	const unsigned int			matCount,
 	ID3D11DeviceContext*		pDeviceContext,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	//	ローカル変数
@@ -384,7 +384,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 	ID3D11Buffer*				pBuffer,
 	const unsigned int			matCount,
 	ID3D11DeviceContext*		pDeviceContext,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	//	ローカル変数

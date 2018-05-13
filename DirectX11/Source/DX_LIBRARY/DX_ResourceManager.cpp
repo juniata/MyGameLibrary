@@ -33,7 +33,7 @@ void DX_ResourceManager::SetConstantbuffers(
 	const int					registerNum,
 	const int					viewCount,
 	ID3D11Buffer* const*		pBuffers,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
@@ -77,7 +77,7 @@ void DX_ResourceManager::SetShaderResources(
 	const int							registerNum,
 	const int							viewCount, 
 	ID3D11ShaderResourceView* const*	pShaderResourceView,
-	dx_library::SHADER_TYPE			shaderType
+	DX_SHADER_TYPE			shaderType
 	)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
@@ -122,32 +122,32 @@ void DX_ResourceManager::SelectSetShaderConstantBuffers(
 	const int					registerNum,
 	const int					viewCount,
 	ID3D11Buffer* const*		pBuffers,
-	dx_library::SHADER_TYPE	shaderType
+	DX_SHADER_TYPE	shaderType
 	)
 {
 	switch (shaderType)
 	{
-	case dx_library::SHADER_TYPE::VERTEX_SHADER:
+	case DX_SHADER_TYPE::VERTEX_SHADER:
 		pDeviceContext->VSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
-	case dx_library::SHADER_TYPE::HULL_SHADER:
+	case DX_SHADER_TYPE::HULL_SHADER:
 		pDeviceContext->HSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
-	case dx_library::SHADER_TYPE::DOMAIN_SHADER:
+	case DX_SHADER_TYPE::DOMAIN_SHADER:
 		pDeviceContext->DSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
-	case dx_library::SHADER_TYPE::GEOMETRY_SHADER:
+	case DX_SHADER_TYPE::GEOMETRY_SHADER:
 		pDeviceContext->GSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
-	case dx_library::SHADER_TYPE::PIXEL_SHADER:
+	case DX_SHADER_TYPE::PIXEL_SHADER:
 		pDeviceContext->PSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
-	case dx_library::SHADER_TYPE::COMPUTE_SHADER:
+	case DX_SHADER_TYPE::COMPUTE_SHADER:
 		pDeviceContext->CSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
 
@@ -165,32 +165,32 @@ void DX_ResourceManager::SelectSetShaderResources(
 	const int							registerNum, 
 	const int							viewCount,
 	ID3D11ShaderResourceView* const*	pShaderResourceView,
-	dx_library::SHADER_TYPE			shaderType
+	DX_SHADER_TYPE 			shaderType
 	)
 {
 	switch (shaderType)
 	{
-	case dx_library::SHADER_TYPE::VERTEX_SHADER:
+	case DX_SHADER_TYPE::VERTEX_SHADER:
 		pDeviceContext->VSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 
-	case dx_library::SHADER_TYPE::HULL_SHADER:
+	case DX_SHADER_TYPE::HULL_SHADER:
 		pDeviceContext->HSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 
-	case dx_library::SHADER_TYPE::DOMAIN_SHADER:
+	case DX_SHADER_TYPE::DOMAIN_SHADER:
 		pDeviceContext->DSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 
-	case dx_library::SHADER_TYPE::GEOMETRY_SHADER:
+	case DX_SHADER_TYPE::GEOMETRY_SHADER:
 		 pDeviceContext->GSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 
-	case dx_library::SHADER_TYPE::PIXEL_SHADER:
+	case DX_SHADER_TYPE::PIXEL_SHADER:
 		pDeviceContext->PSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 
-	case dx_library::SHADER_TYPE::COMPUTE_SHADER:
+	case DX_SHADER_TYPE::COMPUTE_SHADER:
 		pDeviceContext->CSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
 

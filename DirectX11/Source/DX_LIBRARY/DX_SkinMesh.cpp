@@ -7,7 +7,7 @@ using namespace DirectX;
 //	メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_SkinMesh::SkinMesh() :
+DX_SkinMesh::DX_SkinMesh() :
 
 //	ボーン情報を初期化
 m_pBoneInfo(nullptr),
@@ -34,7 +34,7 @@ m_frame(0)
 //	メンバ変数を初期化し、モデルを読み込む
 //
 //-----------------------------------------------------------------------------------------
-DX_SkinMesh::SkinMesh(const char* pFilepath) : SkinMesh()
+DX_SkinMesh::DX_SkinMesh(const char* pFilepath) : DX_SkinMesh()
 {
 	//	モデルを読み込み
 	LoadModel(pFilepath);
@@ -46,7 +46,7 @@ DX_SkinMesh::SkinMesh(const char* pFilepath) : SkinMesh()
 //	全データ解放
 //
 //-----------------------------------------------------------------------------------------
-DX_SkinMesh::~SkinMesh()
+DX_SkinMesh::~DX_SkinMesh()
 {
 	//	自身がオリジナルなら、データを解放する
 	if (IsOriginal()){
@@ -304,7 +304,7 @@ void DX_SkinMesh::Render()
 	}
 
 	//	Bone行列を頂点シェーダーのregister(t1)に送る
-	DX_ShaderManager::SetMatrixResoruce(1, m_pBoneMatrix, m_boneCount, l_pDeviceContext, SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::SetMatrixResoruce(1, m_pBoneMatrix, m_boneCount, l_pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	//	レイピックフラグが立っていれば、レイピック処理の入ったジオメトリシェーダーを取得
 	DX_Shader* l_pGeometryShader = ((m_bRayPick) ? DX_ShaderManager::GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetDefaultGeometryShader3D());
@@ -405,7 +405,7 @@ void DX_SkinMesh::UpdateSkinMeshFrame(const float frame)
 //	フレームによってm_pBoneInfo->curPoseを更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SkinMesh::UpdateBonePoseByFrame(const float argFrame, dx_library::tagIEMBoneSkinMesh* pIEMBoneSkinMesh, dx_library::tagIEMAnimation* pIEMAnimation)
+void DX_SkinMesh::UpdateBonePoseByFrame(const float argFrame, tagIEMBoneSkinMesh* pIEMBoneSkinMesh, tagIEMAnimation* pIEMAnimation)
 {
 	float l_t;
 	DWORD j;
@@ -453,7 +453,7 @@ void DX_SkinMesh::UpdateBonePoseByFrame(const float argFrame, dx_library::tagIEM
 //	フレームによってm_pBoneInfo->curPosを更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SkinMesh::UpdateBonePosByFrame(const float argFrame, dx_library::tagIEMBoneSkinMesh* pIEMBoneSkinMesh, dx_library::tagIEMAnimation* pIEMAnimation)
+void DX_SkinMesh::UpdateBonePosByFrame(const float argFrame, tagIEMBoneSkinMesh* pIEMBoneSkinMesh, tagIEMAnimation* pIEMAnimation)
 {
 	float l_t;
 	DWORD j;

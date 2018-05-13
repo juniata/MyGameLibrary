@@ -47,7 +47,7 @@ struct tagFase{
 //	Mesh
 //
 //****************************************************************************************************
-class Mesh : public dx_library::GameObject
+class DX_Mesh : public DX_GameObject
 {
 protected:
 	ComPtr<ID3D11Buffer>	m_vertexBuffer;	//	頂点バッファ
@@ -55,7 +55,7 @@ protected:
 	ComPtr<ID3D11Buffer>	m_rayPickBuffer;	//	レイピック用バッファ
 
 	//	マテリアル順描画用構造体ポインタ変数
-	dx_library::tagGroupMesh*	m_pGroupMesh;
+	tagGroupMesh*	m_pGroupMesh;
 
 	DWORD  m_indexCount;
 	DWORD  m_materialCount;
@@ -80,14 +80,14 @@ public:
 	//  @brief		メンバー変数の初期化
 	//
 	//------------------------------------------------------------------------------
-	Mesh();
+	DX_Mesh();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		メンバ変数を解放
 	//
 	//------------------------------------------------------------------------------
-	virtual ~Mesh();
+	virtual ~DX_Mesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -95,7 +95,7 @@ public:
 	//	@param[in]	pFilepath	モデルのファイルパス
 	//
 	//------------------------------------------------------------------------------
-	Mesh(const char* pFilepath);
+	DX_Mesh(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
@@ -103,7 +103,7 @@ public:
 	//	@retrun		ポインタが返る
 	//
 	//------------------------------------------------------------------------------
-	Mesh* Clone()const;
+	DX_Mesh* Clone()const;
 
 	//------------------------------------------------------------------------------
 	//
@@ -237,7 +237,7 @@ private:
 	//	@param[in]		pIMOVertex	IMOLoader::GetVertex()
 	//
 	//------------------------------------------------------------------------------
-	void VertexCopy(std::vector<dx_library::tagMeshVertex>* pVertexList,void* pIMOVertex);
+	void VertexCopy(std::vector<tagMeshVertex>* pVertexList,void* pIMOVertex);
 
 protected:
 	//------------------------------------------------------------------------------
@@ -269,9 +269,9 @@ protected:
 	//------------------------------------------------------------------------------
 	void Render(
 		ID3D11DeviceContext*	pDeviceContext,
-		dx_library::Shader*		pVertexShader,
-		dx_library::Shader*		pGeometryShader,
-		dx_library::Shader*		pPixelShader,
+		DX_Shader*		pVertexShader,
+		DX_Shader*		pGeometryShader,
+		DX_Shader*		pPixelShader,
 		ID3D11InputLayout*		pInputLayout
 		);
 

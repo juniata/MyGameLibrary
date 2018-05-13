@@ -5,8 +5,8 @@
 //	staticƒƒ“ƒo•Ï”
 //
 //-----------------------------------------------------------------------------------------
-dx_library::Scene*	DX_SceneManager::m_pCurScene = nullptr;
-dx_library::Scene*	DX_SceneManager::m_pNextScene = nullptr;
+DX_Scene*	DX_SceneManager::m_pCurScene = nullptr;
+DX_Scene*	DX_SceneManager::m_pNextScene = nullptr;
 
 
 //-----------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ void DX_SceneManager::Initialize(DX_Scene*	pCurScene)
 //	Œ»İ‚ÌƒV[ƒ“‚ğæ“¾‚·‚é
 //
 //-----------------------------------------------------------------------------------------
-dx_library::Scene* DX_SceneManager::GetCurScene()
+DX_Scene* DX_SceneManager::GetCurScene()
 {
 	return m_pCurScene;
 }

@@ -6,15 +6,15 @@
 //	SceneManager
 //
 //****************************************************************************************************
-class SceneManager
+class DX_SceneManager
 {
 private:
-	static dx_library::Scene*	m_pCurScene;	//	現在のシーン
-	static dx_library::Scene*	m_pNextScene;	//	次のシーン
+	static DX_Scene*	m_pCurScene;	//	現在のシーン
+	static DX_Scene*	m_pNextScene;	//	次のシーン
 
-	SceneManager() = delete;
+	DX_SceneManager() = delete;
 public:
-	~SceneManager(){}
+	~DX_SceneManager(){}
 
 	//------------------------------------------------------------------------------
 	//
@@ -23,7 +23,7 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	static void Initialize(
-		dx_library::Scene* pCurScene
+		DX_Scene* pCurScene
 		);
 
 	
@@ -33,6 +33,6 @@ public:
 	//	@return		m_pCurScene
 	//
 	//------------------------------------------------------------------------------
-	static dx_library::Scene* GetCurScene();
+	static DX_Scene* GetCurScene();
 };
 #endif // !__DX_SCENE_MANAGER_H_

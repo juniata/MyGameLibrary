@@ -1,7 +1,7 @@
 #ifndef __DX_FONT_H_
 #define __DX_FONT_H_
 
-class Font
+class DX_Font
 {
 private:
 public:

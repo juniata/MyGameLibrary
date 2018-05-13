@@ -2,7 +2,7 @@
 #define __DX_COMPUTE_SHADER_H_
 
 
-class ComputeShader : public dx_library::Shader
+class DX_ComputeShader : public DX_Shader
 {
 private:
 	ComPtr<ID3D11ComputeShader>	m_computeShader;
@@ -13,14 +13,14 @@ public:
 	//  @brief		ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 	//
 	//------------------------------------------------------------------------------
-	ComputeShader();
+	DX_ComputeShader();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		À‘Ì‚ª‚ ‚ê‚Î‰ğ•ú
 	//
 	//------------------------------------------------------------------------------
-	~ComputeShader();
+	~DX_ComputeShader();
 
 	//------------------------------------------------------------------------------
 	//

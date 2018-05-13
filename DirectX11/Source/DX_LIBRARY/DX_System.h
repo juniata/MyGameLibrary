@@ -13,41 +13,20 @@ enum class CREATE_WINDOW_SIZE : int{
 //	System
 //
 //****************************************************************************************************
-class System
+class DX_System
 {
-private:
-	static System* m_pInstnace;
-	Microsoft::WRL::ComPtr<ID3D11Device> m_device;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_rtv;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_dsb;
-	static D3D_FEATURE_LEVEL		m_featureLevel;
-	static D3D_DRIVER_TYPE			m_driverType;
-	static HWND						m_windowHandle;
-
-	static unsigned int m_windowWidth;
-	static unsigned int m_windowHeight;
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		âΩÇ‡ÇµÇ»Ç¢
-	//
-	//------------------------------------------------------------------------------
-	System();
 public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		âΩÇ‡ÇµÇ»Ç¢
 	//
 	//------------------------------------------------------------------------------
-	~System();
+	~DX_System();
 
-	static System* GetInstance();
+	static DX_System* GetInstance();
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		DeviceÇ»Ç«ÇÃê∂ê¨ÇçsÇ§
+	//  @brief		DirectXÇèâä˙âªÇ∑ÇÈ
 	//	@param[in]	hwnd	DX_Framework::GetHwnd()
 	//
 	//------------------------------------------------------------------------------
@@ -69,7 +48,7 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	void SetWindowsSize(
-		dx_library::CREATE_WINDOW_SIZE windowSize
+		CREATE_WINDOW_SIZE windowSize
 		);
 
 	//------------------------------------------------------------------------------
@@ -161,14 +140,34 @@ public:
 	 HWND	GetWindowHandle();
 
 private:
-	void CreateDevice();
+	static DX_System* m_pInstnace;
+	Microsoft::WRL::ComPtr<ID3D11Device> m_device;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_rtv;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_dsb;
+	static D3D_FEATURE_LEVEL		m_featureLevel;
+	static D3D_DRIVER_TYPE			m_driverType;
+	static HWND						m_windowHandle;
+
+	static unsigned int m_windowWidth;
+	static unsigned int m_windowHeight;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		âΩÇ‡ÇµÇ»Ç¢
+	//
+	//------------------------------------------------------------------------------
+	DX_System();
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		SwapChain,ID3D11Device,ID3D11DeviceContextÇçÏê¨
 	//	@param[in]	hWnd	DX_Framework::GetHwnd()
 	//
 	//------------------------------------------------------------------------------
-	void CreateSwapChain(
+	void CreateDeviceAndSwapChain(
 		const HWND& hWnd
 		);
 

@@ -1,13 +1,12 @@
 #ifndef __DX_GAME_OBJECT_H_
 #define __DX_GAME_OBJECT_H_
 
-class GameObject
+class DX_GameObject
 {
 private:
 public:
-	GameObject(){}
-	virtual ~GameObject(){}
-
+	DX_GameObject(){}
+	virtual ~DX_GameObject(){}
 	virtual void Initialize(){}
 	virtual void Destroy(){}
 };

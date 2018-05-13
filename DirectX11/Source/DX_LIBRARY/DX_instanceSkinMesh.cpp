@@ -6,7 +6,7 @@
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceSkinMesh::InstanceSkinMesh() :
+DX_InstanceSkinMesh::DX_InstanceSkinMesh() :
 m_pReadBuffer(nullptr),
 m_pGPUWriteBuffer(nullptr),
 m_instanceCount(0)
@@ -19,7 +19,7 @@ m_instanceCount(0)
 //  ƒƒ“ƒo•Ï”‚ğ‰Šú‰»A‹y‚Ñ¶¬
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceSkinMesh::InstanceSkinMesh(const char* pFilepath, const int instanceCount) : DX_InstanceSkinMesh()
+DX_InstanceSkinMesh::DX_InstanceSkinMesh(const char* pFilepath, const int instanceCount) : DX_InstanceSkinMesh()
 {
 	ComPtr<ID3D11Device> l_device = DX_System::GetInstance()->GetDevice();
 
@@ -37,7 +37,7 @@ DX_InstanceSkinMesh::InstanceSkinMesh(const char* pFilepath, const int instanceC
 	DX_SkinMesh::LoadModel(pFilepath);
 }
 
-DX_InstanceSkinMesh::~InstanceSkinMesh()
+DX_InstanceSkinMesh::~DX_InstanceSkinMesh()
 {
 
 }
