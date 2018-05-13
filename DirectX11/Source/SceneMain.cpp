@@ -32,10 +32,9 @@ SceneMain::~SceneMain()
 bool SceneMain::Initialize()
 {
 	g_pView = new DX_View();
-	g_tex = new DX_2DObject("11_2nh194zhx9.jpg");
-	g_tex2 = new DX_2DObject("11_2nh194zhx9.jpg");
+	g_tex = new DX_2DObject("14_s2bgay4bpz.jpg");
+	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
 	DX_Lighting::Initialize();
-	DELETE_OBJ(g_tex);
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);
 
@@ -63,4 +62,5 @@ void SceneMain::Render()
 {
 	g_pView->Clear();
 	g_pView->Active();
+	g_tex->Render();
 }
