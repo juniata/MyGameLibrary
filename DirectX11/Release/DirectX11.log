@@ -1,0 +1,25 @@
+﻿DirectXTex.lib(DirectXTexD3D11.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexD3D11.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexD3D11.obj) : warning LNK4075: /EDITANDCONTINUE は /OPT:ICF の指定によって無視されます。
+DirectXTex.lib(DirectXTexWIC.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexWIC.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexImage.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexImage.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexUtil.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexUtil.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexConvert.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexConvert.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexMipMaps.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexMipMaps.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexCompress.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(DirectXTexCompress.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC4BC5.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC4BC5.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC6HBC7.obj) : error LNK2038: '_ITERATOR_DEBUG_LEVEL' の不一致が検出されました。値 '2' が 0 の値 'DX_2DObject.obj' と一致しません。
+DirectXTex.lib(BC6HBC7.obj) : error LNK2038: 'RuntimeLibrary' の不一致が検出されました。値 'MDd_DynamicDebug' が MD_DynamicRelease の値 'DX_2DObject.obj' と一致しません。
+LINK : warning LNK4098: defaultlib 'MSVCRTD' は他のライブラリの使用と競合しています。/NODEFAULTLIB:library を使用してください。
+DirectXTex.lib(DirectXTexMipMaps.obj) : error LNK2001: 外部シンボル "__imp___invalid_parameter" は未解決です。
+DirectXTex.lib(DirectXTexMipMaps.obj) : error LNK2001: 外部シンボル "__imp___CrtDbgReportW" は未解決です。
+C:\Users\健太\Desktop\DirectX11\__friends_dg\DirectX11\Release\DirectX11.exe : fatal error LNK1120: 2 件の未解決の外部参照

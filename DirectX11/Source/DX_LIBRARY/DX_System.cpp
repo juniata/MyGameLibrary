@@ -18,11 +18,6 @@ unsigned int DX_System::m_windowWidth	= 0;
 unsigned int DX_System::m_windowHeight	= 0;
 
 
-DX_System::DX_System()
-{
-
-}
-
 DX_System* DX_System::GetInstance()
 {
 	if (m_pInstnace == nullptr) {
@@ -32,24 +27,6 @@ DX_System* DX_System::GetInstance()
 	return m_pInstnace;
 }
 
-DX_System::~DX_System()
-{
-	m_swapChain->SetFullscreenState(FALSE, nullptr);
-	m_deviceContext->ClearState();
-	//	シェーダーの解放を行う
-	DX_ShaderManager::Release();
-	DX_Debug::ReportLiveDeviceObjects("DX_ShaderManager::Release");
-
-	//	デバッグの解放を行う
-	DX_Debug::ReportLiveDeviceObjects("DX_System::Release");
-	DX_Debug::Release();
-
-	//	OGGファイルを解放
-	//	OGGManager::Release();
-
-	//	ALManagerを解放する
-	//ALManager::Release();
-}
 //-----------------------------------------------------------------------------------------
 //
 //  DirectXを初期化する
@@ -105,6 +82,22 @@ bool DX_System::InitD3D(const HWND& hWnd)
 void DX_System::Release()
 {
 	if (m_pInstnace) {
+		m_pInstnace->m_swapChain->SetFullscreenState(FALSE, nullptr);
+		m_pInstnace->m_deviceContext->ClearState();
+		//	シェーダーの解放を行う
+		DX_ShaderManager::Release();
+		DX_Debug::ReportLiveDeviceObjects("DX_ShaderManager::Release");
+
+		//	デバッグの解放を行う
+		DX_Debug::ReportLiveDeviceObjects("DX_System::Release");
+		DX_Debug::Release();
+
+		//	OGGファイルを解放
+		//	OGGManager::Release();
+
+		//	ALManagerを解放する
+		//ALManager::Release();
+
 		delete m_pInstnace;
 		m_pInstnace = nullptr;
 	}

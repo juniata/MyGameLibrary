@@ -1,5 +1,5 @@
 #include	"DX_Library.h"
-#include "../DirectXTex/DirectXTex.h"
+#include "../../DirectXTex/DirectXTex.h"
 #include	<locale.h>
 
 using namespace DirectX;

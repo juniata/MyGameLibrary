@@ -294,7 +294,7 @@ void DX_Graphics::wcstombs_s(
 	const wchar_t * _Src
 	)
 {
-	unsigned int	l_stringLendth = 0;
+	size_t	l_stringLendth = 0;
 
 	if (::wcstombs_s(
 		&l_stringLendth,
