@@ -65,9 +65,9 @@ public:
 	//------------------------------------------------------------------------------
 	void CreateGeometryShaderWithStreamOutput(
 		D3D11_SO_DECLARATION_ENTRY	decreation[],	
-		const	size_t				decreationElementCount,
+		const UINT					decreationElementCount,
 		unsigned int*				pBufferStrides,
-		const size_t				stridesElementCount
+		const UINT					stridesElementCount
 		);
 private:
 	//------------------------------------------------------------------------------

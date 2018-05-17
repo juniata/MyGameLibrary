@@ -97,9 +97,9 @@ void DX_GeometryShader::CreateShaderObject()
 //-----------------------------------------------------------------------------------------
 void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(
 	D3D11_SO_DECLARATION_ENTRY	decreation[],
-	const size_t				decreationElementCount,
+	const UINT					decreationElementCount,
 	unsigned int*				pBufferStrides,
-	const size_t				stridesElementCount
+	const UINT					stridesElementCount
 	)
 {
 	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(

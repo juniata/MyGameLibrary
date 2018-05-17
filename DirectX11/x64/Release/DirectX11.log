@@ -17,7 +17,6 @@ Source\DX_LIBRARY\DX_Buffer.cpp(277): warning C4267: '=': 'size_t' から 'UINT'
   DX_Font.cpp
   DX_FramwWork.cpp
   DX_GeometryShader.cpp
-Source\DX_LIBRARY\DX_GeometryShader.cpp(115): warning C4267: '引数': 'size_t' から 'UINT' に変換しました。データが失われているかもしれません。
   DX_Graphics.cpp
   DX_Input.cpp
   DX_InstanceMesh.cpp

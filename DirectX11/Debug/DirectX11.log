@@ -1,2 +1,40 @@
-﻿  DirectX11.vcxproj -> C:\Users\健太\Desktop\DirectX11\__friends_dg\DirectX11\Debug\DirectX11.exe
+﻿  WAVManager.cpp
+  OGGManager.cpp
+  AutoProfile.cpp
+  ALManager.cpp
+  SceneMain.cpp
+  IMOLoader.cpp
+  IEMLoader.cpp
+  DX_XInput.cpp
+  DX_View.cpp
+  DX_VertexShader.cpp
+  DX_Texture.cpp
+  DX_System.cpp
+  DX_SkinMesh.cpp
+  DX_ShaderManager.cpp
+  DX_Shader.cpp
+  DX_SceneManager.cpp
+  DX_ResourceManager.cpp
+  DX_Resource.cpp
+  DX_RenderState.cpp
+  DX_PixelShader.cpp
+  コードを生成中...
+  コンパイル中...
+  DX_Particle.cpp
+  DX_Mesh.cpp
+  DX_Lighting.cpp
+  DX_instanceSkinMesh.cpp
+  DX_InstanceMesh.cpp
+  DX_Input.cpp
+  DX_Graphics.cpp
+  DX_GeometryShader.cpp
+  DX_FramwWork.cpp
+  DX_Font.cpp
+  DX_Debug.cpp
+  DX_ComputeShader.cpp
+  DX_Buffer.cpp
+  DX_Audio.cpp
+  DX_2DObject.cpp
+  コードを生成中...
+  DirectX11.vcxproj -> C:\Users\健太\Desktop\DirectX11\__friends_dg\DirectX11\Debug\DirectX11.exe
   DirectX11.vcxproj -> C:\Users\健太\Desktop\DirectX11\__friends_dg\DirectX11\Debug\DirectX11.pdb (Full PDB)
