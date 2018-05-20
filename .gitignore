@@ -1,14 +1,6 @@
-# 「Debug」フォルダを除外
-DirectX11/Debug/
-
-# 「Release」フォルダを除外
-DirectX11/Release/
-
-# 「.vs」フォルダを除外
-DirectX11/.vs/
-
-# 「DirectX11.VC.db」ファイルを除外
-DirectX11/DirectX11.VC.db
-
-# 「DirectX11.VC.VC.opendb」ファイルを除外
-DirectX11/DirectX11.VC.VC.opendb
+/DirectX11/DirectX11.VC.db
+/DirectX11/x64
+/DirectX11/Release
+/DirectX11/Debug
+/DirectX11/.vs
+/DirectX11/*.opendb
