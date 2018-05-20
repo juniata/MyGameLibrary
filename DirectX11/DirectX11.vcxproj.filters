@@ -167,9 +167,6 @@
     <ClCompile Include="Source\DX_LIBRARY\DX_GeometryShader.cpp">
       <Filter>DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_FramwWork.cpp">
-      <Filter>DX11\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DX_LIBRARY\DX_Graphics.cpp">
       <Filter>DX11\cpp</Filter>
     </ClCompile>
@@ -250,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="Source\SceneMain.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DX_LIBRARY\DX_FrameWork.cpp">
+      <Filter>DX11\cpp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

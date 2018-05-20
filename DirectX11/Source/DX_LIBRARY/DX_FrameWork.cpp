@@ -101,7 +101,7 @@ void DX_FrameWork::Run()
 	MSG l_msg = { NULL };
 
 
-	//	スワップチャインを取得
+	//	スワップチェインを取得
 	ComPtr<IDXGISwapChain> l_swapChain = DX_System::GetInstance()->GetSwapChain();
 
 	//	現在のシーンを取得
