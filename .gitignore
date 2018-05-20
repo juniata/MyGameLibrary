@@ -1,0 +1,11 @@
+# 「Debug」フォルダを除外
+Debug/
+
+# 「Release」フォルダを除外
+Release/
+
+# 「.vs」フォルダを除外
+.vs/
+
+# 「.db」ファイルを除外
+*.db
