@@ -1,4 +1,5 @@
 #include	"DX_LIBRARY\DX_Library.h"
+#include	"Bullet.h"
 #include	"SceneMain.h"
 #include	"user_helper_class\OGGManager.h"
 
@@ -22,6 +23,7 @@ SceneMain::~SceneMain()
 	DELETE_OBJ(g_tex);
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);
+	DELETE_OBJ(bullet);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -33,6 +35,7 @@ bool SceneMain::Initialize()
 	g_pView = new DX_View();
 	g_tex = new DX_2DObject("14_s2bgay4bpz.jpg");
 	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
+	bullet = new Bullet();
 	DX_Lighting::Initialize();
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);
@@ -49,6 +52,8 @@ bool SceneMain::Update()
 {
 	g_pView->FreeCamera(2.0f);
 
+	bullet->Update();
+
 	return true;
 }
 
@@ -61,5 +66,7 @@ void SceneMain::Render()
 {
 	g_pView->Clear();
 	g_pView->Active();
-	g_tex->Render();
+
+	bullet->Render();
+	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
 }

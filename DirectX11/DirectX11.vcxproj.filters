@@ -144,6 +144,9 @@
     <ClInclude Include="Source\SceneMain.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Bullet.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DX_LIBRARY\DX_2DObject.cpp">
@@ -250,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="Source\DX_LIBRARY\DX_FrameWork.cpp">
       <Filter>DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bullet.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -130,6 +130,41 @@ void DX_2DObject::Render(const tagRect& renderPos)
 
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  指定した範囲に描画
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSize)
+{
+	//	頂点情報
+	tagVertex2D l_pVertex[4];
+
+	//	頂点情報を作成
+	CreateVertex(l_pVertex, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+
+	//	バッファを作成
+	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+
+	//	シェーダーを取得
+	DX_Shader* l_pVertexShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* l_pPixelShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+
+	//	デバイスコンテキストを取得
+	ComPtr<ID3D11DeviceContext>	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
+
+	//	シェーダーを利用
+	l_pVertexShader->Begin(l_deviceContext.Get());
+	l_pPixelShader->Begin(l_deviceContext.Get());
+
+	//	描画
+	DX_Buffer::Render2D(l_buffer.Get(), m_pShaderResourceView);
+
+	//	シェーダーを終了
+	l_pVertexShader->End(l_deviceContext.Get());
+	l_pPixelShader->End(l_deviceContext.Get());
+
+}
 
 //-----------------------------------------------------------------------------------------
 //
