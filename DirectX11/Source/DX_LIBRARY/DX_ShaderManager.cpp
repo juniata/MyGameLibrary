@@ -25,10 +25,10 @@ using namespace DirectX;
 //
 //-----------------------------------------------------------------------------------------
 std::map<const char*, DX_Shader*>	DX_ShaderManager::m_shaders;
-ID3D11InputLayout*	DX_ShaderManager::m_pInputLayout2D			= nullptr;
-ID3D11InputLayout*	DX_ShaderManager::m_pInputLayout3D			= nullptr;
-ID3D11InputLayout*	DX_ShaderManager::m_pInputLayoutSkinMesh	= nullptr;
-ID3D11InputLayout*	DX_ShaderManager::m_pInputLayoutInstanceMesh = nullptr;
+ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayout2D;
+ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayout3D;
+ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayoutSkinMesh;
+ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayoutInstanceMesh;
 bool				DX_ShaderManager::m_bCanUsetoComputeShader  = false;
 
 //-----------------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ DX_Shader* DX_ShaderManager::GetInstanceMeshComputeShader()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D()
 {
-	return m_pInputLayout2D;
+	return m_inputLayout2D.Get();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout3D()
 {
-	return m_pInputLayout3D;
+	return m_inputLayout3D.Get();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout3D()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
 {
-	return m_pInputLayoutSkinMesh;
+	return m_inputLayoutSkinMesh.Get();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetInputLayoutInstanceMesh()
 {
-	return m_pInputLayoutInstanceMesh;
+	return m_inputLayoutInstanceMesh.Get();
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -388,7 +388,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 	)
 {
 	//	ローカル変数
-	ID3D11Device*				l_pDevice = DX_System::GetInstance()->GetDevice();
+	ComPtr<ID3D11Device> device = DX_System::GetInstance()->GetDevice();
 	ComPtr<ID3D11ShaderResourceView>	l_srv;
 	D3D11_SHADER_RESOURCE_VIEW_DESC l_srvDesc;
 	ZeroMemory(&l_srvDesc, sizeof(l_srvDesc));
@@ -400,7 +400,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 	l_srvDesc.ViewDimension			= D3D11_SRV_DIMENSION_BUFFER;
 
 	//	SRVを作成
-	if (FAILED(l_pDevice->CreateShaderResourceView(pBuffer, &l_srvDesc, &l_srv))){
+	if (FAILED(device->CreateShaderResourceView(pBuffer, &l_srvDesc, &l_srv))){
 		MessageBox(NULL, "l_pSRV", "error", MB_OK);
 		exit(1);
 	}
@@ -466,7 +466,7 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 void DX_ShaderManager::CreateInputLayout()
 {
 	//	デバイスを取得
-	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
+	ComPtr<ID3D11Device> device = DX_System::GetInstance()->GetDevice();
 
 	// 2D用レイアウト
 	D3D11_INPUT_ELEMENT_DESC l_layout2D[] = {
@@ -508,17 +508,26 @@ void DX_ShaderManager::CreateInputLayout()
 
 	
 	try {
+		ComPtr<ID3D11InputLayout> il2d;
+		ComPtr<ID3D11InputLayout> il3d;
+		ComPtr<ID3D11InputLayout> ilSkinMesh;
+		ComPtr<ID3D11InputLayout> ilInstanceSkinMesh;
 		//	2D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout2D, _countof(l_layout2D), m_shaders[DEFAULT_2D_SHADER::VERTEX_SHADER]->GetByteCord(), &m_pInputLayout2D);
+		CreateInputLayout(device.Get(), l_layout2D, _countof(l_layout2D), m_shaders[DEFAULT_2D_SHADER::VERTEX_SHADER]->GetByteCord(), &il2d);
 
 		//	3D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout3D, _countof(l_layout3D), m_shaders[DEFAULT_VERTEX_SHADER_3D]->GetByteCord(), &m_pInputLayout3D);
+		CreateInputLayout(device.Get(), l_layout3D, _countof(l_layout3D), m_shaders[DEFAULT_VERTEX_SHADER_3D]->GetByteCord(), &il3d);
 
 		//	スキンメッシュ用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH]->GetByteCord(), &m_pInputLayoutSkinMesh);
+		CreateInputLayout(device.Get(), l_layoutSkinMesh, _countof(l_layoutSkinMesh), m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH]->GetByteCord(), &ilSkinMesh);
 
 		//	インスタンススキンメッシュ描画用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_insntanceMesh, _countof(l_insntanceMesh), m_shaders[VARTEX_SHADER_INSTANCE_3D]->GetByteCord(), &m_pInputLayoutInstanceMesh);
+		CreateInputLayout(device.Get(), l_insntanceMesh, _countof(l_insntanceMesh), m_shaders[VARTEX_SHADER_INSTANCE_3D]->GetByteCord(), &ilInstanceSkinMesh);
+
+		il2d.As(&m_inputLayout2D);
+		il3d.As(&m_inputLayout3D);
+		ilSkinMesh.As(&m_inputLayoutSkinMesh);
+		ilInstanceSkinMesh.As(&m_inputLayoutInstanceMesh);
 	}
 	catch (char* pMessage){
 		throw pMessage;

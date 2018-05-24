@@ -22,6 +22,9 @@
     <Filter Include="DX11\h">
       <UniqueIdentifier>{82ea322a-4c28-424d-802f-e784f5de6b1a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DX11\Shader">
+      <UniqueIdentifier>{74273f43-51fd-4d09-9614-a54dff68699f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DX_LIBRARY\DX_2DObject.h">
@@ -257,5 +260,67 @@
     <ClCompile Include="Source\Bullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ShaderFile\CS_InstanceMesh.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\CS_InstanceSkinMesh.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\CS_Particle.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\GS_3DObject.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\GS_CubeMap.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\GS_Particle.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\GS_RayPick.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\PS_2DObject.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\PS_3DObject.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\PS_Instancing.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\PS_Particle.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\PS_ShadowMap.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_2DObject.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_3DObject.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_CubeMap.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_InstanceMesh.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_Instancing.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_Particle.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_ShadowMap.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="ShaderFile\VS_SkinMesh.hlsl">
+      <Filter>DX11\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

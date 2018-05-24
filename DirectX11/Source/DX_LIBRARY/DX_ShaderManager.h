@@ -62,10 +62,10 @@ class DX_ShaderManager
 private:
 	static std::map<const char*, DX_Shader*>		m_shaders;
 
-	static ID3D11InputLayout*	m_pInputLayout2D;
-	static ID3D11InputLayout*	m_pInputLayout3D;
-	static ID3D11InputLayout*	m_pInputLayoutSkinMesh;
-	static ID3D11InputLayout*	m_pInputLayoutInstanceMesh;
+	static ComPtr<ID3D11InputLayout>	m_inputLayout2D;
+	static ComPtr<ID3D11InputLayout>	m_inputLayout3D;
+	static ComPtr<ID3D11InputLayout>	m_inputLayoutSkinMesh;
+	static ComPtr<ID3D11InputLayout>	m_inputLayoutInstanceMesh;
 
 	//	コンピュートシェーダーが使えるかどうか
 	static bool m_bCanUsetoComputeShader;

@@ -99,6 +99,68 @@
     <ClCompile Include="Source\user_helper_class\OGGManager.cpp" />
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderFile\CS_InstanceMesh.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\CS_InstanceSkinMesh.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\CS_Particle.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\GS_3DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\GS_CubeMap.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\GS_Particle.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\GS_RayPick.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\PS_2DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\PS_3DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\PS_Instancing.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\PS_Particle.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\PS_ShadowMap.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_2DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_3DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_CubeMap.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_InstanceMesh.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_Instancing.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_Particle.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_ShadowMap.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="ShaderFile\VS_SkinMesh.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C89352B8-56D2-44B6-8051-4CF5F2FCBB2C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
