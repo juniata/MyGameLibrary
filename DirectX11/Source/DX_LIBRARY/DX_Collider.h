@@ -3,40 +3,38 @@
 
 enum class COLLIDER_TYPE : int
 {
-	__NONE,
-	BOX_COLLIDER,
-	SPHERE_COLLIDER,
+	// 2D
+	RECT_COLLIDER_2D,
+	CIRCLE_COLLIDER_2D,
+
+	// 3D
+	BOX_COLLIDER_3D,
+	SPHERE_COLLIDER_3D,
+
 };
 
 class DX_Collider
 {
-protected:
-	DX_GameObject* m_pGameObject;
-	COLLIDER_TYPE m_colliderType;
-
 public:
 	DX_Collider(){}
 	virtual ~DX_Collider(){}
-	DX_GameObject* GetGameObject();
-	COLLIDER_TYPE GetCollider();
+	virtual COLLIDER_TYPE GetColliderType() = 0;
 	
 };
 
-class BoxCollider : public DX_Collider
-{
+#include "DX_Collider2D.h"
+#include "DX_Collider3D.h"
 
-};
 
-class SphereCollider : public DX_Collider
-{
 
-};
-
-class ColliderManager
+class DX_ColliderManager
 {
 private:
+	static std::list<DX_GameObject*> m_gameObjects;
 public:
 
-	static void BindGameObject(COLLIDER_TYPE colliderType, DX_GameObject* pGameObject);
+	static DX_Collider* BindGameObject(DX_GameObject* gameObject, COLLIDER_TYPE colliderType);
+	static void Update();
+	static void Release(DX_GameObject* gameObject);
 };
 #endif // !__DX_COLLIDER_H_

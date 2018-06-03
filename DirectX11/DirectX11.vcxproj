@@ -24,6 +24,8 @@
     <ClInclude Include="Source\DX_LIBRARY\DX_Audio.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Buffer.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Collider.h" />
+    <ClInclude Include="Source\DX_LIBRARY\DX_Collider2D.h" />
+    <ClInclude Include="Source\DX_LIBRARY\DX_Collider3D.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_ComputeShader.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Debug.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Font.h" />
@@ -66,10 +68,12 @@
     <ClCompile Include="Source\DX_LIBRARY\DX_2DObject.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Audio.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Buffer.cpp" />
+    <ClCompile Include="Source\DX_LIBRARY\DX_ColliderManager.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_ComputeShader.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Debug.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Font.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_FrameWork.cpp" />
+    <ClCompile Include="Source\DX_LIBRARY\DX_GameObject.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_GeometryShader.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Graphics.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Input.cpp" />
