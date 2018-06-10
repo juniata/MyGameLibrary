@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Bullet.h" />
+    <ClInclude Include="Source\BulletManager.h" />
+    <ClInclude Include="Source\CircularBarrage.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_2DObject.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Audio.h" />
     <ClInclude Include="Source\DX_LIBRARY\DX_Buffer.h" />
@@ -65,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Bullet.cpp" />
+    <ClCompile Include="Source\BulletManager.cpp" />
+    <ClCompile Include="Source\CircularBarrage.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_2DObject.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Audio.cpp" />
     <ClCompile Include="Source\DX_LIBRARY\DX_Buffer.cpp" />

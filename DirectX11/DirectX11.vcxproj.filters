@@ -150,11 +150,17 @@
     <ClInclude Include="Source\Bullet.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Source\BulletManager.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Source\DX_LIBRARY\DX_Collider2D.h">
       <Filter>DX11\h</Filter>
     </ClInclude>
     <ClInclude Include="Source\DX_LIBRARY\DX_Collider3D.h">
       <Filter>DX11\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CircularBarrage.h">
+      <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -266,11 +272,17 @@
     <ClCompile Include="Source\Bullet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\BulletManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Source\DX_LIBRARY\DX_ColliderManager.cpp">
       <Filter>DX11\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\DX_LIBRARY\DX_GameObject.cpp">
       <Filter>DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CircularBarrage.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
