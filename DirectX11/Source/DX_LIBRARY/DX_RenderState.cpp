@@ -97,7 +97,7 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	D3D11_BLEND_DESC l_blendDesc;
 	ZeroMemory(&l_blendDesc, sizeof(l_blendDesc));
 
-	l_blendDesc.AlphaToCoverageEnable		= FALSE;
+	l_blendDesc.AlphaToCoverageEnable		= TRUE;
 	l_blendDesc.IndependentBlendEnable		= FALSE;
 	l_blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
