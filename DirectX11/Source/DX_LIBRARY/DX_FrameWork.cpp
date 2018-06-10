@@ -121,7 +121,7 @@ void DX_FrameWork::Run()
 			// 物理演算
 
 			// 衝突判定
-			DX_ColliderManager::Update();
+			//DX_ColliderManager::Update();
 
 			//	全キー更新
 			DX_Input::Update(l_msg.message, l_msg.wParam);
