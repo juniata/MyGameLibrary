@@ -53,10 +53,9 @@ void DX_ColliderManager::Update()
 			}
 
 			//　自身のコライダータイプをチェックし、衝突判定方法を切り替える
-			switch (collider1->GetColliderType())
+			switch (collider2->GetColliderType())
 			{
-				case COLLIDER_TYPE::RECT_COLLIDER_2D:	// ToBoxCollision();
-					break;
+			case COLLIDER_TYPE::RECT_COLLIDER_2D: TargetRectCollision(collider1, dynamic_cast<DX_RectCollder2D*>(collider2)); break;
 				case COLLIDER_TYPE::CIRCLE_COLLIDER_2D: // ToCirCleCollision();
 					break;
 				case COLLIDER_TYPE::BOX_COLLIDER_3D:	// ToBoxCollision();
@@ -71,4 +70,19 @@ void DX_ColliderManager::Update()
 void DX_ColliderManager::Release(DX_GameObject* gameObject)
 {
 	m_gameObjects.remove(gameObject);
+}
+
+void DX_ColliderManager::TargetRectCollision(DX_Collider* collider, DX_RectCollder2D* targetCollider)
+{
+	switch (collider->GetColliderType())
+	{
+	case COLLIDER_TYPE::RECT_COLLIDER_2D:
+			break;
+	case COLLIDER_TYPE::CIRCLE_COLLIDER_2D:
+		break;
+	case COLLIDER_TYPE::BOX_COLLIDER_3D:
+		break;
+	case COLLIDER_TYPE::SPHERE_COLLIDER_3D:
+		break;
+	}
 }
