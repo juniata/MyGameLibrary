@@ -223,18 +223,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
