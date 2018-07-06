@@ -60,36 +60,38 @@ __declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::PIXEL_SHADER	= "Shad
 class DX_ShaderManager
 {
 private:
-	static std::map<const char*, DX_Shader*>		m_shaders;
+	std::map<const char*, DX_Shader*>		m_shaders;
 
-	static ComPtr<ID3D11InputLayout>	m_inputLayout2D;
-	static ComPtr<ID3D11InputLayout>	m_inputLayout3D;
-	static ComPtr<ID3D11InputLayout>	m_inputLayoutSkinMesh;
-	static ComPtr<ID3D11InputLayout>	m_inputLayoutInstanceMesh;
+	ComPtr<ID3D11InputLayout>	m_inputLayout2D;
+	ComPtr<ID3D11InputLayout>	m_inputLayout3D;
+	ComPtr<ID3D11InputLayout>	m_inputLayoutSkinMesh;
+	ComPtr<ID3D11InputLayout>	m_inputLayoutInstanceMesh;
 
 	//	コンピュートシェーダーが使えるかどうか
-	static bool m_bCanUsetoComputeShader;
+	bool m_bCanUsetoComputeShader;
 
+	static DX_ShaderManager* m_pInstance;
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	DX_ShaderManager() = delete;
+	DX_ShaderManager();
 public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	~DX_ShaderManager(){}
+	~DX_ShaderManager();
 
+	static DX_ShaderManager* GetInstance();
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		メンバ変数の初期化(シェーダーの作成)
 	//
 	//------------------------------------------------------------------------------
-	static void Initialize();
+	void Initialize();
 
 	//------------------------------------------------------------------------------
 	//
@@ -98,7 +100,7 @@ public:
 	//------------------------------------------------------------------------------
 	static void Release();
 
-	static DX_Shader*	GetShader(const char* pShaderFileName);
+	DX_Shader*	GetShader(const char* pShaderFileName);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -106,7 +108,7 @@ public:
 	//	@return		DX_VertexShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader* GetDefaultVertexShader3D();
+	DX_Shader* GetDefaultVertexShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -114,7 +116,7 @@ public:
 	//	@return		DX_VertexShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader* GetDefaultVertexShaderSkinMesh();
+	DX_Shader* GetDefaultVertexShaderSkinMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -122,7 +124,7 @@ public:
 	//	@return		DX_GeometryShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader*	GetDefaultGeometryShader3D();
+	DX_Shader*	GetDefaultGeometryShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -130,7 +132,7 @@ public:
 	//	@return		DX_GeometryShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader*	GetDefaultGeometryShaderRayPick();
+	DX_Shader*	GetDefaultGeometryShaderRayPick();
 
 	//------------------------------------------------------------------------------
 	//
@@ -138,7 +140,7 @@ public:
 	//	@return		DX_PixelShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader* GetDefaultPixelShader3D();
+	DX_Shader* GetDefaultPixelShader3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -146,7 +148,7 @@ public:
 	//	@return		DX_ComputeShaderが返る
 	//
 	//------------------------------------------------------------------------------
-	static DX_Shader* GetInstanceMeshComputeShader();
+	DX_Shader* GetInstanceMeshComputeShader();
 
 	//------------------------------------------------------------------------------
 	//
@@ -154,7 +156,7 @@ public:
 	//	@return		m_pInplutLayout2Dが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11InputLayout* GetDefaultInputLayout2D();
+	ID3D11InputLayout* GetDefaultInputLayout2D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -162,7 +164,7 @@ public:
 	//	@return		m_pInplutLayout3Dが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11InputLayout* GetDefaultInputLayout3D();
+	ID3D11InputLayout* GetDefaultInputLayout3D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -170,7 +172,7 @@ public:
 	//	@return		m_pInputLayoutSkinMeshが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11InputLayout* GetDefaultInputLayoutSkinMesh();
+	ID3D11InputLayout* GetDefaultInputLayoutSkinMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -178,7 +180,7 @@ public:
 	//	@return		m_pInputLayoutInstanceMeshが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11InputLayout* GetInputLayoutInstanceMesh();
+	ID3D11InputLayout* GetInputLayoutInstanceMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -189,7 +191,7 @@ public:
 	//	@note		レジスタ番号は1
 	//
 	//------------------------------------------------------------------------------
-	static void SetWorldMat(
+	void SetWorldMat(
 		const DirectX::XMFLOAT4X4&				worldMat,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
@@ -205,7 +207,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	static void SetVector(
+	void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT4&				vec4,
 		ID3D11Device*				pDevice,
@@ -223,7 +225,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	static void SetVector(
+	void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT3&				vec3,
 		ID3D11Device*				pDevice,
@@ -241,7 +243,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	static void SetVector(
+	void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT2&				vec2,
 		ID3D11Device*				pDevice,
@@ -258,7 +260,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	static void SetMatrix(
+	void SetMatrix(
 		const unsigned int			regiserNum,
 		const DirectX::XMFLOAT4X4&				mat,
 		ID3D11DeviceContext*		pDeviceContext,
@@ -275,7 +277,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//
 	//------------------------------------------------------------------------------
-	static void SetMatrix(
+	void SetMatrix(
 		const unsigned int			regiserNum,
 		const DirectX::XMFLOAT4X4*				pMat,
 		const unsigned int			matCount,
@@ -293,7 +295,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//
 	//------------------------------------------------------------------------------
-	static void SetMatrixResoruce(
+	void SetMatrixResoruce(
 		const unsigned int			regiserNum,
 		const DirectX::XMFLOAT4X4*				pMat,
 		const unsigned int			matCount,
@@ -301,7 +303,7 @@ public:
 		DX_SHADER_TYPE	shaderType
 		);
 
-	static void SetMatrixResoruce(
+	void SetMatrixResoruce(
 		const unsigned int			regiserNum,
 		ID3D11Buffer*			pBuffer,
 		const unsigned int			matCount,
@@ -316,7 +318,7 @@ private:
 	//  @brief		コンピュートシェーダーが使えるかどうかをチェック
 	//
 	//------------------------------------------------------------------------------
-	static void UsedComputeShaderCheck();
+	void UsedComputeShaderCheck();
 
 	//------------------------------------------------------------------------------
 	//
@@ -324,7 +326,7 @@ private:
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	static void CreateShader(
+	void CreateShader(
 		const char* pFilepath
 		);
 
@@ -333,7 +335,7 @@ private:
 	//  @brief		メンバ変数にあるInputLauoutを作成する
 	//
 	//------------------------------------------------------------------------------
-	static void CreateInputLayout();
+	void CreateInputLayout();
 
 	//------------------------------------------------------------------------------
 	//
@@ -345,7 +347,7 @@ private:
 	//	@param[in]	pInputLayout		作成したpInputLayout
 	//
 	//------------------------------------------------------------------------------
-	static void CreateInputLayout(
+	void CreateInputLayout(
 		ID3D11Device*				pDevice,
 		D3D11_INPUT_ELEMENT_DESC*	pInputLayoutDesc,
 		const unsigned int			inputLayoutCount,

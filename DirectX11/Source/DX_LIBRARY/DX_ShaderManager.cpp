@@ -24,13 +24,27 @@ using namespace DirectX;
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-std::map<const char*, DX_Shader*>	DX_ShaderManager::m_shaders;
-ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayout2D;
-ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayout3D;
-ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayoutSkinMesh;
-ComPtr<ID3D11InputLayout>	DX_ShaderManager::m_inputLayoutInstanceMesh;
-bool				DX_ShaderManager::m_bCanUsetoComputeShader  = false;
+DX_ShaderManager* DX_ShaderManager::m_pInstance = nullptr;
 
+DX_ShaderManager::DX_ShaderManager() : m_bCanUsetoComputeShader(false)
+{
+
+}
+
+DX_ShaderManager::~DX_ShaderManager()
+{
+	for (auto itr = m_shaders.begin(); itr != m_shaders.end(); ++itr) {
+		DELETE_OBJ(itr->second);
+	}
+	m_shaders.clear();
+}
+DX_ShaderManager* DX_ShaderManager::GetInstance()
+{
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_ShaderManager();
+	}
+	return m_pInstance;
+}
 //-----------------------------------------------------------------------------------------
 //
 //	メンバ変数の初期化(シェーダーの作成)
@@ -90,10 +104,7 @@ void DX_ShaderManager::Initialize()
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::Release()
 {
-	for (auto itr = m_shaders.begin(); itr != m_shaders.end(); ++itr){
-		DELETE_OBJ(itr->second);
-	}
-	m_shaders.clear();
+	DELETE_OBJ(m_pInstance);
 }
 
 DX_Shader*	DX_ShaderManager::GetShader(const char* pShaderFileName)

@@ -24,6 +24,7 @@ SceneMain::~SceneMain()
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);
 	DELETE_OBJ(bulletManager);
+
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -32,10 +33,15 @@ SceneMain::~SceneMain()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Initialize()
 {
+
 	g_pView = new DX_View();
+
 	g_tex = new DX_2DObject("14_s2bgay4bpz.jpg");
+
 	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
+
 	bulletManager = new BulletManager();
+
 	DX_Lighting::Initialize();
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);

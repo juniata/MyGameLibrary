@@ -11,19 +11,20 @@
 class DX_RenderState
 {
 private:
-	static ID3D11RasterizerState*	m_pRasterizerState;
-	static ID3D11BlendState*		m_pBlendState;
-	static ID3D11DepthStencilState*	m_pDepthStencilState;
+	ComPtr<ID3D11RasterizerState>	m_rasterizerState;
+	ComPtr<ID3D11BlendState>		m_blendState;
+	ComPtr<ID3D11DepthStencilState>	m_depthStencilState;
+	ComPtr<ID3D11SamplerState>		m_samplerState;
 
+	static DX_RenderState* m_pInstance;
 public:
-	static ID3D11SamplerState*		m_pSamplerState;
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		âΩÇ‡ÇµÇ»Ç¢
 	//
 	//------------------------------------------------------------------------------
-	DX_RenderState() = delete;
+	DX_RenderState();
 
 public:
 	//------------------------------------------------------------------------------
@@ -31,15 +32,19 @@ public:
 	//  @brief		âΩÇ‡ÇµÇ»Ç¢
 	//
 	//------------------------------------------------------------------------------
-	~DX_RenderState(){}
+	~DX_RenderState();
 
+	static DX_RenderState* GetInstance();
+
+	static void Release();
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		èâä˙ï`âÊÇÃê›íËÇçsÇ§
 	//
 	//------------------------------------------------------------------------------
-	static void Initialize();
+	void Initialize();
 
+	ID3D11SamplerState* GetDefaultSamplerState();
 private:
 	//------------------------------------------------------------------------------
 	//
@@ -47,7 +52,7 @@ private:
 	//	@param[in]	pDevice	DX_System::GetDevice()
 	//
 	//------------------------------------------------------------------------------
-	static void CreateRasterizerState(
+	void CreateRasterizerState(
 		ID3D11Device* pDevice
 		);
 
@@ -57,7 +62,7 @@ private:
 	//	@param[in]	pDevice	DX_System::GetDevice()
 	//
 	//------------------------------------------------------------------------------
-	static void CreateBlendState(
+	void CreateBlendState(
 		ID3D11Device* pDevice
 		);
 
@@ -67,7 +72,7 @@ private:
 	//	@param[in]	pDevice	DX_System::GetDevice()
 	//
 	//------------------------------------------------------------------------------
-	static void CreateDepthStencilState(
+	void CreateDepthStencilState(
 		ID3D11Device* pDevice
 		);
 
@@ -77,7 +82,7 @@ private:
 	//	@param[in]	pDevice	DX_System::GetDevice()
 	//
 	//------------------------------------------------------------------------------
-	static void CreateSamplerState(
+	void CreateSamplerState(
 		ID3D11Device* pDevice
 		);
 };

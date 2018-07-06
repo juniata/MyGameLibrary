@@ -19,7 +19,12 @@ void DX_SceneManager::Initialize(DX_Scene*	pCurScene)
 	//	現在のシーンを設定
 	m_pCurScene = pCurScene;
 }
-
+void DX_SceneManager::Release()
+{
+	DELETE_OBJ(m_pCurScene);
+	DELETE_OBJ(m_pNextScene);
+	
+}
 //-----------------------------------------------------------------------------------------
 //
 //	現在のシーンを取得する

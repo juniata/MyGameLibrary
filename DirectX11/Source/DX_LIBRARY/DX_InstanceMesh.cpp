@@ -54,7 +54,7 @@ void DX_InstanceMesh::Update(tagInstanceMeshInfo* pInstanceInfo)
 	//	デバイス、コンテキスト、コンピュートシェーダーを取得
 	auto		l_device			= DX_System::GetInstance()->GetDevice();
 	auto		l_deviceContext		= DX_System::GetInstance()->GetDeviceContext();
-	DX_Shader*	l_pComputeShader	= DX_ShaderManager::GetInstanceMeshComputeShader();
+	DX_Shader*	l_pComputeShader	= DX_ShaderManager::GetInstance()->GetInstanceMeshComputeShader();
 
 	//	StrcutredBufferを作成
 	ComPtr<ID3D11Buffer> l_buffer	= DX_Buffer::CreateStructuredBuffer(l_device, sizeof(tagInstanceMeshInfo), m_instanceCount, pInstanceInfo);
@@ -84,11 +84,11 @@ void DX_InstanceMesh::Render()
 	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
 	
 	//	インスタンスの数を送る
-	DX_ShaderManager::SetVector(2, XMFLOAT4(CAST_F(m_instanceCount), 0, 0, 0), DX_System::GetInstance()->GetDevice(), l_deviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetVector(2, XMFLOAT4(CAST_F(m_instanceCount), 0, 0, 0), DX_System::GetInstance()->GetDevice(), l_deviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
-	DX_Shader* l_pVertexShader		= DX_ShaderManager::GetShader("ShaderFile\\VS_InstanceMesh.hlsl");
-	DX_Shader* l_pGeometryShader	= DX_ShaderManager::GetDefaultGeometryShader3D();
-	DX_Shader* l_pPixelShader		= DX_ShaderManager::GetDefaultPixelShader3D();
+	DX_Shader* l_pVertexShader		= DX_ShaderManager::GetInstance()->GetShader("ShaderFile\\VS_InstanceMesh.hlsl");
+	DX_Shader* l_pGeometryShader	= DX_ShaderManager::GetInstance()->GetDefaultGeometryShader3D();
+	DX_Shader* l_pPixelShader		= DX_ShaderManager::GetInstance()->GetDefaultPixelShader3D();
 
 	//	buffer stride and offset
 	//unsigned int l_stride = sizeof(tagMeshVertex);
@@ -108,7 +108,7 @@ void DX_InstanceMesh::Render()
 	l_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	//	InputLayoutの設定を送る
-	l_deviceContext->IASetInputLayout(DX_ShaderManager::GetInputLayoutInstanceMesh());
+	l_deviceContext->IASetInputLayout(DX_ShaderManager::GetInstance()->GetInputLayoutInstanceMesh());
 
 	//	Primitiveの設定を送る
 	l_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

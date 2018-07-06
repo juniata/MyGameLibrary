@@ -46,7 +46,7 @@ bool DX_System::InitD3D(const HWND& hWnd)
 		
 		//	デバッグデバイスを作成する
 		DX_Debug::Initialize();
-		DX_Debug::ReportLiveDeviceObjects("DX_Debug::Initialize()");
+
 		//	RenderTargetViewを作成する
 		CreateRenderTargetView();
 
@@ -57,14 +57,13 @@ bool DX_System::InitD3D(const HWND& hWnd)
 		CreateDepthStencilView();
 
 		//	レンダーステートを初期化する
-		DX_RenderState::Initialize();
+		DX_RenderState::GetInstance()->Initialize();
 
 		//	シェーダーを初期化
-		DX_ShaderManager::Initialize();
+		DX_ShaderManager::GetInstance()->Initialize();
 
 		//	ALManagerを初期化
 		//ALManager::Initialize();
-
 	}
 	catch (char* pErrorMessage){
 		MessageBox(NULL, pErrorMessage, "error", MB_OK);
@@ -86,11 +85,8 @@ void DX_System::Release()
 		m_pInstnace->m_deviceContext->ClearState();
 		//	シェーダーの解放を行う
 		DX_ShaderManager::Release();
-		DX_Debug::ReportLiveDeviceObjects("DX_ShaderManager::Release");
 
-		//	デバッグの解放を行う
 		DX_Debug::ReportLiveDeviceObjects("DX_System::Release");
-		DX_Debug::Release();
 
 		//	OGGファイルを解放
 		//	OGGManager::Release();
@@ -98,8 +94,7 @@ void DX_System::Release()
 		//	ALManagerを解放する
 		//ALManager::Release();
 
-		delete m_pInstnace;
-		m_pInstnace = nullptr;
+		DELETE_OBJ(m_pInstnace);
 	}
 }
 
@@ -315,6 +310,9 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 
 	HRESULT hr = S_FALSE;
 	for (UINT i = 0; i < _countof(driveTypes); ++i){
+		ComPtr<ID3D11Device> tmpDevice;
+		ComPtr<ID3D11DeviceContext> tmpContext;
+		ComPtr<IDXGISwapChain> tmpSwapChain;
 		hr = D3D11CreateDeviceAndSwapChain(
 			nullptr,
 			driveTypes[i],
@@ -324,14 +322,23 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 			ARRAYSIZE(featureLevels),
 			D3D11_SDK_VERSION,
 			&swapChainDesc,
-			&m_swapChain,
-			&m_device,
+			&tmpSwapChain,
+			&tmpDevice,
 			&m_featureLevel,
-			&m_deviceContext
+			&tmpContext
 			);
 
 		if (SUCCEEDED(hr)){
 			m_driverType = driveTypes[i];
+			if (!DX_Debug::IsHresultCheck(tmpDevice.As(&m_device))) {
+				throw "ID3D11Device As Failed()";
+			}
+			if (!DX_Debug::IsHresultCheck(tmpContext.As(&m_deviceContext))) {
+				throw "ID3D11DeviceContext As Failed()";
+			}
+			if (!DX_Debug::IsHresultCheck(tmpSwapChain.As(&m_swapChain))) {
+				throw "IDXGISwapChain As Failed()";
+			}
 			break;
 		}
 	}
@@ -352,15 +359,19 @@ void DX_System::CreateRenderTargetView()
 	PROFILE("DX_System::CreateRenderTargetView()");
 
 	ComPtr<ID3D11Texture2D> buffer;
-
+	ComPtr<ID3D11RenderTargetView> tmpRtv;
 	//	バッファを取得
 	if (!DX_Debug::IsHresultCheck(m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer))){
 		throw "IDXGISwapChain::GetBuffer() : faield";
 	}
 
 	//	レンダーターゲットビューを作成する
-	if (!DX_Debug::IsHresultCheck(m_device->CreateRenderTargetView(buffer.Get(), nullptr, &m_rtv))){
+	if (!DX_Debug::IsHresultCheck(m_device->CreateRenderTargetView(buffer.Get(), nullptr, &tmpRtv))){
 		throw "ID3D11Device::CreateRenderTargetView() : faield";
+	}
+
+	if (!DX_Debug::IsHresultCheck(tmpRtv.As(&m_rtv))) {
+		throw "ID3D11RenderTargetView As Failed()";
 	}
 }
 
@@ -375,7 +386,7 @@ void DX_System::CreateDepthStencilBuffer()
 	PROFILE("DX_System::CreateDepthStencilBuffer()");
 
 	D3D11_TEXTURE2D_DESC dsbDesc = { NULL };
-
+	ComPtr<ID3D11Texture2D> tmpDsb;
 	dsbDesc.MipLevels		= 1;
 	dsbDesc.ArraySize		= 1;
 	dsbDesc.SampleDesc.Count = 1;
@@ -385,8 +396,11 @@ void DX_System::CreateDepthStencilBuffer()
 	dsbDesc.Format			= DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	//	深度･ステンシルバッファを作成
-	if (!DX_Debug::IsHresultCheck(m_device->CreateTexture2D(&dsbDesc, nullptr, &m_dsb))){
+	if (!DX_Debug::IsHresultCheck(m_device->CreateTexture2D(&dsbDesc, nullptr, tmpDsb.GetAddressOf()))){
 		throw "ID3D11Device::CreateTexture2D() : failed";
+	}
+	if (!DX_Debug::IsHresultCheck(tmpDsb.As(&m_dsb))) {
+		throw "ID3D11Texture2D As Failed()";
 	}
 }
 
@@ -404,10 +418,15 @@ void DX_System::CreateDepthStencilView()
 	ZeroMemory(&dsvDesc, sizeof(dsvDesc));
 	dsvDesc.Format		 = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	ComPtr<ID3D11DepthStencilView> tmpDsv;
 
 	//	深度･ステンシルビューを作成
-	if (!DX_Debug::IsHresultCheck(m_device->CreateDepthStencilView(m_dsb.Get(), &dsvDesc, &m_dsv))){
+	if (!DX_Debug::IsHresultCheck(m_device->CreateDepthStencilView(m_dsb.Get(), &dsvDesc, &tmpDsv))){
 		throw "ID3D11Device::CreateDepthStencilView() : failed";
+	}
+
+	if (!DX_Debug::IsHresultCheck(tmpDsv.As(&m_dsv))) {
+		throw "ID3D11DepthStencilView As Failed()";
 	}
 }
 

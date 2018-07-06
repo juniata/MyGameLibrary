@@ -163,7 +163,7 @@ void DX_View::SetMatrixForTheView()
 	};
 
 	//	s—ñ‚ð‘—‚é
-	DX_ShaderManager::SetMatrix(0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetMatrix(0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
 }
 
 

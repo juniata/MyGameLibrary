@@ -136,7 +136,7 @@ void DX_Mesh::Render()
 	l_pDeviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &l_stride, &l_offset);
 
 	//	レイピックフラグが立っていれば、レイピック処理の入ったジオメトリシェーダーを取得
-	DX_Shader* l_pGeometryShader =  ((m_bRayPick) ? DX_ShaderManager::GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetDefaultGeometryShader3D());
+	DX_Shader* l_pGeometryShader =  ((m_bRayPick) ? DX_ShaderManager::GetInstance()->GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetInstance()->GetDefaultGeometryShader3D());
 
 	if (m_bRayPick){
 		unsigned int l_offset[] = { 0 };
@@ -145,10 +145,10 @@ void DX_Mesh::Render()
 	//	描画
 	Render(
 		l_pDeviceContext,
-		DX_ShaderManager::GetDefaultVertexShader3D(),
+		DX_ShaderManager::GetInstance()->GetDefaultVertexShader3D(),
 		l_pGeometryShader,
-		DX_ShaderManager::GetDefaultPixelShader3D(),
-		DX_ShaderManager::GetDefaultInputLayout3D()
+		DX_ShaderManager::GetInstance()->GetDefaultPixelShader3D(),
+		DX_ShaderManager::GetInstance()->GetDefaultInputLayout3D()
 		);
 
 	if (m_bRayPick){
@@ -547,7 +547,7 @@ void DX_Mesh::Render(
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//	ワールド行列を送る
-	DX_ShaderManager::SetWorldMat(m_worldMatrix, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetWorldMat(m_worldMatrix, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	//	ビューに関する行列を送る
 	DX_View::SetMatrixForTheView();

@@ -32,6 +32,7 @@
 #define DELETE_OBJ(x)			if(x){	delete	x;		x = nullptr;	}	
 #define DELETE_OBJ_ARRAY(x)		if(x){  delete[] x;		x = nullptr;	}	
 
+
 //	キャストマクロ
 #define CAST_C(x) static_cast<char>(x)
 #define CAST_I(x) static_cast<int>(x)
@@ -43,7 +44,6 @@
 #include	<list>
 #include	<vector>
 #include	<map>
-
 
 //--------------------------------------------------
 //	4頂点

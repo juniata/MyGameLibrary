@@ -11,9 +11,10 @@ BulletManager::BulletManager()
 {
 	circle = new DX_2DObject("circle.png");
 	
+	circularBarrageList.resize(CIRCULARBARRAGE_MAX, new CircularBarrage());
+	// determine new length, padding with _Val ele
 	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
 	{
-		circularBarrageList.push_back(new CircularBarrage());
 		circularBarrageList[i]->SetEnabled(false);
 	}
 
@@ -28,8 +29,8 @@ BulletManager::BulletManager()
 //-----------------------------------------------------------------------------------------
 BulletManager::~BulletManager()
 {
-	std::vector<CircularBarrage*> vec;
-	circularBarrageList.swap(vec);
+
+	circularBarrageList.clear();
 	DELETE_OBJ(circle);
 }
 

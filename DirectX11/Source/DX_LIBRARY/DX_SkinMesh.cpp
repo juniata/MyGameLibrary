@@ -304,18 +304,18 @@ void DX_SkinMesh::Render()
 	}
 
 	//	Bone行列を頂点シェーダーのregister(t1)に送る
-	DX_ShaderManager::SetMatrixResoruce(1, m_pBoneMatrix, m_boneCount, l_pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetMatrixResoruce(1, m_pBoneMatrix, m_boneCount, l_pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	//	レイピックフラグが立っていれば、レイピック処理の入ったジオメトリシェーダーを取得
-	DX_Shader* l_pGeometryShader = ((m_bRayPick) ? DX_ShaderManager::GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetDefaultGeometryShader3D());
+	DX_Shader* l_pGeometryShader = ((m_bRayPick) ? DX_ShaderManager::GetInstance()->GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetInstance()->GetDefaultGeometryShader3D());
 
 	//	描画
 	DX_Mesh::Render(
 		l_pDeviceContext,
-		DX_ShaderManager::GetDefaultVertexShaderSkinMesh(),
+		DX_ShaderManager::GetInstance()->GetDefaultVertexShaderSkinMesh(),
 		l_pGeometryShader,
-		DX_ShaderManager::GetDefaultPixelShader3D(),
-		DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
+		DX_ShaderManager::GetInstance()->GetDefaultPixelShader3D(),
+		DX_ShaderManager::GetInstance()->GetDefaultInputLayoutSkinMesh()
 		);
 	
 	//	レイピック処理フラグをfalseにする
