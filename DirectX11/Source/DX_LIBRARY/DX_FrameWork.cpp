@@ -127,12 +127,12 @@ void DX_FrameWork::Run()
 			DX_Input::Update(l_msg.message, l_msg.wParam);
 
 			//	シーンの更新
-			//l_pScene->Update();
+			l_pScene->Update();
 
 			//	描画開始
 			DX_Graphics::BeginRender(l_swapChain.Get());
 
-			//l_pScene->Render();
+			l_pScene->Render();
 
 			//	描画終了
 			DX_Graphics::EndRender(l_swapChain.Get());

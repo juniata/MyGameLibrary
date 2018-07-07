@@ -76,7 +76,8 @@ void DX_2DObject::Render()
 	};
 
 	//	バッファを作成
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(),sizeof(tagVertex2D)* 4, l_pVertex);
+	ComPtr<ID3D11Buffer> l_buffer;
+	l_buffer.Attach(DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex));
 	
 	//	シェーダーを取得
 	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
@@ -110,7 +111,8 @@ void DX_2DObject::Render(const tagRect& renderPos)
 	CreateVertex(l_pVertex, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	バッファを作成
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(),sizeof(tagVertex2D)* 4, l_pVertex);
+	ComPtr<ID3D11Buffer> l_buffer;
+	l_buffer.Attach(DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex));
 
 	//	シェーダーを取得
 	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
@@ -146,7 +148,8 @@ void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSi
 	CreateVertex(l_pVertex, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	バッファを作成
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	ComPtr<ID3D11Buffer> l_buffer;
+	l_buffer.Attach(DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex));
 
 	//	シェーダーを取得
 	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
@@ -182,7 +185,8 @@ void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 	CreateVertex(l_pVertex, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	バッファを作成
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	ComPtr<ID3D11Buffer> l_buffer;
+	l_buffer.Attach(DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex));
 
 	//	シェーダーを取得
 	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
@@ -223,13 +227,13 @@ void DX_2DObject::LoadTexture(
 	ComPtr<ID3D11Resource> l_resource;
 	m_pShaderResourceView->GetResource(&l_resource);
 
-	//ComPtr<ID3D11Texture2D> l_texture2D;
-	//l_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&aa);
-	ID3D11Texture2D* l_texture2D = (ID3D11Texture2D*)l_resource.Get();
+	ComPtr<ID3D11Texture2D> l_texture2D;
+	l_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_texture2D);
+
 	D3D11_TEXTURE2D_DESC l_texDesc;
 	l_texture2D->GetDesc(&l_texDesc);
-
 	//	テクスチャサイズを取得
+
 	m_height = l_texDesc.Height;
 	m_width = l_texDesc.Width;
 }

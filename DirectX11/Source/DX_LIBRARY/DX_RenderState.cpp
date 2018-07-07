@@ -62,7 +62,7 @@ void DX_RenderState::Initialize()
 	}
 
 	//	ƒTƒ“ƒvƒ‰[‚ðÝ’è‚·‚é
-	l_pDeviceContext->PSSetSamplers(0, 1, &m_samplerState);
+	l_pDeviceContext->PSSetSamplers(0, 1, m_samplerState.GetAddressOf());
 
 	//	ƒ|ƒŠƒSƒ“•`‰æÝ’è
 	l_pDeviceContext->RSSetState(m_rasterizerState.Get());

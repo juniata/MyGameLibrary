@@ -292,6 +292,7 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(
 //-----------------------------------------------------------------------------------------
 void DX_Buffer::Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
 {
+	ComPtr<ID3D11Buffer> buffer = pVertexBuffer;
 	unsigned int l_stride = sizeof(tagVertex2D);
 	unsigned int l_offset = 0;
 
@@ -299,7 +300,8 @@ void DX_Buffer::Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* 
 	auto l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	VertexBuffer‚ð‘—‚é
-	l_deviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
+	l_deviceContext->IASetVertexBuffers(0, 1, buffer.GetAddressOf(), &l_stride, &l_offset);
+	//l_deviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
 
 	//	InputLayout‚ÌÝ’è‚ð‘—‚é
 	l_deviceContext->IASetInputLayout(DX_ShaderManager::GetInstance()->GetDefaultInputLayout2D());

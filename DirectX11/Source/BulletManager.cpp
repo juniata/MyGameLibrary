@@ -11,11 +11,12 @@ BulletManager::BulletManager()
 {
 	circle = new DX_2DObject("circle.png");
 	
-	circularBarrageList.resize(CIRCULARBARRAGE_MAX, new CircularBarrage());
+	//circularBarrageList.resize(CIRCULARBARRAGE_MAX, new CircularBarrage());
 	// determine new length, padding with _Val ele
 	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
 	{
-		circularBarrageList[i]->SetEnabled(false);
+		circularBarrageList.push_back(new CircularBarrage());
+		circularBarrageList[i]->SetEnabled(true);
 	}
 
 	interval = -1;
