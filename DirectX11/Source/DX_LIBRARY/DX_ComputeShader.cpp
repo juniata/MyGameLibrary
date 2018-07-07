@@ -6,7 +6,8 @@
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_ComputeShader::DX_ComputeShader()
+DX_ComputeShader::DX_ComputeShader() :
+	m_pComputeShader(nullptr)
 {
 }
 
@@ -19,6 +20,7 @@ DX_ComputeShader::DX_ComputeShader()
 //-----------------------------------------------------------------------------------------
 DX_ComputeShader::~DX_ComputeShader()
 {
+	SAFE_RELEASE(m_pComputeShader);
 }
 
 
@@ -50,7 +52,7 @@ void DX_ComputeShader::CreateShader(const char* pFilepath)
 //-----------------------------------------------------------------------------------------
 void DX_ComputeShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
 {
-	pDeviceContext->CSSetShader(m_computeShader.Get(), &m_classInstance, classInstanceCount);
+	pDeviceContext->CSSetShader(m_pComputeShader, &m_pClassInstance, classInstanceCount);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -75,10 +77,10 @@ void DX_ComputeShader::CreateShaderObject()
 
 	//	シェーダーオブジェクトを作成
 	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateComputeShader(
-		m_bytecord->GetBufferPointer(),
-		m_bytecord->GetBufferSize(),
-		m_classLinkage.Get(),
-		&m_computeShader
+		m_pBytecord->GetBufferPointer(),
+		m_pBytecord->GetBufferSize(),
+		m_pClassLinkage,
+		&m_pComputeShader
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する

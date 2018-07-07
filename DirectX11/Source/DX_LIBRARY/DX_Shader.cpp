@@ -6,7 +6,11 @@
 //	メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_Shader::DX_Shader()
+DX_Shader::DX_Shader() :
+	m_pBytecord(nullptr),
+	m_pClassInstance(nullptr),
+	m_pClassLinkage(nullptr),
+	m_pInputLayout(nullptr)
 {}
 
 
@@ -17,6 +21,10 @@ DX_Shader::DX_Shader()
 //-----------------------------------------------------------------------------------------
 DX_Shader::~DX_Shader()
 {
+	SAFE_RELEASE(m_pBytecord);
+	SAFE_RELEASE(m_pClassInstance);
+	SAFE_RELEASE(m_pInputLayout);
+	SAFE_RELEASE(m_pBytecord);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -26,7 +34,7 @@ DX_Shader::~DX_Shader()
 //-----------------------------------------------------------------------------------------
 ID3DBlob* DX_Shader::GetByteCord()
 {
-	return m_bytecord.Get();
+	return m_pBytecord;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -61,7 +69,7 @@ void DX_Shader::CompileFromFile(
 	mbstowcs_s(&strlen, filepath, strnlen_s(pFilepath,MAX_PATH)+1, pFilepath, _TRUNCATE
 	);
 
-	ComPtr<ID3DBlob>	l_errorBlob;
+	ID3DBlob*	l_pErrorBlob = nullptr;
 	HRESULT		l_hr =
 		D3DCompileFromFile(
 		filepath,			//	ファイル名
@@ -71,8 +79,8 @@ void DX_Shader::CompileFromFile(
 		pShaderVersion,		//	シェーダーバージョン
 		l_dwShaderFlags,	//	コンパイルオプション
 		0,					//	コンパイルオプション無し
-		&m_bytecord,		//	コンパイルされたバイトコード
-		&l_errorBlob		//	エラーメッセージ
+		&m_pBytecord,		//	コンパイルされたバイトコード
+		&l_pErrorBlob		//	エラーメッセージ
 	);
 	//l_hr = D3DX11CompileFromFile(
 	//	pFilepath,			//	ファイル名
@@ -89,7 +97,8 @@ void DX_Shader::CompileFromFile(
 	//	);
 
 	//	シェーダーファイルのソースコードをチェック
-	DX_Debug::GetInstance()->CheckSourceCordOfShaderFile(l_hr, l_errorBlob.Get());
+	DX_Debug::GetInstance()->CheckSourceCordOfShaderFile(l_hr, l_pErrorBlob);
+	SAFE_RELEASE(l_pErrorBlob);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -99,8 +108,8 @@ void DX_Shader::CompileFromFile(
 //-----------------------------------------------------------------------------------------
 void DX_Shader::CreateClassLinkage()
 {
-	if (!DX_Debug::GetInstance()->IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_classLinkage))){
-		//SAFE_RELEASE(m_pClassLinkage);
+	if (!DX_Debug::GetInstance()->IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_pClassLinkage))){
+		SAFE_RELEASE(m_pClassLinkage);
 	}
 }
 

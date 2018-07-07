@@ -59,33 +59,21 @@ __declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::PIXEL_SHADER	= "Shad
 //****************************************************************************************************
 class DX_ShaderManager
 {
-private:
-	std::map<const char*, DX_Shader*>		m_shaders;
-
-	ComPtr<ID3D11InputLayout>	m_inputLayout2D;
-	ComPtr<ID3D11InputLayout>	m_inputLayout3D;
-	ComPtr<ID3D11InputLayout>	m_inputLayoutSkinMesh;
-	ComPtr<ID3D11InputLayout>	m_inputLayoutInstanceMesh;
-
-	//	コンピュートシェーダーが使えるかどうか
-	bool m_bCanUsetoComputeShader;
-
-	static DX_ShaderManager* m_pInstance;
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		何もしない
-	//
-	//------------------------------------------------------------------------------
-	DX_ShaderManager();
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		何もしない
+	//  @brief		解放
 	//
 	//------------------------------------------------------------------------------
 	~DX_ShaderManager();
 
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		インスタンスを取得する
+	//
+	//------------------------------------------------------------------------------
 	static DX_ShaderManager* GetInstance();
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		メンバ変数の初期化(シェーダーの作成)
@@ -100,6 +88,11 @@ public:
 	//------------------------------------------------------------------------------
 	static void Release();
 
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		指定したシェーダーを取得する
+	//
+	//------------------------------------------------------------------------------
 	DX_Shader*	GetShader(const char* pShaderFileName);
 	
 	//------------------------------------------------------------------------------
@@ -313,6 +306,23 @@ public:
 
 
 private:
+	std::map<const char*, DX_Shader*>		m_shaders;
+
+	ID3D11InputLayout*	m_pInputLayout2D;
+	ID3D11InputLayout*	m_pInputLayout3D;
+	ID3D11InputLayout*	m_pInputLayoutSkinMesh;
+	ID3D11InputLayout*	m_pInputLayoutInstanceMesh;
+
+	//	コンピュートシェーダーが使えるかどうか
+	bool m_bCanUsetoComputeShader;
+
+	static DX_ShaderManager* m_pInstance;
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		初期化
+	//
+	//------------------------------------------------------------------------------
+	DX_ShaderManager();
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		コンピュートシェーダーが使えるかどうかをチェック

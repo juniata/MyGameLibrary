@@ -6,7 +6,9 @@
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_GeometryShader::DX_GeometryShader()
+DX_GeometryShader::DX_GeometryShader() :
+	m_pOutputGeometryShader(nullptr),
+	m_pGeometryShader(nullptr)
 {
 }
 
@@ -17,6 +19,8 @@ DX_GeometryShader::DX_GeometryShader()
 //-----------------------------------------------------------------------------------------
 DX_GeometryShader::~DX_GeometryShader()
 {
+	SAFE_RELEASE(m_pGeometryShader);
+	SAFE_RELEASE(m_pOutputGeometryShader);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -46,11 +50,11 @@ void DX_GeometryShader::CreateShader(const char* pFilepath)
 //-----------------------------------------------------------------------------------------
 void DX_GeometryShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
 {
-	if (m_outputGeometryShader.Get()){
-		pDeviceContext->GSSetShader(m_outputGeometryShader.Get(), &m_classInstance, classInstanceCount);
+	if (m_pOutputGeometryShader){
+		pDeviceContext->GSSetShader(m_pOutputGeometryShader, &m_pClassInstance, classInstanceCount);
 	}
 	else{
-		pDeviceContext->GSSetShader(m_geometryShader.Get(), &m_classInstance, classInstanceCount);
+		pDeviceContext->GSSetShader(m_pGeometryShader, &m_pClassInstance, classInstanceCount);
 	}
 }
 
@@ -76,10 +80,10 @@ void DX_GeometryShader::CreateShaderObject()
 
 	//	シェーダーオブジェクトを作成
 	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShader(
-		m_bytecord->GetBufferPointer(),
-		m_bytecord->GetBufferSize(),
-		m_classLinkage.Get(),
-		&m_geometryShader
+		m_pBytecord->GetBufferPointer(),
+		m_pBytecord->GetBufferSize(),
+		m_pClassLinkage,
+		&m_pGeometryShader
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
@@ -103,15 +107,15 @@ void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(
 	)
 {
 	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(
-		m_bytecord->GetBufferPointer(),
-		m_bytecord->GetBufferSize(),
+		m_pBytecord->GetBufferPointer(),
+		m_pBytecord->GetBufferSize(),
 		decreation,
 		decreationElementCount,
 		pBufferStrides,
 		stridesElementCount,
 		0,
 		nullptr,
-		&m_outputGeometryShader
+		&m_pOutputGeometryShader
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する

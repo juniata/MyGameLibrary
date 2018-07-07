@@ -49,31 +49,6 @@ struct tagFase{
 //****************************************************************************************************
 class DX_Mesh : public DX_GameObject
 {
-protected:
-	ComPtr<ID3D11Buffer>	m_vertexBuffer;	//	頂点バッファ
-	ComPtr<ID3D11Buffer>	m_indexBuffer;		//	インデックスバッファ
-	ComPtr<ID3D11Buffer>	m_rayPickBuffer;	//	レイピック用バッファ
-
-	//	マテリアル順描画用構造体ポインタ変数
-	tagGroupMesh*	m_pGroupMesh;
-
-	DWORD  m_indexCount;
-	DWORD  m_materialCount;
-	DWORD  m_vertexCount;
-	DWORD  m_faceCount;
-
-	DirectX::XMFLOAT4X4  m_worldMatrix;
-	DirectX::XMFLOAT3 m_pos;
-	DirectX::XMFLOAT3 m_scale;
-	DirectX::XMFLOAT3 m_angle;
-
-	bool m_bChanged;
-	bool m_bClone;
-	bool m_bRayPick;
-
-	//	コピーコンスラクタと代入を禁止にする
-//	dx_library::Mesh& operator=(const dx_library::Mesh& copy);
-//	dx_library::Mesh(const dx_library::Mesh& copy);
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -229,17 +204,28 @@ public:
 		const float		dist
 		);
 
-private:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief			頂点データをコピー
-	//	@param[in out]	pVertexList		pIMOVertexのデータをこっちにコピー
-	//	@param[in]		pIMOVertex	IMOLoader::GetVertex()
-	//
-	//------------------------------------------------------------------------------
-	void VertexCopy(std::vector<tagMeshVertex>* pVertexList,void* pIMOVertex);
-
 protected:
+	ID3D11Buffer*	m_pVertexBuffer;	//	頂点バッファ
+	ID3D11Buffer*	m_pIndexBuffer;		//	インデックスバッファ
+	ID3D11Buffer*	m_pRayPickBuffer;	//	レイピック用バッファ
+
+										//	マテリアル順描画用構造体ポインタ変数
+	tagGroupMesh*	m_pGroupMesh;
+
+	DWORD  m_indexCount;
+	DWORD  m_materialCount;
+	DWORD  m_vertexCount;
+	DWORD  m_faceCount;
+
+	DirectX::XMFLOAT4X4  m_worldMatrix;
+	DirectX::XMFLOAT3 m_pos;
+	DirectX::XMFLOAT3 m_scale;
+	DirectX::XMFLOAT3 m_angle;
+
+	bool m_bChanged;
+	bool m_bClone;
+	bool m_bRayPick;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief			マテリアル順にインデックスを作成
@@ -274,6 +260,19 @@ protected:
 		DX_Shader*		pPixelShader,
 		ID3D11InputLayout*		pInputLayout
 		);
+
+	//	コピーコンスラクタと代入を禁止にする
+	//	dx_library::Mesh& operator=(const dx_library::Mesh& copy);
+	//	dx_library::Mesh(const dx_library::Mesh& copy);
+private:
+	//------------------------------------------------------------------------------
+	//
+	//  @brief			頂点データをコピー
+	//	@param[in out]	pVertexList		pIMOVertexのデータをこっちにコピー
+	//	@param[in]		pIMOVertex	IMOLoader::GetVertex()
+	//
+	//------------------------------------------------------------------------------
+	void VertexCopy(std::vector<tagMeshVertex>* pVertexList, void* pIMOVertex);
 
 };
 #endif // !__DX_MESH_H_

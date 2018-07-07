@@ -4,9 +4,6 @@
 
 class DX_ComputeShader : public DX_Shader
 {
-private:
-	ComPtr<ID3D11ComputeShader>	m_computeShader;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -55,6 +52,8 @@ public:
 		);
 
 private:
+	ID3D11ComputeShader*	m_pComputeShader;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーオブジェクトを作成する

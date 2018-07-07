@@ -24,12 +24,6 @@
 //****************************************************************************************************
 class DX_Shader
 {
-protected:
-	ComPtr<ID3D11ClassLinkage>		m_classLinkage;
-	ComPtr<ID3D11ClassInstance>		m_classInstance;
-	ComPtr<ID3D11InputLayout>		m_inputLayout;
-	ComPtr<ID3DBlob>				m_bytecord;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -86,6 +80,10 @@ public:
 	ID3DBlob* GetByteCord();
 
 protected:
+	ID3D11ClassLinkage*		m_pClassLinkage;
+	ID3D11ClassInstance*	m_pClassInstance;
+	ID3D11InputLayout*		m_pInputLayout;
+	ID3DBlob*				m_pBytecord;
 
 	//------------------------------------------------------------------------------
 	//

@@ -7,15 +7,37 @@
 //-----------------------------------------------------------------------------------------
 DX_RenderState* DX_RenderState::m_pInstance = nullptr;
 
-DX_RenderState::DX_RenderState()
-{
 
-}
+//-----------------------------------------------------------------------------------------
+//
+//  初期化
+//
+//-----------------------------------------------------------------------------------------
+DX_RenderState::DX_RenderState() :
+	m_pRasterizerState(nullptr),
+	m_pBlendState(nullptr),
+	m_pDepthStencilState(nullptr),
+	m_pSamplerState(nullptr)
+{}
 
+//-----------------------------------------------------------------------------------------
+//
+//  解放
+//
+//-----------------------------------------------------------------------------------------
 DX_RenderState::~DX_RenderState()
 {
-
+	SAFE_RELEASE(m_pRasterizerState);
+	SAFE_RELEASE(m_pBlendState);
+	SAFE_RELEASE(m_pDepthStencilState);
+	SAFE_RELEASE(m_pSamplerState);
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  インスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
 DX_RenderState* DX_RenderState::GetInstance()
 {
 	if (m_pInstance == nullptr) {
@@ -25,10 +47,16 @@ DX_RenderState* DX_RenderState::GetInstance()
 	return m_pInstance;
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  インスタンスを解放する
+//
+//-----------------------------------------------------------------------------------------
 void DX_RenderState::Release()
 {
 	DELETE_OBJ(m_pInstance);
 }
+
 //-----------------------------------------------------------------------------------------
 //
 //  初期描画の設定を行う
@@ -62,17 +90,17 @@ void DX_RenderState::Initialize()
 	}
 
 	//	サンプラーを設定する
-	l_pDeviceContext->PSSetSamplers(0, 1, m_samplerState.GetAddressOf());
+	l_pDeviceContext->PSSetSamplers(0, 1, &m_pSamplerState);
 
 	//	ポリゴン描画設定
-	l_pDeviceContext->RSSetState(m_rasterizerState.Get());
+	l_pDeviceContext->RSSetState(m_pRasterizerState);
 
 	//	OMに必要情報を設定
 	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	ID3D11RenderTargetView* const targets[1] = { DX_System::GetInstance()->GetDefaultRenderTargetView() };
 	l_pDeviceContext->OMSetRenderTargets(1, targets, DX_System::GetInstance()->GetDefaultDepthStencilView());
-	l_pDeviceContext->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
-	l_pDeviceContext->OMSetBlendState(m_blendState.Get(), l_blendFactor, 1);
+	l_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
+	l_pDeviceContext->OMSetBlendState(m_pBlendState, l_blendFactor, 1);
 	
 }
 
@@ -97,14 +125,10 @@ void DX_RenderState::CreateRasterizerState(ID3D11Device*	pDevice)
 	l_rsDesc.ScissorEnable			= FALSE;	//	シザー矩形無し
 	l_rsDesc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
 	l_rsDesc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
-	ComPtr<ID3D11RasterizerState> com;
-	//	rasterizer stateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &com))){
-		throw "ID3D11Device::CreateRasterizerState() : failed";
-	}
 
-	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_rasterizerState))) {
-		throw "ID3D11RasterizerState As failed";
+												//	rasterizer stateを作成する
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &m_pRasterizerState))){
+		throw "ID3D11Device::CreateRasterizerState() : failed";
 	}
 }
 
@@ -137,17 +161,11 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	l_blendDesc.RenderTarget[0].DestBlendAlpha			= D3D11_BLEND_ZERO;
 	l_blendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	ComPtr<ID3D11BlendState> com;
 
 	//	blendStateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBlendState(&l_blendDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBlendState(&l_blendDesc, &m_pBlendState))){
 		throw "ID3D11Device::CreateBlendState() : failed";
 	}
-
-	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_blendState))) {
-		throw "ID3D11BlendState As failed";
-	}
-
 }
 
 
@@ -183,15 +201,9 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 	l_dsDesc.BackFace.StencilPassOp			= D3D11_STENCIL_OP_KEEP;
 	l_dsDesc.BackFace.StencilFunc			= D3D11_COMPARISON_ALWAYS;
 
-	ComPtr<ID3D11DepthStencilState> com;
-
 	//	depth stencil stateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &m_pDepthStencilState))){
 		throw "ID3D11Device::CreateDepthStencilState() : failed";
-	}
-
-	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_depthStencilState))) {
-		throw "ID3D11BlendState As failed";
 	}
 }
 
@@ -220,17 +232,7 @@ void DX_RenderState::CreateSamplerState(ID3D11Device* pDevice)
 	l_samplerDesc.MinLOD = 0;
 	l_samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	ComPtr<ID3D11SamplerState> com;
-
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateSamplerState(&l_samplerDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateSamplerState(&l_samplerDesc, &m_pSamplerState))){
 		throw "ID3D11Device::CreateSamplerState() : failed";
 	}
-
-	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_samplerState))) {
-		throw "ID3D11SamplerState As failed";
-	}
-}
-ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState()
-{
-	return m_samplerState.Get();
 }

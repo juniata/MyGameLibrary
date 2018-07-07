@@ -31,7 +31,7 @@
 //	マクロ
 #define DELETE_OBJ(x)			if(x){	delete	x;		x = nullptr;	}	
 #define DELETE_OBJ_ARRAY(x)		if(x){  delete[] x;		x = nullptr;	}	
-
+#define SAFE_RELEASE(x)			if(x){  x->Release();		x = nullptr;	}
 
 //	キャストマクロ
 #define CAST_C(x) static_cast<char>(x)
@@ -54,11 +54,6 @@ struct tagRect{
 		x(x), y(y), w(w), h(h)
 	{}
 };
-
-//	Microsoft::WRL::ComPtrを使うため
-#include	<wrl.h>
-using namespace Microsoft::WRL;
-
 
 #include	"DX_Scene.h"
 #include	"DX_SceneManager.h"

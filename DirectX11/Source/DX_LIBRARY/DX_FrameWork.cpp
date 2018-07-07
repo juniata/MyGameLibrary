@@ -102,7 +102,7 @@ void DX_FrameWork::Run()
 
 
 	//	スワップチェインを取得
-	ComPtr<IDXGISwapChain> l_swapChain = DX_System::GetInstance()->GetSwapChain();
+	IDXGISwapChain* l_pSwapChain = DX_System::GetInstance()->GetSwapChain();
 
 	//	現在のシーンを取得
 	DX_Scene*	l_pScene = DX_SceneManager::GetCurScene();
@@ -130,12 +130,12 @@ void DX_FrameWork::Run()
 			l_pScene->Update();
 
 			//	描画開始
-			DX_Graphics::BeginRender(l_swapChain.Get());
+			DX_Graphics::BeginRender(l_pSwapChain);
 
 			l_pScene->Render();
 
 			//	描画終了
-			DX_Graphics::EndRender(l_swapChain.Get());
+			DX_Graphics::EndRender(l_pSwapChain);
 		}
 	}
 

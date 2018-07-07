@@ -39,7 +39,11 @@ m_angle(XMFLOAT3(0.0f,0.0f,0.0f)),
 //	変更フラグとクローンフラグとレイピックフラグを初期化
 m_bChanged(true),
 m_bClone(false),
-m_bRayPick(false)
+m_bRayPick(false),
+
+m_pIndexBuffer(nullptr),
+m_pRayPickBuffer(nullptr),
+m_pVertexBuffer(nullptr)
 {
 	//	行列更新を行う
 	Update();
@@ -65,6 +69,10 @@ DX_Mesh::~DX_Mesh()
 
 		//	groupMeshを解放
 		DELETE_OBJ_ARRAY(m_pGroupMesh);
+
+		SAFE_RELEASE(m_pIndexBuffer);
+		SAFE_RELEASE(m_pRayPickBuffer);
+		SAFE_RELEASE(m_pVertexBuffer);
 	}
 }
 
@@ -133,14 +141,14 @@ void DX_Mesh::Render()
 	unsigned int l_offset = 0;
 
 	//	VertexBufferを送る
-	l_pDeviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &l_stride, &l_offset);
+	l_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &l_stride, &l_offset);
 
 	//	レイピックフラグが立っていれば、レイピック処理の入ったジオメトリシェーダーを取得
 	DX_Shader* l_pGeometryShader =  ((m_bRayPick) ? DX_ShaderManager::GetInstance()->GetDefaultGeometryShaderRayPick() : DX_ShaderManager::GetInstance()->GetDefaultGeometryShader3D());
 
 	if (m_bRayPick){
 		unsigned int l_offset[] = { 0 };
-		l_pDeviceContext->SOSetTargets(1, &m_rayPickBuffer, l_offset);
+		l_pDeviceContext->SOSetTargets(1, &m_pRayPickBuffer, l_offset);
 	}
 	//	描画
 	Render(
@@ -194,13 +202,13 @@ void DX_Mesh::LoadModel(const char* pFilepath)
 	CreateIndexMaterialOrder(&l_indexList, l_imoLoader.GetIndices(), l_imoLoader.GetAttributes());
 	
 	//	頂点バッファを作成
-	m_vertexBuffer = DX_Buffer::CreateVertexBuffer(l_pDevice,sizeof(tagMeshVertex) * m_vertexCount, (tagMeshVertex*)&l_vertexList[0]);
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(l_pDevice,sizeof(tagMeshVertex) * m_vertexCount, (tagMeshVertex*)&l_vertexList[0]);
 
 	//	インデックスバッファ
-	m_indexBuffer = DX_Buffer::CreateIndexBuffer(l_pDevice, sizeof(WORD)* l_indexList.size(), (LPWORD)&l_indexList[0]);
+	m_pIndexBuffer = DX_Buffer::CreateIndexBuffer(l_pDevice, sizeof(WORD)* l_indexList.size(), (LPWORD)&l_indexList[0]);
 
 	//	レイピックバッファを咲く瀬い
-	m_rayPickBuffer = DX_Buffer::CreateStreamOutputBuffer(l_pDevice, (sizeof(XMFLOAT4)+sizeof(XMFLOAT3)) * m_faceCount * 3);
+	m_pRayPickBuffer = DX_Buffer::CreateStreamOutputBuffer(l_pDevice, (sizeof(XMFLOAT4)+sizeof(XMFLOAT3)) * m_faceCount * 3);
 
 	//	マテリアル情報を作成
 	CreateTextureInfo(l_imoLoader.GetTextures());
@@ -240,7 +248,7 @@ bool DX_Mesh::RayPick(
 	l_rayPick.dist	= dist;
 
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>		l_buffer;
+	ID3D11Buffer*				l_pBuffer			= nullptr;
 	D3D11_BUFFER_DESC			l_bufferDesc		= { NULL };
 	D3D11_MAPPED_SUBRESOURCE	l_subResource		= { NULL };
 	ID3D11DeviceContext*		l_pDeviceContext	= DX_System::GetInstance()->GetDeviceContext();
@@ -252,13 +260,13 @@ bool DX_Mesh::RayPick(
 	l_bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_buffer);
+	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
 
 	//	updateSubResource
-	l_pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &l_rayPick, 0, 0);
+	l_pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_rayPick, 0, 0);
 	
 	//	GSに送る
-	DX_ResourceManager::SetConstantbuffers(l_pDeviceContext, 0, 1, &l_buffer, DX_SHADER_TYPE::GEOMETRY_SHADER);
+	DX_ResourceManager::SetConstantbuffers(l_pDeviceContext, 0, 1, &l_pBuffer, DX_SHADER_TYPE::GEOMETRY_SHADER);
 
 	//	ジオメトリから出力させるレイピック情報
 	struct tagRaypickOutput{
@@ -267,17 +275,17 @@ bool DX_Mesh::RayPick(
 	};
 
 	//	CPUで値を読めるバッファを作成
-	ComPtr<ID3D11Buffer> l_cpuReadBuffer = DX_Buffer::CPUReadBuffer(DX_System::GetInstance()->GetDevice(), (sizeof(XMFLOAT4)+sizeof(XMFLOAT4)) * m_faceCount * 3);
+	ID3D11Buffer* l_pCpuReadBuffer = DX_Buffer::CPUReadBuffer(DX_System::GetInstance()->GetDevice(), (sizeof(XMFLOAT4)+sizeof(XMFLOAT4)) * m_faceCount * 3);
 
 	//	値チェック
-	DEBUG_VALUE_CHECK((l_cpuReadBuffer.Get() == nullptr) ? false : true, "DX_Buffer::CPUReadBuffer() : failed");
+	DEBUG_VALUE_CHECK((l_pCpuReadBuffer == nullptr) ? false : true, "DX_Buffer::CPUReadBuffer() : failed");
 
 	//	レイピック用バッファをCPUReadBufferにコピー
-	l_pDeviceContext->CopyResource(l_cpuReadBuffer.Get(), m_rayPickBuffer.Get());
+	l_pDeviceContext->CopyResource(l_pCpuReadBuffer, m_pRayPickBuffer);
 
 	//	値を読み込む
 	D3D11_MAPPED_SUBRESOURCE l_map;
-	l_pDeviceContext->Map(l_cpuReadBuffer.Get(), 0, D3D11_MAP::D3D11_MAP_READ, 0, &l_map);
+	l_pDeviceContext->Map(l_pCpuReadBuffer, 0, D3D11_MAP::D3D11_MAP_READ, 0, &l_map);
 
 	tagRaypickOutput* l_pRayPick = (tagRaypickOutput*)l_map.pData;
 
@@ -304,10 +312,13 @@ bool DX_Mesh::RayPick(
 	}
 
 	//	読み込み終了
-	l_pDeviceContext->Unmap(l_cpuReadBuffer.Get(), 0);
+	l_pDeviceContext->Unmap(l_pCpuReadBuffer, 0);
 
 	//	レイピック処理フラグをtrueにする
 	m_bRayPick = true;
+
+	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(l_pCpuReadBuffer);
 
 	//	ヒットフラグを返す
 	return l_bHit;
@@ -538,7 +549,7 @@ void DX_Mesh::Render(
 {
 
 	//	IndexBufferを送る
-	pDeviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	//	InputLayoutの設定を送る
 	pDeviceContext->IASetInputLayout(pInputLayout);

@@ -21,17 +21,17 @@ m_instanceCount(0)
 //-----------------------------------------------------------------------------------------
 DX_InstanceSkinMesh::DX_InstanceSkinMesh(const char* pFilepath, const int instanceCount) : DX_InstanceSkinMesh()
 {
-	ComPtr<ID3D11Device> l_device = DX_System::GetInstance()->GetDevice();
+	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
 
 	m_instanceCount = instanceCount;
 
-	m_pReadBuffer = DX_Buffer::CPUReadBuffer(l_device.Get(), sizeof(DirectX::XMFLOAT4X4)* instanceCount);
+	m_pReadBuffer = DX_Buffer::CPUReadBuffer(l_pDevice, sizeof(DirectX::XMFLOAT4X4)* instanceCount);
 
 	//	UAVBufferÇçÏê¨
-	m_resultResource.m_pUAVBuffer = DX_Buffer::CreateStructuredBuffer(l_device.Get(), sizeof(DirectX::XMFLOAT4X4), m_instanceCount, nullptr);
+	m_resultResource.m_pUAVBuffer = DX_Buffer::CreateStructuredBuffer(l_pDevice, sizeof(DirectX::XMFLOAT4X4), m_instanceCount, nullptr);
 
 	//	UAVÇçÏê¨
-	m_resultResource.m_pUAV = DX_Resource::CreateUnorderedAccessView(l_device.Get(), m_resultResource.m_pUAVBuffer);
+	m_resultResource.m_pUAV = DX_Resource::CreateUnorderedAccessView(l_pDevice, m_resultResource.m_pUAVBuffer);
 
 	//	ÉÅÉbÉVÉÖÇçÏê¨
 	DX_SkinMesh::LoadModel(pFilepath);
@@ -39,7 +39,9 @@ DX_InstanceSkinMesh::DX_InstanceSkinMesh(const char* pFilepath, const int instan
 
 DX_InstanceSkinMesh::~DX_InstanceSkinMesh()
 {
-
+	SAFE_RELEASE(m_resultResource.m_pUAV);
+	SAFE_RELEASE(m_resultResource.m_pUAVBuffer);
+	SAFE_RELEASE(m_pReadBuffer);
 }
 void DX_InstanceSkinMesh::Update()
 {

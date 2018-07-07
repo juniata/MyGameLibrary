@@ -21,15 +21,15 @@ class DX_InstanceMesh : public DX_Mesh
 private:
 	//	コンピュートで結果を書き込むリソース
 	struct tagResultResource{
-		ComPtr<ID3D11UnorderedAccessView>	m_uav;
-		ComPtr<ID3D11Buffer>				m_uavBuffer;
+		ID3D11UnorderedAccessView*	m_pUav;
+		ID3D11Buffer*				m_pUavBuffer;
 	}m_resultResource;
 	
 	//	コンピュートシェーダーの結果をCPUで受け取るバッファ
-	ComPtr<ID3D11Buffer>	m_readBuffer;
+	ID3D11Buffer*	m_pReadBuffer;
 
 	//	コンピュートシェーダーで書き込む対象バッファ
-	ComPtr<ID3D11Buffer>	m_gpuWriteBuffer;
+	ID3D11Buffer*	m_pGpuWriteBuffer;
 
 	//	インスタンス数
 	int m_instanceCount;

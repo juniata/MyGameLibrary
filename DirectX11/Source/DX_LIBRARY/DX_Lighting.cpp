@@ -125,7 +125,7 @@ void DX_Lighting::SetLightVertexShader()
 	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>		l_buffer;
+	ID3D11Buffer*				l_pBuffer = nullptr;
 	D3D11_BUFFER_DESC			l_bufferDesc = { NULL };
 	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
 
@@ -147,13 +147,15 @@ void DX_Lighting::SetLightVertexShader()
 	l_bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_buffer);
+	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
 
 	//	updateSubResource
-	l_deviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &l_vertexLighting, 0, 0);
+	l_deviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_vertexLighting, 0, 0);
 
 	//	PSに送る
-	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 3, 1, &l_buffer, DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 3, 1, &l_pBuffer, DX_SHADER_TYPE::VERTEX_SHADER);
+
+	SAFE_RELEASE(l_pBuffer);
 }
 
 
@@ -167,7 +169,7 @@ void DX_Lighting::SetLightPixelShader()
 	auto l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>		l_buffer;
+	ID3D11Buffer*				l_pBuffer = nullptr;
 	D3D11_BUFFER_DESC			l_bufferDesc = { NULL };
 	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
 
@@ -187,12 +189,14 @@ void DX_Lighting::SetLightPixelShader()
 	l_bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_buffer);
+	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
 
 	//	updateSubResource
-	l_deviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &l_pixelLighting, 0, 0);
+	l_deviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_pixelLighting, 0, 0);
 
 	//	PSに送る
-	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 0, 1, &l_buffer, DX_SHADER_TYPE::PIXEL_SHADER);
+	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 0, 1, &l_pBuffer, DX_SHADER_TYPE::PIXEL_SHADER);
+
+	SAFE_RELEASE(l_pBuffer);
 
 }

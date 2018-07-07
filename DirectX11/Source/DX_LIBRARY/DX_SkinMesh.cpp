@@ -21,7 +21,9 @@ m_motion(0),
 m_frameCount(0),
 m_pFrameFlag(nullptr),
 m_dwFrame(0),
-m_frame(0)
+m_frame(0),
+
+m_pSkinBuffer(nullptr)
 {
 	ZeroMemory(m_param, sizeof(m_param));
 	ZeroMemory(m_offset, sizeof(m_offset));
@@ -69,6 +71,8 @@ DX_SkinMesh::~DX_SkinMesh()
 
 		//	アニメーションデータを解放
 		DELETE_OBJ_ARRAY(m_pAnimationInfo);
+
+		SAFE_RELEASE(m_pSkinBuffer);
 	}
 	else{
 		//	パレット行列だけは別なので、削除しておく
@@ -127,10 +131,10 @@ void DX_SkinMesh::LoadModel(const char* pFilepath)
 	CreateIndexMaterialOrder(&l_indexList, l_iemLoader.GetIndices(), l_iemLoader.GetAttributes());
 
 	//	頂点バッファを作成
-	m_vertexBuffer = DX_Buffer::CreateVertexBuffer(l_pDevice, sizeof(tagMeshVertex)* m_vertexCount, (tagMeshVertex*)&l_vertexList[0]);
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(l_pDevice, sizeof(tagMeshVertex)* m_vertexCount, (tagMeshVertex*)&l_vertexList[0]);
 
 	//	インデックスバッファ
-	m_indexBuffer = DX_Buffer::CreateIndexBuffer(l_pDevice, sizeof(WORD)* l_indexList.size(), (LPWORD)&l_indexList[0]);
+	m_pIndexBuffer = DX_Buffer::CreateIndexBuffer(l_pDevice, sizeof(WORD)* l_indexList.size(), (LPWORD)&l_indexList[0]);
 
 	//	マテリアル情報を作成
 	CreateTextureInfo(l_iemLoader.GetTextures());
@@ -241,7 +245,7 @@ void DX_SkinMesh::LoadModel(const char* pFilepath)
 	}
 
 	//	スキンバッファを作成する
-	m_skinBuffer = DX_Buffer::CreateSkinBuffer(l_pDevice, sizeof(tagVertexSkinInfo)* m_vertexCount, (tagVertexSkinInfo*)&l_vertexSkinList[0]);
+	m_pSkinBuffer = DX_Buffer::CreateSkinBuffer(l_pDevice, sizeof(tagVertexSkinInfo)* m_vertexCount, (tagVertexSkinInfo*)&l_vertexSkinList[0]);
 
 	//	スキン情報を削除
 	l_vertexSkinList.clear();
@@ -291,10 +295,10 @@ void DX_SkinMesh::Render()
 	unsigned int l_offset = 0;
 
 	//	IAにverteBufferを設定
-	l_pDeviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &l_stride[0], &l_offset);
+	l_pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &l_stride[0], &l_offset);
 
 	//	IAにSkinBufferを設定
-	l_pDeviceContext->IASetVertexBuffers(1, 1, &m_skinBuffer, &l_stride[1], &l_offset);
+	l_pDeviceContext->IASetVertexBuffers(1, 1, &m_pSkinBuffer, &l_stride[1], &l_offset);
 
 	//	行優先から列優先に変更(float4x4 → flaot3x4)
 	XMMATRIX boneMat;

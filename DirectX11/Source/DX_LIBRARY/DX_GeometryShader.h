@@ -3,9 +3,6 @@
 
 class DX_GeometryShader : public DX_Shader
 {
-private:
-	ComPtr<ID3D11GeometryShader>	m_geometryShader;
-	ComPtr<ID3D11GeometryShader>	m_outputGeometryShader;
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -70,6 +67,9 @@ public:
 		const UINT					stridesElementCount
 		);
 private:
+	ID3D11GeometryShader*	m_pGeometryShader;
+	ID3D11GeometryShader*	m_pOutputGeometryShader;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーオブジェクトを作成する

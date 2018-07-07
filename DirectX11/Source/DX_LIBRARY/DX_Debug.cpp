@@ -8,14 +8,34 @@
 //-----------------------------------------------------------------------------------------
 DX_Debug* DX_Debug::m_pInstance = nullptr;
 
+
+//-----------------------------------------------------------------------------------------
+//
+//  初期化
+//
+//-----------------------------------------------------------------------------------------
 DX_Debug::DX_Debug()
 #if defined(DEBUG) || defined(_DEBUG)
-	: m_consoleHandle(NULL), m_csbi({NULL})
+	: m_consoleHandle(NULL), m_csbi({NULL}), m_pDebug(nullptr)
 #endif
-{
+{}
 
+
+//-----------------------------------------------------------------------------------------
+//
+//  解放
+//
+//-----------------------------------------------------------------------------------------
+DX_Debug::~DX_Debug()
+{
+	SAFE_RELEASE(m_pDebug);
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  インスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
 DX_Debug* DX_Debug::GetInstance()
 {
 	if (m_pInstance == nullptr) {
@@ -73,7 +93,7 @@ void DX_Debug::ReportLiveDeviceObjects(const char* pMessage)
 	char l_message[512] = { NULL };
 	sprintf_s(l_message, "%s\n", pMessage);
 	OutputDebugString(l_message);
-	m_debug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
+	m_pDebug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
 	OutputDebugString("\n\n===============================================================================================================================\n");
 #endif
 }
@@ -174,7 +194,7 @@ void DX_Debug::Printf(const char* pFormat, ...)
 void DX_Debug::CreateDebugDevice()
 {
 #if defined(DEBUG) || defined(_DEBUG)
-	if (!IsHresultCheck(DX_System::GetInstance()->GetDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)m_debug.GetAddressOf()))){
+	if (!IsHresultCheck(DX_System::GetInstance()->GetDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pDebug))){
 		throw "ID3D11Device::QueryInterface() : create ID3D11Debug failed";
 	}
 #endif

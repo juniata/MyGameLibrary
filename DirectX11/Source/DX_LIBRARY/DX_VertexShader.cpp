@@ -6,7 +6,8 @@
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_VertexShader::DX_VertexShader()
+DX_VertexShader::DX_VertexShader() :
+	m_pVertexShader(nullptr)
 {
 }
 
@@ -19,6 +20,7 @@ DX_VertexShader::DX_VertexShader()
 //-----------------------------------------------------------------------------------------
 DX_VertexShader::~DX_VertexShader()
 {
+	SAFE_RELEASE(m_pVertexShader);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -48,7 +50,7 @@ void DX_VertexShader::CreateShader(const char* pFilepath)
 //-----------------------------------------------------------------------------------------
 void DX_VertexShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
 {
-	pDeviceContext->VSSetShader(m_vertexShader.Get(), &m_classInstance, classInstanceCount);
+	pDeviceContext->VSSetShader(m_pVertexShader, &m_pClassInstance, classInstanceCount);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -73,10 +75,10 @@ void DX_VertexShader::CreateShaderObject()
 
 	//	シェーダーオブジェクトを作成
 	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateVertexShader(
-		m_bytecord->GetBufferPointer(),
-		m_bytecord->GetBufferSize(),
-		m_classLinkage.Get(),
-		&m_vertexShader
+		m_pBytecord->GetBufferPointer(),
+		m_pBytecord->GetBufferSize(),
+		m_pClassLinkage,
+		&m_pVertexShader
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する

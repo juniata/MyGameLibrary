@@ -61,27 +61,6 @@ struct tagIEMBoneSkinMesh
 //****************************************************************************************************
 class DX_SkinMesh : public DX_Mesh
 {
-private:
-	//	スキンバッファ
-	ComPtr<ID3D11Buffer>	m_skinBuffer;
-
-	tagIEMBoneSkinMesh*	m_pBoneInfo;		//	ボーン情報
-	tagIEMAnimation*	m_pAnimationInfo;	//	アニメーション情報
-
-	
-	DirectX::XMFLOAT4X4*	m_pBoneMatrix;	//	パレット行列
-
-	int m_boneCount;	//	ボーン数
-
-	unsigned char	m_motion;		//	現在のモーション番号
-	unsigned short	m_frameCount;	//	フレーム数
-	unsigned short* m_pFrameFlag;	//	フレーム情報
-	unsigned short	m_offset[256];		//	モーション先頭フレーム
-	unsigned char	m_param[16];
-
-	int m_dwFrame;
-	int m_frame;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -151,6 +130,26 @@ public:
 	void SetMotion(const int motinoNum);
 
 private:
+	//	スキンバッファ
+	ID3D11Buffer*	m_pSkinBuffer;
+
+	tagIEMBoneSkinMesh*	m_pBoneInfo;		//	ボーン情報
+	tagIEMAnimation*	m_pAnimationInfo;	//	アニメーション情報
+
+
+	DirectX::XMFLOAT4X4*	m_pBoneMatrix;	//	パレット行列
+
+	int m_boneCount;	//	ボーン数
+
+	unsigned char	m_motion;		//	現在のモーション番号
+	unsigned short	m_frameCount;	//	フレーム数
+	unsigned short* m_pFrameFlag;	//	フレーム情報
+	unsigned short	m_offset[256];		//	モーション先頭フレーム
+	unsigned char	m_param[16];
+
+	int m_dwFrame;
+	int m_frame;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		フレームによって姿勢を更新する

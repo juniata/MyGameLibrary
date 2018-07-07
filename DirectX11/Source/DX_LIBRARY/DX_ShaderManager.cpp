@@ -26,18 +26,44 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 DX_ShaderManager* DX_ShaderManager::m_pInstance = nullptr;
 
-DX_ShaderManager::DX_ShaderManager() : m_bCanUsetoComputeShader(false)
+//-----------------------------------------------------------------------------------------
+//
+//	初期化
+//
+//-----------------------------------------------------------------------------------------
+DX_ShaderManager::DX_ShaderManager() : 
+	m_bCanUsetoComputeShader(false),
+	m_pInputLayout2D(nullptr),
+	m_pInputLayout3D(nullptr),
+	m_pInputLayoutInstanceMesh(nullptr),
+	m_pInputLayoutSkinMesh(nullptr)
 {
-
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//	解放
+//
+//-----------------------------------------------------------------------------------------
 DX_ShaderManager::~DX_ShaderManager()
 {
+	SAFE_RELEASE(m_pInputLayout2D);
+	SAFE_RELEASE(m_pInputLayout3D);
+	SAFE_RELEASE(m_pInputLayoutInstanceMesh);
+	SAFE_RELEASE(m_pInputLayoutSkinMesh);
+
 	for (auto itr = m_shaders.begin(); itr != m_shaders.end(); ++itr) {
 		DELETE_OBJ(itr->second);
 	}
 	m_shaders.clear();
 }
+
+
+//-----------------------------------------------------------------------------------------
+//
+//	インスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
 DX_ShaderManager* DX_ShaderManager::GetInstance()
 {
 	if (m_pInstance == nullptr) {
@@ -45,6 +71,7 @@ DX_ShaderManager* DX_ShaderManager::GetInstance()
 	}
 	return m_pInstance;
 }
+
 //-----------------------------------------------------------------------------------------
 //
 //	メンバ変数の初期化(シェーダーの作成)
@@ -183,7 +210,7 @@ DX_Shader* DX_ShaderManager::GetInstanceMeshComputeShader()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D()
 {
-	return m_inputLayout2D.Get();
+	return m_pInputLayout2D;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -193,7 +220,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout3D()
 {
-	return m_inputLayout3D.Get();
+	return m_pInputLayout3D;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -203,7 +230,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout3D()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
 {
-	return m_inputLayoutSkinMesh.Get();
+	return m_pInputLayoutSkinMesh;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -213,7 +240,7 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
 //-----------------------------------------------------------------------------------------
 ID3D11InputLayout* DX_ShaderManager::GetInputLayoutInstanceMesh()
 {
-	return m_inputLayoutInstanceMesh.Get();
+	return m_pInputLayoutInstanceMesh;
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -243,13 +270,15 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>	l_buffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &vec4, 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &vec4, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_buffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+
+	SAFE_RELEASE(l_pBuffer);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -266,14 +295,15 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>	l_buffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &DirectX::XMFLOAT4(vec3.x,vec3.y,vec3.z,0.0f), 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &DirectX::XMFLOAT4(vec3.x,vec3.y,vec3.z,0.0f), 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_buffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
 
+	SAFE_RELEASE(l_pBuffer);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -290,13 +320,15 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Buffer>	l_buffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &XMFLOAT4(vec2.x,vec2.y,0.0f,0.0f), 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &XMFLOAT4(vec2.x,vec2.y,0.0f,0.0f), 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_buffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+
+	SAFE_RELEASE(l_pBuffer);
 }
 
 
@@ -313,13 +345,15 @@ void DX_ShaderManager::SetMatrix(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4));
+	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4));
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, &mat, 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &mat, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_buffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+
+	SAFE_RELEASE(l_pBuffer);
 }
 
 
@@ -337,13 +371,15 @@ void DX_ShaderManager::SetMatrix(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Buffer> l_buffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4)* matCount);
+	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4)* matCount);
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_buffer.Get(), 0, nullptr, pMat, 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, pMat, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_buffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+
+	SAFE_RELEASE(l_pBuffer);
 
 }
 //-----------------------------------------------------------------------------------------
@@ -360,9 +396,10 @@ void DX_ShaderManager::SetMatrixResoruce(
 	)
 {
 	//	ローカル変数
-	ID3D11Device*				l_pDevice	= DX_System::GetInstance()->GetDevice();
-	ComPtr<ID3D11Buffer>		l_buffer = DX_Buffer::CPUWriteBuffer(l_pDevice,sizeof(XMFLOAT4X4)* matCount);
-	ComPtr<ID3D11ShaderResourceView>	l_srv;
+	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(l_pDevice,sizeof(XMFLOAT4X4)* matCount);
+	ID3D11ShaderResourceView* l_pSrv = nullptr;
+
 	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
 	D3D11_SHADER_RESOURCE_VIEW_DESC l_srvDesc;
 	ZeroMemory(&l_srvDesc, sizeof(l_srvDesc));
@@ -374,22 +411,31 @@ void DX_ShaderManager::SetMatrixResoruce(
 	l_srvDesc.ViewDimension			= D3D11_SRV_DIMENSION_BUFFER;
 
 	//	SRVを作成
-	if (FAILED(l_pDevice->CreateShaderResourceView(l_buffer.Get(), &l_srvDesc, &l_srv))){
+	if (FAILED(l_pDevice->CreateShaderResourceView(l_pBuffer, &l_srvDesc, &l_pSrv))){
 		MessageBox(NULL, "l_pSRV", "error", MB_OK);
 		exit(1);
 	}
 
 	//	map
-	pDeviceContext->Map(l_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &l_subResource);
+	pDeviceContext->Map(l_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &l_subResource);
 
 	//	データを書き込む
 	CopyMemory(l_subResource.pData, pMat, sizeof(XMFLOAT4X4) * matCount);
 
 	//	unmap
-	pDeviceContext->Unmap(l_buffer.Get(), 0);
+	pDeviceContext->Unmap(l_pBuffer, 0);
 
-	DX_ResourceManager::SetShaderResources(pDeviceContext, regiserNum, 1, &l_srv, shaderType);
+	DX_ResourceManager::SetShaderResources(pDeviceContext, regiserNum, 1, &l_pSrv, shaderType);
+
+	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(l_pSrv);
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//	をSRVとしてシェーダーに送る
+//
+//-----------------------------------------------------------------------------------------
 void DX_ShaderManager::SetMatrixResoruce(
 	const unsigned int			regiserNum,
 	ID3D11Buffer*				pBuffer,
@@ -399,8 +445,8 @@ void DX_ShaderManager::SetMatrixResoruce(
 	)
 {
 	//	ローカル変数
-	ComPtr<ID3D11Device> device = DX_System::GetInstance()->GetDevice();
-	ComPtr<ID3D11ShaderResourceView>	l_srv;
+	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
+	ID3D11ShaderResourceView*	l_pSrv = nullptr;
 	D3D11_SHADER_RESOURCE_VIEW_DESC l_srvDesc;
 	ZeroMemory(&l_srvDesc, sizeof(l_srvDesc));
 
@@ -411,12 +457,14 @@ void DX_ShaderManager::SetMatrixResoruce(
 	l_srvDesc.ViewDimension			= D3D11_SRV_DIMENSION_BUFFER;
 
 	//	SRVを作成
-	if (FAILED(device->CreateShaderResourceView(pBuffer, &l_srvDesc, &l_srv))){
+	if (FAILED(l_pDevice->CreateShaderResourceView(pBuffer, &l_srvDesc, &l_pSrv))){
 		MessageBox(NULL, "l_pSRV", "error", MB_OK);
 		exit(1);
 	}
 
-	DX_ResourceManager::SetShaderResources(pDeviceContext, regiserNum, 1, &l_srv, shaderType);
+	DX_ResourceManager::SetShaderResources(pDeviceContext, regiserNum, 1, &l_pSrv, shaderType);
+
+	SAFE_RELEASE(l_pSrv);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -477,7 +525,7 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 void DX_ShaderManager::CreateInputLayout()
 {
 	//	デバイスを取得
-	ComPtr<ID3D11Device> device = DX_System::GetInstance()->GetDevice();
+	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
 
 	// 2D用レイアウト
 	D3D11_INPUT_ELEMENT_DESC l_layout2D[] = {
@@ -519,26 +567,17 @@ void DX_ShaderManager::CreateInputLayout()
 
 	
 	try {
-		ComPtr<ID3D11InputLayout> il2d;
-		ComPtr<ID3D11InputLayout> il3d;
-		ComPtr<ID3D11InputLayout> ilSkinMesh;
-		ComPtr<ID3D11InputLayout> ilInstanceSkinMesh;
 		//	2D用レイアウトを作成
-		CreateInputLayout(device.Get(), l_layout2D, _countof(l_layout2D), m_shaders[DEFAULT_2D_SHADER::VERTEX_SHADER]->GetByteCord(), &il2d);
+		CreateInputLayout(l_pDevice, l_layout2D, _countof(l_layout2D), m_shaders[DEFAULT_2D_SHADER::VERTEX_SHADER]->GetByteCord(), &m_pInputLayout2D);
 
 		//	3D用レイアウトを作成
-		CreateInputLayout(device.Get(), l_layout3D, _countof(l_layout3D), m_shaders[DEFAULT_VERTEX_SHADER_3D]->GetByteCord(), &il3d);
+		CreateInputLayout(l_pDevice, l_layout3D, _countof(l_layout3D), m_shaders[DEFAULT_VERTEX_SHADER_3D]->GetByteCord(), &m_pInputLayout3D);
 
 		//	スキンメッシュ用レイアウトを作成
-		CreateInputLayout(device.Get(), l_layoutSkinMesh, _countof(l_layoutSkinMesh), m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH]->GetByteCord(), &ilSkinMesh);
+		CreateInputLayout(l_pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH]->GetByteCord(), &m_pInputLayoutInstanceMesh);
 
 		//	インスタンススキンメッシュ描画用レイアウトを作成
-		CreateInputLayout(device.Get(), l_insntanceMesh, _countof(l_insntanceMesh), m_shaders[VARTEX_SHADER_INSTANCE_3D]->GetByteCord(), &ilInstanceSkinMesh);
-
-		il2d.As(&m_inputLayout2D);
-		il3d.As(&m_inputLayout3D);
-		ilSkinMesh.As(&m_inputLayoutSkinMesh);
-		ilInstanceSkinMesh.As(&m_inputLayoutInstanceMesh);
+		CreateInputLayout(l_pDevice, l_insntanceMesh, _countof(l_insntanceMesh), m_shaders[VARTEX_SHADER_INSTANCE_3D]->GetByteCord(), &m_pInputLayoutSkinMesh);
 	}
 	catch (char* pMessage){
 		throw pMessage;

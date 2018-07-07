@@ -16,14 +16,6 @@ struct tagVertex2D{
 //****************************************************************************************************
 class DX_2DObject : public DX_GameObject
 {
-private:
-	//	テクスチャ情報
-	ID3D11ShaderResourceView*		m_pShaderResourceView;
-
-	//	テクスチャサイズ
-	unsigned int m_height;
-	unsigned int m_width;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -107,6 +99,13 @@ public:
 		);
 
 private:
+	//	テクスチャ情報
+	ID3D11ShaderResourceView*		m_pShaderResourceView;
+
+	//	テクスチャサイズ
+	unsigned int m_height;
+	unsigned int m_width;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		頂点情報を作成する

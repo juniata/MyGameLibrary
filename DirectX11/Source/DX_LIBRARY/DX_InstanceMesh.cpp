@@ -6,7 +6,10 @@ using namespace DirectX;
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_InstanceMesh::DX_InstanceMesh() : m_instanceCount(0)
+DX_InstanceMesh::DX_InstanceMesh() : 
+	m_instanceCount(0),
+	m_pReadBuffer(nullptr),
+	m_pGpuWriteBuffer(nullptr)
 {
 	ZeroMemory(&m_resultResource, sizeof(m_resultResource));
 }
@@ -22,13 +25,13 @@ DX_InstanceMesh::DX_InstanceMesh(const char* pFilepath, const int instanceCount)
 
 	m_instanceCount = instanceCount;
 	
-	m_readBuffer = DX_Buffer::CPUReadBuffer(l_device, sizeof(XMFLOAT4X4) * instanceCount);
+	m_pReadBuffer = DX_Buffer::CPUReadBuffer(l_device, sizeof(XMFLOAT4X4) * instanceCount);
 
 	//	UAVBufferを作成
-	m_resultResource.m_uavBuffer = DX_Buffer::CreateByteAddressBuffer(l_device, sizeof(XMFLOAT4X4)* m_instanceCount, nullptr,true);
+	m_resultResource.m_pUavBuffer = DX_Buffer::CreateByteAddressBuffer(l_device, sizeof(XMFLOAT4X4)* m_instanceCount, nullptr,true);
 
 	//	UAVを作成
-	m_resultResource.m_uav = DX_Resource::CreateUnorderedAccessView(l_device, m_resultResource.m_uavBuffer.Get());
+	m_resultResource.m_pUav = DX_Resource::CreateUnorderedAccessView(l_device, m_resultResource.m_pUavBuffer);
 
 	//	メッシュを作成
 	LoadModel(pFilepath);
@@ -42,6 +45,10 @@ DX_InstanceMesh::DX_InstanceMesh(const char* pFilepath, const int instanceCount)
 //-----------------------------------------------------------------------------------------
 DX_InstanceMesh::~DX_InstanceMesh()
 {
+	SAFE_RELEASE(m_pReadBuffer);
+	SAFE_RELEASE(m_pGpuWriteBuffer);
+	SAFE_RELEASE(m_resultResource.m_pUavBuffer);
+	SAFE_RELEASE(m_resultResource.m_pUav);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -57,15 +64,15 @@ void DX_InstanceMesh::Update(tagInstanceMeshInfo* pInstanceInfo)
 	DX_Shader*	l_pComputeShader	= DX_ShaderManager::GetInstance()->GetInstanceMeshComputeShader();
 
 	//	StrcutredBufferを作成
-	ComPtr<ID3D11Buffer> l_buffer	= DX_Buffer::CreateStructuredBuffer(l_device, sizeof(tagInstanceMeshInfo), m_instanceCount, pInstanceInfo);
+	ID3D11Buffer * l_pBuffer = DX_Buffer::CreateStructuredBuffer(l_device, sizeof(tagInstanceMeshInfo), m_instanceCount, pInstanceInfo);
 
 	//	SRVを作成
-	ComPtr<ID3D11ShaderResourceView> l_srv	= DX_Resource::CreateShaderResourceView(l_device, l_buffer.Get());
+	ID3D11ShaderResourceView * l_pSrv = DX_Resource::CreateShaderResourceView(l_device, l_pBuffer);
 	ID3D11UnorderedAccessView* l_pNull = nullptr;
 
 	//	CSにSRVとUAVを設定し、利用を開始する
-	DX_ResourceManager::SetShaderResources(l_deviceContext, 0, 1, &l_srv, DX_SHADER_TYPE::COMPUTE_SHADER);
-	l_deviceContext->CSSetUnorderedAccessViews(0, 1, &m_resultResource.m_uav, nullptr);
+	DX_ResourceManager::SetShaderResources(l_deviceContext, 0, 1, &l_pSrv, DX_SHADER_TYPE::COMPUTE_SHADER);
+	l_deviceContext->CSSetUnorderedAccessViews(0, 1, &m_resultResource.m_pUav, nullptr);
 	l_pComputeShader->Begin(l_deviceContext);
 	
 	//	計算を行う
@@ -75,6 +82,10 @@ void DX_InstanceMesh::Update(tagInstanceMeshInfo* pInstanceInfo)
 	l_pComputeShader->End(l_deviceContext);
 
 	l_deviceContext->CSSetUnorderedAccessViews(0, 1, &l_pNull, nullptr);
+
+	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(l_pSrv);
+	SAFE_RELEASE(l_pNull);
 }
 
 
@@ -99,13 +110,13 @@ void DX_InstanceMesh::Render()
 	unsigned int l_offset = 0;
 	
 	//	VertexBufferを送る
-	l_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &l_stride[0], &l_offset);
+	l_deviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &l_stride[0], &l_offset);
 	
 	//	行列を送る
-	l_deviceContext->IASetVertexBuffers(1, 1, &m_resultResource.m_uavBuffer, &l_stride[1], &l_offset);
+	l_deviceContext->IASetVertexBuffers(1, 1, &m_resultResource.m_pUavBuffer, &l_stride[1], &l_offset);
 
 	//	IndexBufferを送る
-	l_deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	l_deviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	//	InputLayoutの設定を送る
 	l_deviceContext->IASetInputLayout(DX_ShaderManager::GetInstance()->GetInputLayoutInstanceMesh());

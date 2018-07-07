@@ -18,7 +18,7 @@ class DX_System
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		âΩÇ‡ÇµÇ»Ç¢
+	//  @brief		âï˙
 	//
 	//------------------------------------------------------------------------------
 	~DX_System();
@@ -146,13 +146,13 @@ public:
 	 HWND	GetWindowHandle();
 
 private:
-	static DX_System* m_pInstnace;
-	Microsoft::WRL::ComPtr<ID3D11Device> m_device;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_deviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_rtv;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_dsb;
+	static DX_System*		m_pInstnace;
+	ID3D11Device*			m_pDevice;
+	ID3D11DeviceContext*	m_pDeviceContext;
+	IDXGISwapChain*			m_pSwapChain;
+	ID3D11RenderTargetView* m_pRtv;
+	ID3D11DepthStencilView* m_pDsv;
+	ID3D11Texture2D*		m_pDsb;
 	static D3D_FEATURE_LEVEL		m_featureLevel;
 	static D3D_DRIVER_TYPE			m_driverType;
 	static HWND						m_windowHandle;
@@ -162,10 +162,10 @@ private:
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		âΩÇ‡ÇµÇ»Ç¢
+	//  @brief		èâä˙âª
 	//
 	//------------------------------------------------------------------------------
-	DX_System() {};
+	DX_System();
 
 	//------------------------------------------------------------------------------
 	//

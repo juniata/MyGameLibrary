@@ -1,6 +1,5 @@
 #include	"DX_Library.h"
 using namespace DirectX;
-using namespace Microsoft::WRL;
 //-----------------------------------------------------------------------------------------
 //
 //	staticƒƒ“ƒo•Ï”

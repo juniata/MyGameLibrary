@@ -3,9 +3,6 @@
 
 class DX_PixelShader : public DX_Shader
 {
-private:
-	ComPtr<ID3D11PixelShader>	m_pixelShader;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -54,6 +51,8 @@ public:
 		);
 
 private:
+	ID3D11PixelShader*	m_pPixelShader;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーオブジェクトを作成する
