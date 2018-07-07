@@ -561,7 +561,7 @@ void DX_ShaderManager::CreateInputLayout(
 	HRESULT l_hr = pDevice->CreateInputLayout(pInputLayoutDesc, inputLayoutCount, pByteCord->GetBufferPointer(), pByteCord->GetBufferSize(), pInputLayout);
 
 	//	戻り値チェック
-	if (!DX_Debug::IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
 		throw "create InputLayout failed()";
 	}
 

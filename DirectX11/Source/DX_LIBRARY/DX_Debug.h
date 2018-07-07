@@ -47,17 +47,18 @@ class DX_Debug
 {
 private:
 #if defined(DEBUG) || defined(_DEBUG)
-	static ComPtr<ID3D11Debug>	m_debug;
-	static HANDLE	m_consoleHandle;
-	static CONSOLE_SCREEN_BUFFER_INFO m_csbi;
+	ComPtr<ID3D11Debug>	m_debug;
+	HANDLE	m_consoleHandle;
+	CONSOLE_SCREEN_BUFFER_INFO m_csbi;
 #endif
 
+	static DX_Debug* m_pInstance;
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	DX_Debug() = delete;
+	DX_Debug();
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -66,12 +67,13 @@ public:
 	//------------------------------------------------------------------------------
 	~DX_Debug(){}
 
+	static DX_Debug* GetInstance();
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		メンバ変数の初期化を行う
 	//
 	//------------------------------------------------------------------------------
-	static void Initialize();
+	void Initialize();
 
 	//------------------------------------------------------------------------------
 	//
@@ -85,7 +87,7 @@ public:
 	//  @brief		ID3D系の生存オブジェクトを調査する
 	//
 	//------------------------------------------------------------------------------
-	static void ReportLiveDeviceObjects(
+	void ReportLiveDeviceObjects(
 		const char* pMessage
 		);
 
@@ -96,7 +98,7 @@ public:
 	//	@retrun		true:成功	false:失敗
 	//
 	//------------------------------------------------------------------------------
-	static bool IsHresultCheck(
+	bool IsHresultCheck(
 		HRESULT hr
 		);
 
@@ -107,7 +109,7 @@ public:
 	//	@param[in]	pBytecord	D3DX11CompileFromFile()で出来たバイトコード
 	//
 	//------------------------------------------------------------------------------
-	static void CheckSourceCordOfShaderFile(
+	void CheckSourceCordOfShaderFile(
 		HRESULT		hr,
 		ID3DBlob*	pBytecord
 		);
@@ -118,7 +120,7 @@ public:
 	//	@param[in]	printColor	SET_PRINT_COLOR
 	//	
 	//------------------------------------------------------------------------------
-	static void SetPrintColor(
+	void SetPrintColor(
 		SET_PRINT_COLOR printColor
 		);
 	
@@ -129,7 +131,7 @@ public:
 	//	@note		debug時のみ出力
 	//	
 	//------------------------------------------------------------------------------
-	static void Printf(
+	void Printf(
 		const char* pFormat,
 		...
 		);
@@ -140,7 +142,7 @@ private:
 	//  @brief		m_pDebugを生成する
 	//
 	//------------------------------------------------------------------------------
-	static void CreateDebugDevice();
+	void CreateDebugDevice();
 
 
 };

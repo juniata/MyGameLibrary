@@ -99,11 +99,11 @@ void DX_RenderState::CreateRasterizerState(ID3D11Device*	pDevice)
 	l_rsDesc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
 	ComPtr<ID3D11RasterizerState> com;
 	//	rasterizer stateを作成する
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &com))){
 		throw "ID3D11Device::CreateRasterizerState() : failed";
 	}
 
-	if (!DX_Debug::IsHresultCheck(com.As(&m_rasterizerState))) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_rasterizerState))) {
 		throw "ID3D11RasterizerState As failed";
 	}
 }
@@ -140,11 +140,11 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	ComPtr<ID3D11BlendState> com;
 
 	//	blendStateを作成する
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBlendState(&l_blendDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBlendState(&l_blendDesc, &com))){
 		throw "ID3D11Device::CreateBlendState() : failed";
 	}
 
-	if (!DX_Debug::IsHresultCheck(com.As(&m_blendState))) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_blendState))) {
 		throw "ID3D11BlendState As failed";
 	}
 
@@ -186,11 +186,11 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 	ComPtr<ID3D11DepthStencilState> com;
 
 	//	depth stencil stateを作成する
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &com))){
 		throw "ID3D11Device::CreateDepthStencilState() : failed";
 	}
 
-	if (!DX_Debug::IsHresultCheck(com.As(&m_depthStencilState))) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_depthStencilState))) {
 		throw "ID3D11BlendState As failed";
 	}
 }
@@ -222,11 +222,11 @@ void DX_RenderState::CreateSamplerState(ID3D11Device* pDevice)
 
 	ComPtr<ID3D11SamplerState> com;
 
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateSamplerState(&l_samplerDesc, &com))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateSamplerState(&l_samplerDesc, &com))){
 		throw "ID3D11Device::CreateSamplerState() : failed";
 	}
 
-	if (!DX_Debug::IsHresultCheck(com.As(&m_samplerState))) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(com.As(&m_samplerState))) {
 		throw "ID3D11SamplerState As failed";
 	}
 }

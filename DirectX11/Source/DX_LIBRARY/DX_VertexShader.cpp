@@ -80,7 +80,7 @@ void DX_VertexShader::CreateShaderObject()
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
 		throw "VertexShaderオブジェクトの作成に失敗しました";
 	}
 	

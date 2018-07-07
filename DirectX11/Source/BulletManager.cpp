@@ -29,7 +29,6 @@ BulletManager::BulletManager()
 //-----------------------------------------------------------------------------------------
 BulletManager::~BulletManager()
 {
-
 	circularBarrageList.clear();
 	DELETE_OBJ(circle);
 }

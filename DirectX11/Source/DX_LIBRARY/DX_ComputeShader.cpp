@@ -82,7 +82,7 @@ void DX_ComputeShader::CreateShaderObject()
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
 		throw "ComputeShaderオブジェクトの作成に失敗しました";
 	}
 

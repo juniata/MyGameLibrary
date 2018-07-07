@@ -41,7 +41,7 @@ ID3D11ShaderResourceView*	DX_Resource::CreateShaderResourceView(
 	HRESULT l_hr = pDevice->CreateShaderResourceView(pBuffer, &l_srvDesc, &l_pSRV);
 
 	//	戻り値チェック
-	if (DX_Debug::IsHresultCheck(l_hr) == false){
+	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
 		l_pSRV->Release();
 	}
 	return l_pSRV;
@@ -95,7 +95,7 @@ ID3D11UnorderedAccessView*	DX_Resource::CreateUnorderedAccessView(
 	HRESULT l_hr = pDevice->CreateUnorderedAccessView(pBuffer, &l_uavDesc, &l_pUAV);
 
 	//	戻り値チェック
-	if (DX_Debug::IsHresultCheck(l_hr) == false){
+	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
 		l_pUAV->Release();
 	}
 

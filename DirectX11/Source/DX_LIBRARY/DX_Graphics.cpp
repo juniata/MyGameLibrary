@@ -188,7 +188,7 @@ DXGI_FORMAT	DX_Graphics::GetFortmat()
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::CreateDXGIFactory(IDXGIFactory*& pFactary)
 {
-	if (!DX_Debug::IsHresultCheck(::CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactary))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(::CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactary))){
 		throw "CreateDXGIFactory() : failed";
 	}
 }
@@ -200,7 +200,7 @@ void DX_Graphics::CreateDXGIFactory(IDXGIFactory*& pFactary)
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::EnumAdapters(IDXGIFactory* pFactory, IDXGIAdapter*& pAapter)
 {
-	if (!DX_Debug::IsHresultCheck(pFactory->EnumAdapters(0, &pAapter))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pFactory->EnumAdapters(0, &pAapter))){
 		throw "IDXGIFactory::EnumAdapters() : failed";
 	}
 }
@@ -212,7 +212,7 @@ void DX_Graphics::EnumAdapters(IDXGIFactory* pFactory, IDXGIAdapter*& pAapter)
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::EnumOutputs(IDXGIAdapter* pAdapter, IDXGIOutput*& pOutput)
 {
-	if (!DX_Debug::IsHresultCheck(pAdapter->EnumOutputs(0, &pOutput))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pAdapter->EnumOutputs(0, &pOutput))){
 		throw "IDXGIAdapter::EnumOutputs() : failed";
 	}
 }
@@ -224,7 +224,7 @@ void DX_Graphics::EnumOutputs(IDXGIAdapter* pAdapter, IDXGIOutput*& pOutput)
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::GetDisplayModeList(IDXGIOutput* pOutput, unsigned int& pNumModels, DXGI_MODE_DESC*& pModelList)
 {
-	if (!DX_Debug::IsHresultCheck(pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &pNumModels, pModelList))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &pNumModels, pModelList))){
 		if (pModelList == nullptr){
 			throw "IDXGIOutput::GetDisplayModeList() : DXGI_MODE_DESC element failed";
 		}
@@ -241,7 +241,7 @@ void DX_Graphics::GetDisplayModeList(IDXGIOutput* pOutput, unsigned int& pNumMod
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::GetDesc(IDXGIAdapter* pAdapter, DXGI_ADAPTER_DESC* pAdapterDesc)
 {
-	if (!DX_Debug::IsHresultCheck(pAdapter->GetDesc(pAdapterDesc))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pAdapter->GetDesc(pAdapterDesc))){
 		throw "IDXGIAdapter::GetDesc(): failed";
 	}
 }

@@ -9,9 +9,9 @@
 //-----------------------------------------------------------------------------------------
 CircularBarrage::CircularBarrage()
 {
+	bulletList.resize(CircularBarrage::BULLET_MAX, new Bullet());
 	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
 	{
-		bulletList.push_back(new Bullet());
 		bulletList[i]->SetEnabled(true);
 		bulletList[i]->SetAngle(i * 10);
 	}
@@ -27,8 +27,7 @@ CircularBarrage::CircularBarrage()
 //-----------------------------------------------------------------------------------------
 CircularBarrage::~CircularBarrage()
 {
-	std::vector<Bullet*> vec;
-	bulletList.swap(vec);
+	bulletList.clear();
 }
 
 //-----------------------------------------------------------------------------------------

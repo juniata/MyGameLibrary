@@ -89,7 +89,7 @@ void DX_Shader::CompileFromFile(
 	//	);
 
 	//	シェーダーファイルのソースコードをチェック
-	DX_Debug::CheckSourceCordOfShaderFile(l_hr, l_errorBlob.Get());
+	DX_Debug::GetInstance()->CheckSourceCordOfShaderFile(l_hr, l_errorBlob.Get());
 }
 
 //-----------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void DX_Shader::CompileFromFile(
 //-----------------------------------------------------------------------------------------
 void DX_Shader::CreateClassLinkage()
 {
-	if (!DX_Debug::IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_classLinkage))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_classLinkage))){
 		//SAFE_RELEASE(m_pClassLinkage);
 	}
 }

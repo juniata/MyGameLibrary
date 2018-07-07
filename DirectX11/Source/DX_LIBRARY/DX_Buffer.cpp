@@ -20,7 +20,7 @@ ID3D11Buffer* DX_Buffer::CreateConstantBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -52,7 +52,7 @@ ID3D11Buffer* DX_Buffer::CreateVertexBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 	
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -92,7 +92,7 @@ ID3D11Buffer* DX_Buffer::CreateStructuredBuffer(
 	}
 
 	//	Ž¸”s‚µ‚Ä‚¢‚éê‡‚ÍAnull‚ð•Ô‚·
-	if (DX_Debug::IsHresultCheck(l_hr) == false){
+	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -136,7 +136,7 @@ ID3D11Buffer* DX_Buffer::CreateByteAddressBuffer(
 	}
 
 	//	Ž¸”s‚µ‚Ä‚¢‚éê‡‚ÍAnull‚ð•Ô‚·
-	if (DX_Debug::IsHresultCheck(l_hr) == false){
+	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -167,7 +167,7 @@ ID3D11Buffer* DX_Buffer::CreateIndexBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -198,7 +198,7 @@ ID3D11Buffer*	DX_Buffer::CreateSkinBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -223,7 +223,7 @@ ID3D11Buffer*	DX_Buffer::CreateStreamOutputBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -250,7 +250,7 @@ ID3D11Buffer*	DX_Buffer::CPUWriteBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 
@@ -279,7 +279,7 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(
 	ID3D11Buffer* l_pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
 		//SAFE_RELEASE(l_pBuffer);
 	}
 

@@ -6,13 +6,24 @@
 //  staticƒƒ“ƒo•Ï”
 //
 //-----------------------------------------------------------------------------------------
+DX_Debug* DX_Debug::m_pInstance = nullptr;
+
+DX_Debug::DX_Debug()
 #if defined(DEBUG) || defined(_DEBUG)
-ComPtr<ID3D11Debug>	DX_Debug::m_debug;
-HANDLE			DX_Debug::m_consoleHandle	= NULL;
-CONSOLE_SCREEN_BUFFER_INFO DX_Debug::m_csbi = { NULL };
+	: m_consoleHandle(NULL), m_csbi({NULL})
 #endif
+{
 
+}
 
+DX_Debug* DX_Debug::GetInstance()
+{
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_Debug();
+	}
+	
+	return m_pInstance;
+}
 //-----------------------------------------------------------------------------------------
 //
 //	ƒƒ“ƒo•Ï”‚Ì‰Šú‰»‚ğs‚¤
@@ -47,8 +58,7 @@ void DX_Debug::Initialize()
 //-----------------------------------------------------------------------------------------
 void DX_Debug::Release()
 {
-#if defined(DEBUG) || defined(_DEBUG)
-#endif
+	DELETE_OBJ(m_pInstance);
 }
 
 //-----------------------------------------------------------------------------------------

@@ -43,14 +43,14 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(
 	HRESULT l_hr = LoadFromWICFile(filepath, NULL, &metadata, image);
 
 	//	戻り値をチェック
-	if (!DX_Debug::IsHresultCheck(l_hr)) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)) {
 		//	エラーだった場合、nullptrを返す
 		return nullptr;
 	}
 
 	l_hr = CreateShaderResourceView(DX_System::GetInstance()->GetDevice(), image.GetImages(), image.GetImageCount(), metadata, &l_pTexture);
 	//	戻り値をチェック
-	if (!DX_Debug::IsHresultCheck(l_hr)) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)) {
 		//	エラーだった場合、nullptrを返す
 		return nullptr;
 	}

@@ -334,6 +334,7 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 	DX_SceneManager::Release();
 	//	DX_Libraryを解放する
 	DX_System::Release();
+	DX_Debug::GetInstance()->ReportLiveDeviceObjects("DX_System::Release");
 
 	//	デバッグ時のみコンソール画面を閉じる
 	DEBUG_CLOSE_CONSOLE
