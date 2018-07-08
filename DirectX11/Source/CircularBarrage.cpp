@@ -28,6 +28,10 @@ CircularBarrage::CircularBarrage()
 //-----------------------------------------------------------------------------------------
 CircularBarrage::~CircularBarrage()
 {
+	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
+	{
+		DELETE_OBJ(bulletList[i]);
+	}
 	bulletList.clear();
 }
 

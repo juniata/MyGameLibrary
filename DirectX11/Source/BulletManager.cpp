@@ -30,6 +30,10 @@ BulletManager::BulletManager()
 //-----------------------------------------------------------------------------------------
 BulletManager::~BulletManager()
 {
+	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
+	{
+		DELETE_OBJ(circularBarrageList[i]);
+	}
 	circularBarrageList.clear();
 	DELETE_OBJ(circle);
 }
