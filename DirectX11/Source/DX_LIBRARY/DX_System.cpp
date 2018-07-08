@@ -39,18 +39,23 @@ DX_System::DX_System() :
 //-----------------------------------------------------------------------------------------
 DX_System::~DX_System()
 {
-	m_pSwapChain->SetFullscreenState(FALSE, nullptr);
-	m_pDeviceContext->ClearState();
-
-	SAFE_RELEASE(m_pDevice);
-	SAFE_RELEASE(m_pDeviceContext);
-	SAFE_RELEASE(m_pSwapChain);
-	SAFE_RELEASE(m_pRtv);
-	SAFE_RELEASE(m_pDsv);
-	SAFE_RELEASE(m_pDsv);
 	//	シェーダーの解放を行う
 	DX_ShaderManager::Release();
 
+	// レンダーステートを初期化する
+	DX_RenderState::Release();
+
+	m_pSwapChain->SetFullscreenState(FALSE, nullptr);
+	m_pDeviceContext->ClearState();
+
+
+	SAFE_RELEASE(m_pRtv);
+	SAFE_RELEASE(m_pDsv);
+	SAFE_RELEASE(m_pDsv);
+	SAFE_RELEASE(m_pDeviceContext);
+	SAFE_RELEASE(m_pDevice);
+	SAFE_RELEASE(m_pSwapChain);
+	
 
 	//	OGGファイルを解放
 	//	OGGManager::Release();
@@ -89,13 +94,15 @@ bool DX_System::InitD3D(const HWND& hWnd)
 
 		//	SwapChainを作成する
 		CreateDeviceAndSwapChain(hWnd);
-		
+	
 		//	デバッグデバイスを作成する
 		DX_Debug::GetInstance()->Initialize();
 		DX_Debug::GetInstance()->ReportLiveDeviceObjects("dx_debug initialize");
+	
+		
 		//	RenderTargetViewを作成する
 		CreateRenderTargetView();
-
+		
 		//	DepthStencilBufferを作成する
 		CreateDepthStencilBuffer();
 

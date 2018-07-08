@@ -24,7 +24,7 @@ DX_Shader::~DX_Shader()
 	SAFE_RELEASE(m_pBytecord);
 	SAFE_RELEASE(m_pClassInstance);
 	SAFE_RELEASE(m_pInputLayout);
-	SAFE_RELEASE(m_pBytecord);
+	SAFE_RELEASE(m_pClassLinkage);
 }
 
 //-----------------------------------------------------------------------------------------
