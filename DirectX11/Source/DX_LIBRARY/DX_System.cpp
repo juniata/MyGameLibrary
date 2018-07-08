@@ -395,6 +395,8 @@ void DX_System::CreateRenderTargetView()
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pDevice->CreateRenderTargetView(buffer, nullptr, &m_pRtv))){
 		throw "ID3D11Device::CreateRenderTargetView() : faield";
 	}
+
+	SAFE_RELEASE(buffer);
 }
 
 

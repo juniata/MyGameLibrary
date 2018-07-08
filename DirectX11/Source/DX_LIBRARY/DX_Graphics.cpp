@@ -72,10 +72,10 @@ void DX_Graphics::Initialize()
 		wcstombs_s(l_adpterDesc.Description);
 
 		//	‰ð•úˆ—
-		if (l_pDisplayModeList){ delete[] l_pDisplayModeList; l_pDisplayModeList = nullptr; }
-		if (l_pOutput){ l_pOutput->Release(); l_pOutput = nullptr; }
-		if (l_pAdapter){ l_pAdapter->Release(); l_pAdapter = nullptr; }
-		if (l_pFactory){ l_pFactory->Release(); l_pFactory = nullptr; }
+		DELETE_OBJ_ARRAY(l_pDisplayModeList);
+		SAFE_RELEASE(l_pFactory);
+		SAFE_RELEASE(l_pAdapter);
+		SAFE_RELEASE(l_pOutput);
 	}
 	catch (char* pErrorMsg){
 		throw  pErrorMsg;

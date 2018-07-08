@@ -39,7 +39,7 @@ bool SceneMain::Initialize()
 	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
 
 	bulletManager = new BulletManager();
-	DX_Lighting::Initialize();
+	//DX_Lighting::Initialize();
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);
 

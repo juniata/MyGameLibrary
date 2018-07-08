@@ -101,6 +101,7 @@ void DX_RenderState::Initialize()
 	l_pDeviceContext->OMSetRenderTargets(1, targets, DX_System::GetInstance()->GetDefaultDepthStencilView());
 	l_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
 	l_pDeviceContext->OMSetBlendState(m_pBlendState, l_blendFactor, 1);
+
 	
 }
 
@@ -144,7 +145,7 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	D3D11_BLEND_DESC l_blendDesc;
 	ZeroMemory(&l_blendDesc, sizeof(l_blendDesc));
 
-	l_blendDesc.AlphaToCoverageEnable		= TRUE;
+	l_blendDesc.AlphaToCoverageEnable		= FALSE;
 	l_blendDesc.IndependentBlendEnable		= FALSE;
 	l_blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
