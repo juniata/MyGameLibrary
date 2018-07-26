@@ -10,12 +10,12 @@ class CircularBarrage;
 class BulletManager
 {
 private:
-	const int CIRCULARBARRAGE_MAX = 30;
+	static const int CIRCULARBARRAGE_MAX = 30;
 
 	DX_2DObject* circle;
 
 	// 弾画像リスト
-	std::vector<CircularBarrage*> circularBarrageList;
+	CircularBarrage* circularBarrageList[BulletManager::CIRCULARBARRAGE_MAX];
 
 	// 弾有効化インターバル
 	int interval;

@@ -15,7 +15,7 @@ BulletManager::BulletManager()
 	// determine new length, padding with _Val ele
 	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
 	{
-		circularBarrageList.push_back(new CircularBarrage());
+		circularBarrageList[i] = new CircularBarrage();
 		circularBarrageList[i]->SetEnabled(true);
 	}
 
@@ -34,7 +34,6 @@ BulletManager::~BulletManager()
 	{
 		DELETE_OBJ(circularBarrageList[i]);
 	}
-	circularBarrageList.clear();
 	DELETE_OBJ(circle);
 }
 

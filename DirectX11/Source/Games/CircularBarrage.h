@@ -12,9 +12,10 @@ class CircularBarrage
 {
 private:
 	// 生成する弾の数
-	const int BULLET_MAX = 12;
+	static const int BULLET_MAX = 12;
 	// 弾リスト
-	std::vector<Bullet*> bulletList;
+	Bullet* bulletList[CircularBarrage::BULLET_MAX];
+
 	// 有効フラグ
 	bool isEnabled;
 public:

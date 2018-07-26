@@ -9,10 +9,9 @@
 //-----------------------------------------------------------------------------------------
 CircularBarrage::CircularBarrage()
 {
-	//bulletList.resize(CircularBarrage::BULLET_MAX, new Bullet());
-	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
+	for (int i = 0; i < BULLET_MAX; ++i)
 	{
-		bulletList.push_back(new Bullet());
+		bulletList[i] = new Bullet();
 		bulletList[i]->SetEnabled(true);
 		bulletList[i]->SetAngle(i * 10);
 	}
@@ -32,7 +31,6 @@ CircularBarrage::~CircularBarrage()
 	{
 		DELETE_OBJ(bulletList[i]);
 	}
-	bulletList.clear();
 }
 
 //-----------------------------------------------------------------------------------------
