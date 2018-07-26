@@ -120,15 +120,6 @@
     <ClInclude Include="Source\DxLibrary\DX_Font.h">
       <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DxLibrary\DX_Collider3D.h">
-      <Filter>ソース ファイル\DX11\h</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DxLibrary\DX_Collider2D.h">
-      <Filter>ソース ファイル\DX11\h</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DxLibrary\DX_Collider.h">
-      <Filter>ソース ファイル\DX11\h</Filter>
-    </ClInclude>
     <ClInclude Include="Source\DxLibrary\DX_Buffer.h">
       <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
@@ -249,9 +240,6 @@
       <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\DxLibrary\DX_Font.cpp">
-      <Filter>ソース ファイル\DX11\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DxLibrary\DX_ColliderManager.cpp">
       <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\DxLibrary\DX_Audio.cpp">

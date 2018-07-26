@@ -15,7 +15,6 @@ m_pShaderResourceView(nullptr),
 m_height(0),
 m_width(0)
 {
-	m_pCollider = DX_ColliderManager::BindGameObject(this, COLLIDER_TYPE::RECT_COLLIDER_2D);
 }
 
 

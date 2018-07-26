@@ -22,9 +22,6 @@
     <ClInclude Include="Source\DxLibrary\DX_2DObject.h" />
     <ClInclude Include="Source\DxLibrary\DX_Audio.h" />
     <ClInclude Include="Source\DxLibrary\DX_Buffer.h" />
-    <ClInclude Include="Source\DxLibrary\DX_Collider.h" />
-    <ClInclude Include="Source\DxLibrary\DX_Collider2D.h" />
-    <ClInclude Include="Source\DxLibrary\DX_Collider3D.h" />
     <ClInclude Include="Source\DxLibrary\DX_ComputeShader.h" />
     <ClInclude Include="Source\DxLibrary\DX_Debug.h" />
     <ClInclude Include="Source\DxLibrary\DX_Font.h" />
@@ -69,7 +66,6 @@
     <ClCompile Include="Source\DxLibrary\DX_2DObject.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Audio.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Buffer.cpp" />
-    <ClCompile Include="Source\DxLibrary\DX_ColliderManager.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_ComputeShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Debug.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Font.cpp" />
