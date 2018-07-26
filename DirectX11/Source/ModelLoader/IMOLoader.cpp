@@ -1,4 +1,4 @@
-#include "../DX_LIBRARY/DX_Library.h"
+#include	"DxLibrary/DX_Library.h"
 #include	<stdio.h>
 
 #include	"IMOLoader.h"

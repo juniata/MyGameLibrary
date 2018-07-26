@@ -19,153 +19,153 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Bullet.h" />
-    <ClInclude Include="Source\BulletManager.h" />
-    <ClInclude Include="Source\CircularBarrage.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_2DObject.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Audio.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Buffer.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider2D.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider3D.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_ComputeShader.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Debug.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Font.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_FrameWork.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_GameObject.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_GeometryShader.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Graphics.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Input.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_InputDefines.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_InstanceMesh.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_InstanceSkinMesh.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Library.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Lighting.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Mesh.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Particle.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_PixelShader.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_RenderState.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Resource.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_ResourceManager.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Scene.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_SceneManager.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Shader.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_ShaderManager.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_SkinMesh.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_System.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_Texture.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_VertexShader.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_View.h" />
-    <ClInclude Include="Source\DX_LIBRARY\DX_XInput.h" />
+    <ClInclude Include="Source\DxLibrary\DX_2DObject.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Audio.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Buffer.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Collider.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Collider2D.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Collider3D.h" />
+    <ClInclude Include="Source\DxLibrary\DX_ComputeShader.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Debug.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Font.h" />
+    <ClInclude Include="Source\DxLibrary\DX_FrameWork.h" />
+    <ClInclude Include="Source\DxLibrary\DX_GameObject.h" />
+    <ClInclude Include="Source\DxLibrary\DX_GeometryShader.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Graphics.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Input.h" />
+    <ClInclude Include="Source\DxLibrary\DX_InputDefines.h" />
+    <ClInclude Include="Source\DxLibrary\DX_InstanceMesh.h" />
+    <ClInclude Include="Source\DxLibrary\DX_InstanceSkinMesh.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Library.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Lighting.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Mesh.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Particle.h" />
+    <ClInclude Include="Source\DxLibrary\DX_PixelShader.h" />
+    <ClInclude Include="Source\DxLibrary\DX_RenderState.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Resource.h" />
+    <ClInclude Include="Source\DxLibrary\DX_ResourceManager.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Scene.h" />
+    <ClInclude Include="Source\DxLibrary\DX_SceneManager.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Shader.h" />
+    <ClInclude Include="Source\DxLibrary\DX_ShaderManager.h" />
+    <ClInclude Include="Source\DxLibrary\DX_SkinMesh.h" />
+    <ClInclude Include="Source\DxLibrary\DX_System.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Texture.h" />
+    <ClInclude Include="Source\DxLibrary\DX_VertexShader.h" />
+    <ClInclude Include="Source\DxLibrary\DX_View.h" />
+    <ClInclude Include="Source\DxLibrary\DX_XInput.h" />
+    <ClInclude Include="Source\Games\Bullet.h" />
+    <ClInclude Include="Source\Games\BulletManager.h" />
+    <ClInclude Include="Source\Games\CircularBarrage.h" />
+    <ClInclude Include="Source\Games\SceneMain.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
     <ClInclude Include="Source\ModelLoader\imoloader.h" />
-    <ClInclude Include="Source\SceneMain.h" />
     <ClInclude Include="Source\user_helper_class\ALManager.h" />
     <ClInclude Include="Source\user_helper_class\AutoProfile.h" />
     <ClInclude Include="Source\user_helper_class\oggmanager.h" />
     <ClInclude Include="Source\user_helper_class\WAVManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Bullet.cpp" />
-    <ClCompile Include="Source\BulletManager.cpp" />
-    <ClCompile Include="Source\CircularBarrage.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_2DObject.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Audio.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Buffer.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_ColliderManager.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_ComputeShader.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Debug.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Font.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_FrameWork.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_GameObject.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_GeometryShader.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Graphics.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Input.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_InstanceMesh.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_instanceSkinMesh.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Lighting.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Mesh.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Particle.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_PixelShader.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_RenderState.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Resource.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_ResourceManager.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_SceneManager.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Shader.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_ShaderManager.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_SkinMesh.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_System.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_Texture.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_VertexShader.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_View.cpp" />
-    <ClCompile Include="Source\DX_LIBRARY\DX_XInput.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_2DObject.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Audio.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Buffer.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_ColliderManager.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_ComputeShader.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Debug.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Font.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_FrameWork.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_GameObject.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_GeometryShader.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Graphics.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Input.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_InstanceMesh.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_instanceSkinMesh.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Lighting.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Mesh.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Particle.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_PixelShader.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_RenderState.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Resource.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_ResourceManager.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_SceneManager.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Shader.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_ShaderManager.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_SkinMesh.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_System.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Texture.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_VertexShader.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
+    <ClCompile Include="Source\Games\Bullet.cpp" />
+    <ClCompile Include="Source\Games\BulletManager.cpp" />
+    <ClCompile Include="Source\Games\CircularBarrage.cpp" />
+    <ClCompile Include="Source\Games\SceneMain.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp" />
-    <ClCompile Include="Source\SceneMain.cpp" />
     <ClCompile Include="Source\user_helper_class\ALManager.cpp" />
     <ClCompile Include="Source\user_helper_class\AutoProfile.cpp" />
     <ClCompile Include="Source\user_helper_class\OGGManager.cpp" />
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShaderFile\CS_InstanceMesh.hlsl">
+    <None Include="Source\ShaderFile\CS_InstanceMesh.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\CS_InstanceSkinMesh.hlsl">
+    <None Include="Source\ShaderFile\CS_InstanceSkinMesh.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\CS_Particle.hlsl">
+    <None Include="Source\ShaderFile\CS_Particle.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\GS_3DObject.hlsl">
+    <None Include="Source\ShaderFile\GS_3DObject.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\GS_CubeMap.hlsl">
+    <None Include="Source\ShaderFile\GS_CubeMap.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\GS_Particle.hlsl">
+    <None Include="Source\ShaderFile\GS_Particle.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\GS_RayPick.hlsl">
+    <None Include="Source\ShaderFile\GS_RayPick.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\PS_2DObject.hlsl">
+    <None Include="Source\ShaderFile\PS_2DObject.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\PS_3DObject.hlsl">
+    <None Include="Source\ShaderFile\PS_3DObject.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\PS_Instancing.hlsl">
+    <None Include="Source\ShaderFile\PS_Instancing.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\PS_Particle.hlsl">
+    <None Include="Source\ShaderFile\PS_Particle.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\PS_ShadowMap.hlsl">
+    <None Include="Source\ShaderFile\PS_ShadowMap.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_2DObject.hlsl">
+    <None Include="Source\ShaderFile\VS_2DObject.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_3DObject.hlsl">
+    <None Include="Source\ShaderFile\VS_3DObject.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_CubeMap.hlsl">
+    <None Include="Source\ShaderFile\VS_CubeMap.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_InstanceMesh.hlsl">
+    <None Include="Source\ShaderFile\VS_InstanceMesh.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_Instancing.hlsl">
+    <None Include="Source\ShaderFile\VS_Instancing.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_Particle.hlsl">
+    <None Include="Source\ShaderFile\VS_Particle.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_ShadowMap.hlsl">
+    <None Include="Source\ShaderFile\VS_ShadowMap.hlsl">
       <FileType>Document</FileType>
     </None>
-    <None Include="ShaderFile\VS_SkinMesh.hlsl">
+    <None Include="Source\ShaderFile\VS_SkinMesh.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
@@ -223,28 +223,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
@@ -257,6 +257,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -272,6 +273,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -289,6 +291,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -309,6 +312,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

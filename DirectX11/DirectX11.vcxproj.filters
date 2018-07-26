@@ -13,341 +13,341 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="DX11">
+    <Filter Include="ソース ファイル\DX11">
       <UniqueIdentifier>{13127362-663e-4fde-881d-63cb049cbb47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DX11\cpp">
+    <Filter Include="ソース ファイル\DX11\cpp">
       <UniqueIdentifier>{b768cb0e-3621-4424-a4fa-89a1eba1528f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DX11\h">
+    <Filter Include="ソース ファイル\DX11\h">
       <UniqueIdentifier>{82ea322a-4c28-424d-802f-e784f5de6b1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DX11\Shader">
-      <UniqueIdentifier>{74273f43-51fd-4d09-9614-a54dff68699f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader">
+    <Filter Include="ソース ファイル\Shader">
       <UniqueIdentifier>{005e2767-eba7-48d5-bddb-3e0fccec12e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Games">
+      <UniqueIdentifier>{64b4b67c-dccf-4333-a684-9112eed61e01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\DX_LIBRARY\DX_2DObject.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Library.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Audio.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_2DObject.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Buffer.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_View.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_System.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_ComputeShader.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Texture.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Debug.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_InstanceMesh.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Font.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_SkinMesh.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_FrameWork.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Mesh.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_GameObject.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_ShaderManager.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_GeometryShader.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_ComputeShader.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Graphics.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_PixelShader.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Input.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_GeometryShader.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_InputDefines.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_VertexShader.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_InstanceMesh.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Shader.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_InstanceSkinMesh.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_RenderState.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Library.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Debug.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Lighting.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_SceneManager.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Mesh.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_XInput.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Particle.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Scene.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_PixelShader.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_ResourceManager.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_RenderState.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Resource.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Resource.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Particle.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_ResourceManager.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Lighting.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Scene.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_InstanceSkinMesh.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_SceneManager.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_InputDefines.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Shader.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Input.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_ShaderManager.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Graphics.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_SkinMesh.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_GameObject.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_System.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_FrameWork.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Texture.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Font.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_VertexShader.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Collider3D.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_View.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Collider2D.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_XInput.h">
-      <Filter>DX11\h</Filter>
+    <ClInclude Include="Source\DxLibrary\DX_Collider.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DxLibrary\DX_Buffer.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DxLibrary\DX_Audio.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
     <ClInclude Include="Source\user_helper_class\ALManager.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\user_helper_class\AutoProfile.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\user_helper_class\oggmanager.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\user_helper_class\WAVManager.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\Bullet.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\BulletManager.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\CircularBarrage.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain.h">
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModelLoader\IEMLoader.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModelLoader\imoloader.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneMain.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Bullet.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\BulletManager.h">
-      <Filter>ソース ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider2D.h">
-      <Filter>DX11\h</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DX_LIBRARY\DX_Collider3D.h">
-      <Filter>DX11\h</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\CircularBarrage.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DX_LIBRARY\DX_2DObject.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Audio.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Debug.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Buffer.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_2DObject.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_ComputeShader.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_RenderState.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Debug.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Graphics.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Font.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_View.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_GeometryShader.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_System.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Graphics.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_FrameWork.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Input.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Shader.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_InstanceMesh.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_instanceSkinMesh.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_instanceSkinMesh.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Lighting.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Lighting.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Buffer.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Mesh.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_InstanceMesh.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Particle.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_SkinMesh.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_PixelShader.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Mesh.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_RenderState.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_ShaderManager.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Resource.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_ComputeShader.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_ResourceManager.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_PixelShader.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_SceneManager.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_GeometryShader.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Shader.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_VertexShader.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_ShaderManager.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Resource.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_SkinMesh.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_SceneManager.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_System.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_XInput.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_Texture.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_ResourceManager.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_VertexShader.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Particle.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_View.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_Input.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_XInput.cpp">
-      <Filter>DX11\cpp</Filter>
+    <ClCompile Include="Source\DxLibrary\DX_GameObject.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_Font.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_ColliderManager.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_Audio.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\user_helper_class\ALManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\user_helper_class\AutoProfile.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\user_helper_class\OGGManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\Bullet.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\BulletManager.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\CircularBarrage.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain.cpp">
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneMain.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_FrameWork.cpp">
-      <Filter>DX11\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Bullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\BulletManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_ColliderManager.cpp">
-      <Filter>DX11\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DX_LIBRARY\DX_GameObject.cpp">
-      <Filter>DX11\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\CircularBarrage.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ShaderFile\CS_InstanceMesh.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\CS_InstanceSkinMesh.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\CS_Particle.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\GS_3DObject.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\GS_CubeMap.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\GS_Particle.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\GS_RayPick.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\PS_2DObject.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\PS_3DObject.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\PS_Instancing.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\PS_Particle.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\PS_ShadowMap.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_2DObject.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_3DObject.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_CubeMap.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_InstanceMesh.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_Instancing.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_Particle.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_ShadowMap.hlsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="ShaderFile\VS_SkinMesh.hlsl">
-      <Filter>Shader</Filter>
-    </None>
+    <FxCompile Include="Source\ShaderFile\CS_InstanceMesh.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\CS_InstanceSkinMesh.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\CS_Particle.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\GS_3DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\GS_CubeMap.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\GS_Particle.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\GS_RayPick.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_2DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_3DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_Instancing.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_Particle.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_ShadowMap.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_2DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_3DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_CubeMap.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_InstanceMesh.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_Instancing.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_Particle.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_ShadowMap.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_SkinMesh.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
