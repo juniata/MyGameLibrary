@@ -174,6 +174,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DirectX11</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>windwos 10.0.16299.0</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -223,22 +224,30 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.17134.0\x86;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>$(ProjectDir)DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
+    <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -252,7 +261,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -267,7 +276,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -286,7 +295,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -306,7 +315,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DirectXTex.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DirectXTex.lib;dxgi.lib;d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -101,7 +101,6 @@ public:
 private:
 	//	テクスチャ情報
 	ID3D11ShaderResourceView*		m_pShaderResourceView;
-
 	//	テクスチャサイズ
 	unsigned int m_height;
 	unsigned int m_width;

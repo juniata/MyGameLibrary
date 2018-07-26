@@ -73,7 +73,7 @@ void BulletManager::Update()
 //-----------------------------------------------------------------------------------------
 void BulletManager::Render()
 {
-	PROFILE(" BulletManager::Render")
+	//PROFILE(" BulletManager::Render")
 	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		circularBarrageList[i]->Render();

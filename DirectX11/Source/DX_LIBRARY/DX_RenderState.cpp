@@ -145,22 +145,22 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	D3D11_BLEND_DESC l_blendDesc;
 	ZeroMemory(&l_blendDesc, sizeof(l_blendDesc));
 
-	l_blendDesc.AlphaToCoverageEnable		= FALSE;
+	l_blendDesc.AlphaToCoverageEnable		= TRUE;
 	l_blendDesc.IndependentBlendEnable		= FALSE;
 	l_blendDesc.RenderTarget[0].BlendEnable = TRUE;
 
 	//	‚Ç‚¤ƒuƒŒƒ“ƒh‚·‚é‚©
-	l_blendDesc.RenderTarget[0].BlendOp			= D3D11_BLEND_OP_ADD;
-	l_blendDesc.RenderTarget[0].BlendOpAlpha	= D3D11_BLEND_OP_ADD;
+	l_blendDesc.RenderTarget[0].BlendOp			= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+	l_blendDesc.RenderTarget[0].BlendOpAlpha	= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 
 	//	Blend‚Ì‘ÎÛ‚Í‚È‚ñ‚È‚Ì‚©
-	l_blendDesc.RenderTarget[0].SrcBlend	= D3D11_BLEND_SRC_ALPHA;
-	l_blendDesc.RenderTarget[0].DestBlend	= D3D11_BLEND_INV_SRC_ALPHA;
+	l_blendDesc.RenderTarget[0].SrcBlend	= D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+	l_blendDesc.RenderTarget[0].DestBlend	= D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 
 	//	BlendŒW”‚Í‚¢‚­‚ç‚©
-	l_blendDesc.RenderTarget[0].SrcBlendAlpha			= D3D11_BLEND_ONE;
-	l_blendDesc.RenderTarget[0].DestBlendAlpha			= D3D11_BLEND_ZERO;
-	l_blendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE_ALL;
+	l_blendDesc.RenderTarget[0].SrcBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ONE;
+	l_blendDesc.RenderTarget[0].DestBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ZERO;
+	l_blendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
 
 	//	blendState‚ðì¬‚·‚é
@@ -182,8 +182,8 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 
 	//	depth test parameters
 	l_dsDesc.DepthEnable	= TRUE;
-	l_dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	l_dsDesc.DepthFunc		= D3D11_COMPARISON_LESS;
+	l_dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+	l_dsDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
 
 	// Stencil test parameters
 	l_dsDesc.StencilEnable		= TRUE;	
@@ -191,16 +191,16 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 	l_dsDesc.StencilWriteMask	= 0xFF;
 
 	// Stencil operations if pixel is front-facing
-	l_dsDesc.FrontFace.StencilFailOp		= D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.FrontFace.StencilDepthFailOp	= D3D11_STENCIL_OP_INCR;
-	l_dsDesc.FrontFace.StencilPassOp		= D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.FrontFace.StencilFunc			= D3D11_COMPARISON_ALWAYS;
+	l_dsDesc.FrontFace.StencilFailOp		= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+	l_dsDesc.FrontFace.StencilDepthFailOp	= D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
+	l_dsDesc.FrontFace.StencilPassOp		= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+	l_dsDesc.FrontFace.StencilFunc			= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
 
 	// Stencil operations if pixel is back-facing
-	l_dsDesc.BackFace.StencilFailOp			= D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.BackFace.StencilDepthFailOp	= D3D11_STENCIL_OP_DECR;
-	l_dsDesc.BackFace.StencilPassOp			= D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.BackFace.StencilFunc			= D3D11_COMPARISON_ALWAYS;
+	l_dsDesc.BackFace.StencilFailOp			= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+	l_dsDesc.BackFace.StencilDepthFailOp	= D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
+	l_dsDesc.BackFace.StencilPassOp			= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
+	l_dsDesc.BackFace.StencilFunc			= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
 
 	//	depth stencil state‚ðì¬‚·‚é
 	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &m_pDepthStencilState))){
@@ -219,13 +219,13 @@ void DX_RenderState::CreateSamplerState(ID3D11Device* pDevice)
 	D3D11_SAMPLER_DESC l_samplerDesc;
 	ZeroMemory(&l_samplerDesc, sizeof(l_samplerDesc));
 
-	l_samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	l_samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	l_samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	l_samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	l_samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	l_samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	l_samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	l_samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 	l_samplerDesc.MipLODBias = .0f;
 	l_samplerDesc.MaxAnisotropy = 0;
-	l_samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	l_samplerDesc.ComparisonFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
 	l_samplerDesc.BorderColor[0] = .0f;
 	l_samplerDesc.BorderColor[1] = .0f;
 	l_samplerDesc.BorderColor[2] = .0f;

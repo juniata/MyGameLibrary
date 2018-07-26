@@ -1,37 +1,25 @@
 #ifndef __DX_LIBRARY_H_
 #define __DX_LIBRARY_H_
 
+/*
+	windows10によるdirectxゲーム開発
+	今のところwindwos7は対応させません。
+	windows10でdirectx11を開発した後、directx12を導入するかもしれません。
+*/
 
-#define WIN32_LEAN_AND_MEAN	
-//	DirectX11のマクロ再定義がうざいので消す
-//#pragma warning(disable : 4005)
 #include	<Windows.h>
-
-// windows10
 #include	<d3d11.h>
 #include	<DirectXMath.h>
 #include	<d3dcompiler.h>
-#pragma comment( lib, "d3d11.lib" )
-#pragma comment( lib, "d3dcompiler.lib" )
-#pragma comment( lib, "dxgi.lib" )
-
-// windows 7
-//#include	<D3DX11.h>
-//#include	<D3DX10math.h>
+//#include	<d3d9.h>
 #include	<XAudio2.h>
 #include	<XInput.h>
-//	型名定義
-//typedef D3DXMATRIX		Matrix;
-//typedef D3DXQUATERNION	Quaternion;
-//typedef D3DXVECTOR4		Vector4;
-//typedef D3DXVECTOR3		Vector3;
-//typedef D3DXVECTOR2		Vector2;
 
 
 //	マクロ
 #define DELETE_OBJ(x)			if(x){	delete	x;		x = nullptr;	}	
 #define DELETE_OBJ_ARRAY(x)		if(x){  delete[] x;		x = nullptr;	}	
-#define SAFE_RELEASE(x)			if(x){  x->Release();		x = nullptr;	}
+#define SAFE_RELEASE(x)			if(x){  x->Release();	x = nullptr;	}
 
 //	キャストマクロ
 #define CAST_C(x) static_cast<char>(x)
