@@ -141,9 +141,6 @@
     <ClInclude Include="Source\Games\Bullet.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Games\BulletManager.h">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Games\CircularBarrage.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
@@ -154,6 +151,9 @@
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModelLoader\imoloader.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\CircularBarrageManager.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
   </ItemGroup>
@@ -260,9 +260,6 @@
     <ClCompile Include="Source\Games\Bullet.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Games\BulletManager.cpp">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Games\CircularBarrage.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
@@ -275,67 +272,30 @@
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Games\CircularBarrageManager.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\ShaderFile\CS_InstanceMesh.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\CS_InstanceSkinMesh.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\CS_Particle.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\GS_3DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\GS_CubeMap.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\GS_Particle.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\GS_RayPick.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_2DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_3DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_Instancing.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_Particle.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_ShadowMap.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_2DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_3DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_CubeMap.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_InstanceMesh.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_Instancing.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_Particle.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_ShadowMap.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_SkinMesh.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
+    <None Include="Source\ShaderFile\CS_InstanceMesh.hlsl" />
+    <None Include="Source\ShaderFile\CS_InstanceSkinMesh.hlsl" />
+    <None Include="Source\ShaderFile\CS_Particle.hlsl" />
+    <None Include="Source\ShaderFile\GS_3DObject.hlsl" />
+    <None Include="Source\ShaderFile\GS_CubeMap.hlsl" />
+    <None Include="Source\ShaderFile\GS_Particle.hlsl" />
+    <None Include="Source\ShaderFile\GS_RayPick.hlsl" />
+    <None Include="Source\ShaderFile\PS_2DObject.hlsl" />
+    <None Include="Source\ShaderFile\PS_3DObject.hlsl" />
+    <None Include="Source\ShaderFile\PS_Instancing.hlsl" />
+    <None Include="Source\ShaderFile\PS_Particle.hlsl" />
+    <None Include="Source\ShaderFile\PS_ShadowMap.hlsl" />
+    <None Include="Source\ShaderFile\VS_2DObject.hlsl" />
+    <None Include="Source\ShaderFile\VS_3DObject.hlsl" />
+    <None Include="Source\ShaderFile\VS_CubeMap.hlsl" />
+    <None Include="Source\ShaderFile\VS_InstanceMesh.hlsl" />
+    <None Include="Source\ShaderFile\VS_Instancing.hlsl" />
+    <None Include="Source\ShaderFile\VS_Particle.hlsl" />
+    <None Include="Source\ShaderFile\VS_ShadowMap.hlsl" />
+    <None Include="Source\ShaderFile\VS_SkinMesh.hlsl" />
   </ItemGroup>
 </Project>

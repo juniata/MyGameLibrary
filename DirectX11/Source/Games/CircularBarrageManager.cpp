@@ -1,19 +1,19 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"CircularBarrage.h"
-#include	"BulletManager.h"
+#include	"CircularBarrageManager.h"
 
 //-----------------------------------------------------------------------------------------
 //
 //  èâä˙âª
 //
 //-----------------------------------------------------------------------------------------
-BulletManager::BulletManager()
+CircularBarrageManager::CircularBarrageManager()
 {
 	circle = new DX_2DObject("circle.png");
 	
 	//circularBarrageList.resize(CIRCULARBARRAGE_MAX, new CircularBarrage());
 	// determine new length, padding with _Val ele
-	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
+	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		circularBarrageList[i] = new CircularBarrage();
 		circularBarrageList[i]->SetEnabled(true);
@@ -28,9 +28,9 @@ BulletManager::BulletManager()
 //  âï˙
 //
 //-----------------------------------------------------------------------------------------
-BulletManager::~BulletManager()
+CircularBarrageManager::~CircularBarrageManager()
 {
-	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
+	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		DELETE_OBJ(circularBarrageList[i]);
 	}
@@ -42,7 +42,7 @@ BulletManager::~BulletManager()
 //  çXêV
 //
 //-----------------------------------------------------------------------------------------
-void BulletManager::Update()
+void CircularBarrageManager::Update()
 {
 	interval++;
 	if (interval == -1 || interval % 5 == 0)
@@ -52,13 +52,13 @@ void BulletManager::Update()
 		circularBarrageList[enabledBulletIndex]->Response();
 
 		enabledBulletIndex++;
-		if (enabledBulletIndex >= BulletManager::CIRCULARBARRAGE_MAX)
+		if (enabledBulletIndex >= CircularBarrageManager::CIRCULARBARRAGE_MAX)
 		{
 			enabledBulletIndex = 0;
 		}		
 	}
 
-	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
+	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		float _angle = (i % 2 == 0) ? 0.5f : -0.5f;
 		circularBarrageList[i]->Update(_angle, 10.0f);
@@ -70,10 +70,10 @@ void BulletManager::Update()
 //  ï`âÊ
 //
 //-----------------------------------------------------------------------------------------
-void BulletManager::Render()
+void CircularBarrageManager::Render()
 {
 	//PROFILE(" BulletManager::Render")
-	for (int i = 0; i < BulletManager::CIRCULARBARRAGE_MAX; i++)
+	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		circularBarrageList[i]->Render();
 	}

@@ -7,7 +7,7 @@ class CircularBarrage;
 //	BulletManager Class
 //
 //****************************************************************************************************
-class BulletManager
+class CircularBarrageManager
 {
 private:
 	static const int CIRCULARBARRAGE_MAX = 30;
@@ -15,7 +15,7 @@ private:
 	DX_2DObject* circle;
 
 	// 弾画像リスト
-	CircularBarrage* circularBarrageList[BulletManager::CIRCULARBARRAGE_MAX];
+	CircularBarrage* circularBarrageList[CircularBarrageManager::CIRCULARBARRAGE_MAX];
 
 	// 弾有効化インターバル
 	int interval;
@@ -29,14 +29,14 @@ public:
 	//  @brief		初期化
 	//
 	//------------------------------------------------------------------------------
-	BulletManager();
+	CircularBarrageManager();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		解放
 	//
 	//------------------------------------------------------------------------------
-	~BulletManager();
+	~CircularBarrageManager();
 
 	//------------------------------------------------------------------------------
 	//

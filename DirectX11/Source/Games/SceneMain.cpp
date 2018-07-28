@@ -1,5 +1,5 @@
 #include	"DxLibrary\DX_Library.h"
-#include	"BulletManager.h"
+#include	"CircularBarrageManager.h"
 #include	"SceneMain.h"
 #include	"user_helper_class\OGGManager.h"
 
@@ -23,7 +23,7 @@ SceneMain::~SceneMain()
 	DELETE_OBJ(g_tex);
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);
-	DELETE_OBJ(bulletManager);
+	DELETE_OBJ(circularBarrageManager);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -38,7 +38,7 @@ bool SceneMain::Initialize()
 
 	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
 
-	bulletManager = new BulletManager();
+	circularBarrageManager = new CircularBarrageManager();
 	//DX_Lighting::Initialize();
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);
@@ -55,7 +55,7 @@ bool SceneMain::Update()
 {
 	g_pView->FreeCamera(2.0f);
 
-	bulletManager->Update();
+	circularBarrageManager->Update();
 
 	return true;
 }
@@ -70,7 +70,7 @@ void SceneMain::Render()
 	g_pView->Clear();
 	g_pView->Active();
 
-	// TODO:‚È‚º‚©BulletManager‚ðæ‚É•`‰æ‚µ‚È‚¢‚Æ‘S–Ê‚É•`‰æ‚³‚ê‚È‚¢B•’Ê‹t‚¶‚áH—vŒŸØ
-	bulletManager->Render();
+	// TODO:‚È‚º‚©circularBarrageManager‚ðæ‚É•`‰æ‚µ‚È‚¢‚Æ‘S–Ê‚É•`‰æ‚³‚ê‚È‚¢B•’Ê‹t‚¶‚áH—vŒŸØ
+	circularBarrageManager->Render();
 	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
 }

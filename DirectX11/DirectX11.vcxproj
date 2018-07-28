@@ -52,7 +52,7 @@
     <ClInclude Include="Source\DxLibrary\DX_View.h" />
     <ClInclude Include="Source\DxLibrary\DX_XInput.h" />
     <ClInclude Include="Source\Games\Bullet.h" />
-    <ClInclude Include="Source\Games\BulletManager.h" />
+    <ClInclude Include="Source\Games\CircularBarrageManager.h" />
     <ClInclude Include="Source\Games\CircularBarrage.h" />
     <ClInclude Include="Source\Games\SceneMain.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
@@ -93,7 +93,7 @@
     <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
     <ClCompile Include="Source\Games\Bullet.cpp" />
-    <ClCompile Include="Source\Games\BulletManager.cpp" />
+    <ClCompile Include="Source\Games\CircularBarrageManager.cpp" />
     <ClCompile Include="Source\Games\CircularBarrage.cpp" />
     <ClCompile Include="Source\Games\SceneMain.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />

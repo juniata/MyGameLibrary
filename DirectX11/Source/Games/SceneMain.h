@@ -1,12 +1,12 @@
 #ifndef __SCENE_MAIN_H_
 #define __SCENE_MAIN_H_
 
-class BulletManager;
+class CircularBarrageManager;
 
 class SceneMain : public DX_Scene
 {
 private:
-	BulletManager* bulletManager;
+	CircularBarrageManager* circularBarrageManager;
 public:
 	SceneMain();
 	~SceneMain();
