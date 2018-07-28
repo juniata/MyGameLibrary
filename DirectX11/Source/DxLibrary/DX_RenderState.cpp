@@ -99,8 +99,8 @@ void DX_RenderState::Initialize()
 	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	ID3D11RenderTargetView* const targets[1] = { DX_System::GetInstance()->GetDefaultRenderTargetView() };
 	l_pDeviceContext->OMSetRenderTargets(1, targets, DX_System::GetInstance()->GetDefaultDepthStencilView());
-	l_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState, 1);
-	l_pDeviceContext->OMSetBlendState(m_pBlendState, l_blendFactor, 1);
+	l_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState, 0);
+	l_pDeviceContext->OMSetBlendState(m_pBlendState, l_blendFactor, 0xffffffff);
 
 	
 }
@@ -146,21 +146,22 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 	ZeroMemory(&l_blendDesc, sizeof(l_blendDesc));
 
 	l_blendDesc.AlphaToCoverageEnable		= TRUE;
-	l_blendDesc.IndependentBlendEnable		= FALSE;
-	l_blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	l_blendDesc.IndependentBlendEnable		= FALSE; // RenderTarget0のみblende設定を使用する
+	l_blendDesc.RenderTarget[0].BlendEnable = FALSE;
+	l_blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 全部の色を書き込む
+	
+	////	どうブレンドするか
+	//l_blendDesc.RenderTarget[0].BlendOp			= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+	//l_blendDesc.RenderTarget[0].BlendOpAlpha	= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 
-	//	どうブレンドするか
-	l_blendDesc.RenderTarget[0].BlendOp			= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-	l_blendDesc.RenderTarget[0].BlendOpAlpha	= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
+	////	Blendの対象はなんなのか
+	//l_blendDesc.RenderTarget[0].SrcBlend	= D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
+	//l_blendDesc.RenderTarget[0].DestBlend	= D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
 
-	//	Blendの対象はなんなのか
-	l_blendDesc.RenderTarget[0].SrcBlend	= D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-	l_blendDesc.RenderTarget[0].DestBlend	= D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
-
-	//	Blend係数はいくらか
-	l_blendDesc.RenderTarget[0].SrcBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ONE;
-	l_blendDesc.RenderTarget[0].DestBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ZERO;
-	l_blendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
+	////	Blend係数はいくらか
+	//l_blendDesc.RenderTarget[0].SrcBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ONE;
+	//l_blendDesc.RenderTarget[0].DestBlendAlpha			= D3D11_BLEND::D3D11_BLEND_ZERO;
+	//l_blendDesc.RenderTarget[0].RenderTargetWriteMask	= D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
 
 	//	blendStateを作成する

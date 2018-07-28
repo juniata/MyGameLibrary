@@ -70,6 +70,7 @@ void SceneMain::Render()
 	g_pView->Clear();
 	g_pView->Active();
 
+	// TODO:‚È‚º‚©BulletManager‚ðæ‚É•`‰æ‚µ‚È‚¢‚Æ‘S–Ê‚É•`‰æ‚³‚ê‚È‚¢B•’Ê‹t‚¶‚áH—vŒŸØ
 	bulletManager->Render();
 	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
 }

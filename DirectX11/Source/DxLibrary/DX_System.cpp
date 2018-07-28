@@ -304,15 +304,18 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 
 	//	スキャンラインとスケーリング
 	swapChainDesc.BufferDesc.ScanlineOrdering	= DX_Graphics::GetScanLineOrder();
-	swapChainDesc.BufferDesc.Scaling			= DX_Graphics::GetScaling();;
+	swapChainDesc.BufferDesc.Scaling			= DX_Graphics::GetScaling();
+	//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	// バック バッファの使用法
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 	// 関連付けるウインドウ
 	swapChainDesc.OutputWindow = hWnd;
-
-	//	マルチサンプルの数とクオリティ
+	
+	//	マルチサンプルの数とクオリティ(conut = 1 quality=0だとアンチエイリアス処理は行わない)
+	// ※アンチエイリアス処理を行って描画する際は、描画ターゲットと深度バッファのマルチサンプル数とクオリティレベルが一致していなければならない。
+	// また、アンチエイリアスを使用する場合、CheckMultisampleQualityLevels()で使用できるクオリティレベルをチェックすること。
 	swapChainDesc.SampleDesc.Count		= 1;
 	swapChainDesc.SampleDesc.Quality	= 0;
 
@@ -321,7 +324,9 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 
 	// モード自動切り替え
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
+	
+	// 画面を更新する際、バックバッファの内容はどうするか？
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
 
 	//	GPUレベル
 	D3D_FEATURE_LEVEL featureLevels[] = {
@@ -386,7 +391,7 @@ void DX_System::CreateRenderTargetView()
 	PROFILE("DX_System::CreateRenderTargetView()");
 
 	ID3D11Texture2D* buffer = nullptr;
-	//	バッファを取得
+	//	バックバッファを取得
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer))){
 		throw "IDXGISwapChain::GetBuffer() : faield";
 	}
@@ -416,7 +421,7 @@ void DX_System::CreateDepthStencilBuffer()
 	dsbDesc.Width				= m_windowWidth;
 	dsbDesc.Height				= m_windowHeight;
 	dsbDesc.BindFlags			= D3D11_BIND_DEPTH_STENCIL;
-	dsbDesc.Format				= DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsbDesc.Format				= DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT;
 
 	//	深度･ステンシルバッファを作成
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pDevice->CreateTexture2D(&dsbDesc, nullptr, &m_pDsb))){
@@ -434,9 +439,12 @@ void DX_System::CreateDepthStencilView()
 {
 	PROFILE("DX_System::CreateDepthStencilView()");
 
+	D3D11_TEXTURE2D_DESC desc = { NULL };
+	m_pDsb->GetDesc(&desc);
+	
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc;
 	ZeroMemory(&dsvDesc, sizeof(dsvDesc));
-	dsvDesc.Format			= DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvDesc.Format			= desc.Format;
 	dsvDesc.ViewDimension	= D3D11_DSV_DIMENSION_TEXTURE2D;
 
 	//	深度･ステンシルビューを作成

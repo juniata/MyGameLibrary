@@ -1,10 +1,6 @@
 #ifndef __DX_VIEW_H_
 #define __DX_VIEW_H_
 
-//	RenderTargetViewを何色でクリアするか
-#define RTV_CLEAR_COLOR_BLOCK  DirectX::XMFLOAT4(0.0f,0.0f,0.0f,0.0f)
-#define RTV_CLEAR_COLOR_WHITE  DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.0f)
-
 //	デフォルト用
 #ifndef PI
 	#define PI CAST_F(3.14159265358979323846f) 

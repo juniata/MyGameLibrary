@@ -38,6 +38,9 @@ m_updateFrameNum(0)
 
 	//	視錐台の面を作成
 	CreateFrustum();
+
+	//	RSにビューポートを設定
+	DX_System::GetInstance()->GetDeviceContext()->RSSetViewports(1, &m_viewPort);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -47,9 +50,6 @@ m_updateFrameNum(0)
 //-----------------------------------------------------------------------------------------
 void DX_View::Active()
 {
-	//	RSにビューポートを設定
-	DX_System::GetInstance()->GetDeviceContext()->RSSetViewports(1, &m_viewPort);
-
 	//	行列作成に関わる変数が変化した場合trueになり、行列が再計算される
 	if (m_bChanged){
 
@@ -96,12 +96,10 @@ void DX_View::Clear(
 	if (bStencilClear){ flags |= D3D11_CLEAR_STENCIL; }
 	
 	//	RenderTargetViewをクリアする
-	float pColor[4] = {NULL};
-	FXMVECTOR color = XMLoadFloat4(&RTV_CLEAR_COLOR_BLOCK);
-	XMVectorGetXPtr(&pColor[0], color);
+	float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	l_pDeviceContext->ClearRenderTargetView(
 		l_pSystem->GetDefaultRenderTargetView(),
-		pColor
+		clearColor
 		);
 
 	//	DepthStencilViewをクリアする
