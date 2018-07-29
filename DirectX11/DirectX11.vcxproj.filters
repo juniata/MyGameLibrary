@@ -156,6 +156,9 @@
     <ClInclude Include="Source\Games\CircularBarrageManager.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\Player.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -273,6 +276,9 @@
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\Games\CircularBarrageManager.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\Player.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
   </ItemGroup>
