@@ -40,8 +40,13 @@ public:
 		);
 
 private:
+	struct TextureInfo {
+		const char * pFilepath;
+		ID3D11ShaderResourceView* pSrv;
+	};
+	static const int TEXTURE_NUM = 100;
 	//	テクスチャ情報を格納
-	static std::map<const char*, ID3D11ShaderResourceView*> m_textureList;
+	static TextureInfo m_textureList[TEXTURE_NUM];
 
 	//------------------------------------------------------------------------------
 	//

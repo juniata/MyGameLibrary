@@ -39,6 +39,11 @@ public:
 	//------------------------------------------------------------------------------
 	void Initialize();
 
+	ID3D11RasterizerState* GetDefaultRasterizerState() const;
+	ID3D11BlendState* GetDefaultBlendState() const;
+	ID3D11DepthStencilState* GetDefaultDepthStencilState() const;
+	ID3D11SamplerState* GetDefaultSamplerState() const;
+
 private:
 	ID3D11RasterizerState*		m_pRasterizerState;
 	ID3D11BlendState*			m_pBlendState;

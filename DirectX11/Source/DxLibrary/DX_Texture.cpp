@@ -9,7 +9,7 @@ using namespace DirectX;
 //  staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-std::map<const char*, ID3D11ShaderResourceView*> DX_TextureManager::m_textureList;
+DX_TextureManager::TextureInfo DX_TextureManager::m_textureList[TEXTURE_NUM] = { NULL };
 
 //-----------------------------------------------------------------------------------------
 //
@@ -24,7 +24,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(
 	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
 
 	//	あればポインタ、なければnullptrが返る
-	ID3D11ShaderResourceView* l_pTexture = SearchTexture(texturePath);
+	ID3D11ShaderResourceView* l_pTexture = SearchTexture(pFilepath);
 	
 	//	見つけたので、テクスチャのポインタを返す
 	if (l_pTexture){ return l_pTexture; }
@@ -57,8 +57,22 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(
 		//	エラーだった場合、nullptrを返す
 		return nullptr;
 	}
+
 	//	リストに追加する
-	m_textureList[texturePath] = l_pTexture;
+	int texCount = 0;
+	for (int i = 0; i < TEXTURE_NUM; ++i) {
+		if (m_textureList[i].pSrv == nullptr) {
+			m_textureList[i].pSrv = l_pTexture;
+			m_textureList[i].pFilepath = pFilepath;
+			break;
+		}
+		++texCount;
+	}
+
+	if (texCount == TEXTURE_NUM) {
+		MessageBox(NULL, "texture max", "error", MB_OK);
+		exit(1);
+	}
 
 	return l_pTexture;
 }
@@ -73,15 +87,13 @@ void DX_TextureManager::Release(
 	ID3D11ShaderResourceView* pTexture
 	)
 {
-	for (auto itr = m_textureList.begin(); itr != m_textureList.end(); ++itr){
-		//	同じ情報が見つかった場合
-		if (itr->second == pTexture){
-			//	テクスチャを解放
-			if (0 >= itr->second->Release()) {
-				itr->second = nullptr;
-
-				//	自身をリストから外す
-				m_textureList.erase(itr);
+	for (int i = 0; i < TEXTURE_NUM; ++i)
+	{
+		if (m_textureList[i].pSrv == pTexture)
+		{
+			ULONG refCount = m_textureList[i].pSrv->Release();
+			if (refCount == 0) {
+				m_textureList[i].pSrv = nullptr;
 			}
 			break;
 		}
@@ -98,11 +110,20 @@ ID3D11ShaderResourceView* DX_TextureManager::SearchTexture(
 	const char* pFilepath
 	)
 {
-	if (m_textureList.count(pFilepath)) {
-		m_textureList[pFilepath]->AddRef();
-		return m_textureList[pFilepath];
+	ID3D11ShaderResourceView* pSrv = nullptr;
+
+	for (int i = 0; i < TEXTURE_NUM; ++i)
+	{
+		if (m_textureList[i].pFilepath == NULL)
+		{
+			continue;
+		}
+		if (strcmp(m_textureList[i].pFilepath, pFilepath) == 0)
+		{
+			pSrv = m_textureList[i].pSrv;
+			break;
+		}
 	}
 
-	//	無かったので、nullptrを返す
-	return nullptr;
+	return pSrv;
 }

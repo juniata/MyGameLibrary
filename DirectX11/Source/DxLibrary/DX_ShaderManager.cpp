@@ -36,8 +36,10 @@ DX_ShaderManager::DX_ShaderManager() :
 	m_pInputLayout2D(nullptr),
 	m_pInputLayout3D(nullptr),
 	m_pInputLayoutInstanceMesh(nullptr),
-	m_pInputLayoutSkinMesh(nullptr)
+	m_pInputLayoutSkinMesh(nullptr),
+	m_shaderIndex(0)
 {
+	ZeroMemory(m_shaders, SHADER_NUM);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -52,10 +54,10 @@ DX_ShaderManager::~DX_ShaderManager()
 	SAFE_RELEASE(m_pInputLayoutInstanceMesh);
 	SAFE_RELEASE(m_pInputLayoutSkinMesh);
 
-	for (auto itr = m_shaders.begin(); itr != m_shaders.end(); ++itr) {
-		DELETE_OBJ(itr->second);
+	for (int i = 0; i < SHADER_NUM; ++i) {
+		DELETE_OBJ(m_shaders[i].pShader);
+		m_shaders[i].path = nullptr;
 	}
-	m_shaders.clear();
 }
 
 
@@ -116,7 +118,7 @@ void DX_ShaderManager::Initialize()
 	};
 
 	unsigned int strides[] = { sizeof(DirectX::XMFLOAT4) + sizeof(DirectX::XMFLOAT3) };
-	static_cast<DX_GeometryShader*>(m_shaders[DEFAULT_GEOMETRY_SHADER_RAYPICK])->CreateGeometryShaderWithStreamOutput(
+	static_cast<DX_GeometryShader*>(GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK))->CreateGeometryShaderWithStreamOutput(
 		l_declaration,
 		_countof(l_declaration),
 		strides,
@@ -136,7 +138,20 @@ void DX_ShaderManager::Release()
 
 DX_Shader*	DX_ShaderManager::GetShader(const char* pShaderFileName)
 {
-	return m_shaders[pShaderFileName];
+	DX_Shader* pShader = nullptr;
+	for (int i = 0; i < SHADER_NUM; ++i)
+	{
+		// 先頭から順番にデータを格納しているため、nullが見つかった場合最後尾となるためそれ以上の検索は無駄となる
+		if (m_shaders[i].path == nullptr) {
+			break;
+		}
+		if (strcmp(m_shaders[i].path, pShaderFileName) == 0)
+		{
+			pShader = m_shaders[i].pShader;
+		}
+	}
+
+	return pShader;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -146,7 +161,7 @@ DX_Shader*	DX_ShaderManager::GetShader(const char* pShaderFileName)
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetDefaultVertexShader3D()
 {
-	return m_shaders[DEFAULT_VERTEX_SHADER_3D];
+	return GetShader(DEFAULT_VERTEX_SHADER_3D);
 }
 
 
@@ -157,7 +172,7 @@ DX_Shader* DX_ShaderManager::GetDefaultVertexShader3D()
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetDefaultVertexShaderSkinMesh()
 {
-	return m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH];
+	return GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH);
 }
 
 
@@ -168,7 +183,7 @@ DX_Shader* DX_ShaderManager::GetDefaultVertexShaderSkinMesh()
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetDefaultGeometryShader3D()
 {
-	return m_shaders[DEFAULT_GEOMETRY_SHADER_3D];
+	return GetShader(DEFAULT_GEOMETRY_SHADER_3D);
 }
 
 
@@ -179,7 +194,7 @@ DX_Shader* DX_ShaderManager::GetDefaultGeometryShader3D()
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetDefaultGeometryShaderRayPick()
 {
-	return m_shaders[DEFAULT_GEOMETRY_SHADER_RAYPICK];
+	return GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK);
 
 }
 
@@ -190,7 +205,7 @@ DX_Shader* DX_ShaderManager::GetDefaultGeometryShaderRayPick()
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetDefaultPixelShader3D()
 {
-	return m_shaders[DEFAULT_PIXEL_SHADER_3D];
+	return GetShader(DEFAULT_PIXEL_SHADER_3D);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -200,7 +215,7 @@ DX_Shader* DX_ShaderManager::GetDefaultPixelShader3D()
 //-----------------------------------------------------------------------------------------
 DX_Shader* DX_ShaderManager::GetInstanceMeshComputeShader()
 {
-	return m_shaders[COMPUTE_SHADER_INSTANCE_3D];
+	return GetShader(COMPUTE_SHADER_INSTANCE_3D);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -499,22 +514,24 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 {
 	//	文字列が無ければNULLが返る
 	if (strstr(pFilepath, "VS_")){
-		m_shaders[pFilepath] = new  DX_VertexShader();
+		m_shaders[m_shaderIndex].pShader = new  DX_VertexShader();
 	}
 	else if (strstr(pFilepath, "PS_")){
-		m_shaders[pFilepath] = new  DX_PixelShader();
+		m_shaders[m_shaderIndex].pShader = new  DX_PixelShader();
 	}
 	else if (strstr(pFilepath, "GS_")){
-		m_shaders[pFilepath] = new DX_GeometryShader();
+		m_shaders[m_shaderIndex].pShader = new  DX_GeometryShader();
 	}
 	else if (strstr(pFilepath, "CS_")){
 		if (m_bCanUsetoComputeShader == false){
 			throw "ComputeShaderは使えません!";
 		}
-		m_shaders[pFilepath] = new DX_ComputeShader();
+		m_shaders[m_shaderIndex].pShader = new  DX_ComputeShader();
 	}
 
-	m_shaders[pFilepath]->CreateShader(pFilepath);
+	m_shaders[m_shaderIndex].path = pFilepath;
+	m_shaders[m_shaderIndex].pShader->CreateShader(pFilepath);
+	++m_shaderIndex;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -568,16 +585,16 @@ void DX_ShaderManager::CreateInputLayout()
 	
 	try {
 		//	2D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout2D, _countof(l_layout2D), m_shaders[DEFAULT_2D_SHADER::VERTEX_SHADER]->GetByteCord(), &m_pInputLayout2D);
+		CreateInputLayout(l_pDevice, l_layout2D, _countof(l_layout2D), GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER)->GetByteCord(), &m_pInputLayout2D);
 
 		//	3D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout3D, _countof(l_layout3D), m_shaders[DEFAULT_VERTEX_SHADER_3D]->GetByteCord(), &m_pInputLayout3D);
+		CreateInputLayout(l_pDevice, l_layout3D, _countof(l_layout3D), GetShader(DEFAULT_VERTEX_SHADER_3D)->GetByteCord(), &m_pInputLayout3D);
 
 		//	スキンメッシュ用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), m_shaders[DEFAULT_VERTEX_SHADER_SKIN_MESH]->GetByteCord(), &m_pInputLayoutInstanceMesh);
+		CreateInputLayout(l_pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH)->GetByteCord(), &m_pInputLayoutInstanceMesh);
 
 		//	インスタンススキンメッシュ描画用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_insntanceMesh, _countof(l_insntanceMesh), m_shaders[VARTEX_SHADER_INSTANCE_3D]->GetByteCord(), &m_pInputLayoutSkinMesh);
+		CreateInputLayout(l_pDevice, l_insntanceMesh, _countof(l_insntanceMesh), GetShader(VARTEX_SHADER_INSTANCE_3D)->GetByteCord(), &m_pInputLayoutSkinMesh);
 	}
 	catch (char* pMessage){
 		throw pMessage;

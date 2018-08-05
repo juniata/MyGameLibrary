@@ -16,7 +16,6 @@ HWND					DX_System::m_windowHandle = NULL;
 unsigned int DX_System::m_windowWidth	= 0;
 unsigned int DX_System::m_windowHeight	= 0;
 
-
 //-----------------------------------------------------------------------------------------
 //
 //  初期化
@@ -50,12 +49,12 @@ DX_System::~DX_System()
 
 
 	SAFE_RELEASE(m_pRtv);
+	SAFE_RELEASE(m_pDsb);
 	SAFE_RELEASE(m_pDsv);
-	SAFE_RELEASE(m_pDsv);
+	SAFE_RELEASE(m_pSwapChain);
 	SAFE_RELEASE(m_pDeviceContext);
 	SAFE_RELEASE(m_pDevice);
-	SAFE_RELEASE(m_pSwapChain);
-	
+
 
 	//	OGGファイルを解放
 	//	OGGManager::Release();
@@ -99,15 +98,8 @@ bool DX_System::InitD3D(const HWND& hWnd)
 		DX_Debug::GetInstance()->Initialize();
 		DX_Debug::GetInstance()->ReportLiveDeviceObjects("dx_debug initialize");
 	
-		
-		//	RenderTargetViewを作成する
-		CreateRenderTargetView();
-		
-		//	DepthStencilBufferを作成する
-		CreateDepthStencilBuffer();
-
-		//	DepthStencilViewを作成する
-		CreateDepthStencilView();
+		// バックバッファを作成する
+		InitBuckBuffer();
 
 		//	レンダーステートを初期化する
 		DX_RenderState::GetInstance()->Initialize();
@@ -277,6 +269,21 @@ HWND	DX_System::GetWindowHandle()
 	return m_windowHandle;
 }
 
+void DX_System::InitBuckBuffer()
+{
+	SAFE_RELEASE(m_pRtv);
+	SAFE_RELEASE(m_pDsv);
+	SAFE_RELEASE(m_pDsb);
+
+	//	RenderTargetViewを作成する
+	CreateRenderTargetView();
+
+	//	DepthStencilBufferを作成する
+	CreateDepthStencilBuffer();
+
+	//	DepthStencilViewを作成する
+	CreateDepthStencilView();
+}
 //-----------------------------------------------------------------------------------------
 //
 //  SwapChain,ID3D11Device,ID3D11DeviceContextを作成
@@ -285,6 +292,11 @@ HWND	DX_System::GetWindowHandle()
 void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 {
 	PROFILE("DX_System::CreateDeviceAndSwapChain()");
+	
+	RECT rc;
+	GetClientRect(hWnd, &rc);
+	UINT width	= rc.right - rc.left;
+	UINT height = rc.bottom - rc.top;
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = { NULL };
 
@@ -292,8 +304,8 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	swapChainDesc.BufferCount = 1;
 
 	//	バックバッファの幅と高さ
-	swapChainDesc.BufferDesc.Width	= m_windowWidth;
-	swapChainDesc.BufferDesc.Height	= m_windowHeight;
+	swapChainDesc.BufferDesc.Width	= width;
+	swapChainDesc.BufferDesc.Height	= height;
 
 	//	フォーマット
 	swapChainDesc.BufferDesc.Format = DX_Graphics::GetFortmat();
@@ -305,7 +317,6 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	//	スキャンラインとスケーリング
 	swapChainDesc.BufferDesc.ScanlineOrdering	= DX_Graphics::GetScanLineOrder();
 	swapChainDesc.BufferDesc.Scaling			= DX_Graphics::GetScaling();
-	//swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	// バック バッファの使用法
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -323,7 +334,7 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	swapChainDesc.Windowed = TRUE;
 
 	// モード自動切り替え
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	
 	// 画面を更新する際、バックバッファの内容はどうするか？
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_DISCARD;
@@ -342,8 +353,11 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 
 	//	ハードタイプ
 	D3D_DRIVER_TYPE driveTypes[] = {
-		D3D_DRIVER_TYPE_HARDWARE,	D3D_DRIVER_TYPE_SOFTWARE, D3D_DRIVER_TYPE_REFERENCE,
-		D3D_DRIVER_TYPE_WARP,		D3D_DRIVER_TYPE_NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		D3D_DRIVER_TYPE_SOFTWARE, 
+		D3D_DRIVER_TYPE_REFERENCE,
+		D3D_DRIVER_TYPE_WARP,
+		D3D_DRIVER_TYPE_NULL,
 	};
 
 #if defined(DEBUG) || defined(_DEBUG)
@@ -390,18 +404,18 @@ void DX_System::CreateRenderTargetView()
 {
 	PROFILE("DX_System::CreateRenderTargetView()");
 
-	ID3D11Texture2D* buffer = nullptr;
+	ID3D11Texture2D* pBuffer = nullptr;
 	//	バックバッファを取得
-	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer))){
 		throw "IDXGISwapChain::GetBuffer() : faield";
 	}
 
 	//	レンダーターゲットビューを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pDevice->CreateRenderTargetView(buffer, nullptr, &m_pRtv))){
+	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pDevice->CreateRenderTargetView(pBuffer, nullptr, &m_pRtv))){
 		throw "ID3D11Device::CreateRenderTargetView() : faield";
 	}
 
-	SAFE_RELEASE(buffer);
+	SAFE_RELEASE(pBuffer);
 }
 
 
@@ -414,19 +428,30 @@ void DX_System::CreateDepthStencilBuffer()
 {
 	PROFILE("DX_System::CreateDepthStencilBuffer()");
 
-	D3D11_TEXTURE2D_DESC dsbDesc = { NULL }; 
+	ID3D11Texture2D* pBuffer = nullptr;
+	//	バックバッファを取得
+	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer))) {
+		throw "IDXGISwapChain::GetBuffer() : faield";
+	}
+
+	// バック・バッファの情報
+	D3D11_TEXTURE2D_DESC descBackBuffer;
+	pBuffer->GetDesc(&descBackBuffer);
+
+	D3D11_TEXTURE2D_DESC dsbDesc = descBackBuffer;
 	dsbDesc.MipLevels			= 1;
 	dsbDesc.ArraySize			= 1;
-	dsbDesc.SampleDesc.Count	= 1;
-	dsbDesc.Width				= m_windowWidth;
-	dsbDesc.Height				= m_windowHeight;
 	dsbDesc.BindFlags			= D3D11_BIND_DEPTH_STENCIL;
-	dsbDesc.Format				= DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT;
+	dsbDesc.Format				= DXGI_FORMAT_D32_FLOAT;
+	dsbDesc.Usage				= D3D11_USAGE_DEFAULT;      // デフォルト使用法
+	dsbDesc.CPUAccessFlags		= 0;   // CPUからはアクセスしない
+	dsbDesc.MiscFlags			= 0;   // その他の設定なし
 
 	//	深度･ステンシルバッファを作成
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pDevice->CreateTexture2D(&dsbDesc, nullptr, &m_pDsb))){
 		throw "ID3D11Device::CreateTexture2D() : failed";
 	}
+	SAFE_RELEASE(pBuffer);
 }
 
 

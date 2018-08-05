@@ -71,9 +71,11 @@ public:
 	//	@param[in]	bStencilClear	trueならステンシルをクリアする(0でクリア)
 	//
 	//------------------------------------------------------------------------------
-	void Clear(
+	static void Clear(
 		const bool bZClear			= true,
-		const bool bStencilClear	= true
+		const bool bStencilClear	= true,
+		ID3D11RenderTargetView* pRtv = nullptr,
+		ID3D11DepthStencilView* pDsv = nullptr
 		);
 
 	//------------------------------------------------------------------------------
@@ -104,6 +106,8 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	static void SetMatrixForTheView();
+
+	static D3D11_VIEWPORT* GetViewPort() { return &m_viewPort; }
 
 	//------------------------------------------------------------------------------
 	//

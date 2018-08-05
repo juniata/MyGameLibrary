@@ -306,7 +306,13 @@ public:
 
 
 private:
-	std::map<const char*, DX_Shader*>		m_shaders;
+	struct Sharders {
+		const char* path;
+		DX_Shader* pShader;
+	};
+	static const int SHADER_NUM = 10;
+	Sharders m_shaders[SHADER_NUM];
+	int m_shaderIndex;
 
 	ID3D11InputLayout*	m_pInputLayout2D;
 	ID3D11InputLayout*	m_pInputLayout3D;

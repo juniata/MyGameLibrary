@@ -147,13 +147,15 @@ void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSi
 
 	//	頂点情報を作成
 	CreateVertex(l_pVertex, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	
 
 	//	バッファを作成
 	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
 
 	//	シェーダーを取得
-	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 
 	//	デバイスコンテキストを取得

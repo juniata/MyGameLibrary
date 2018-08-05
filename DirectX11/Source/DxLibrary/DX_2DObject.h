@@ -120,4 +120,9 @@ private:
 		);
 
 };
+
+class DX_Instance2DObject
+{
+
+};
 #endif // !__DX_2DOBJECT_H_

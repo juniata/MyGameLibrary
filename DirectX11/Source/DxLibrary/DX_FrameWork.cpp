@@ -134,7 +134,6 @@ void DX_FrameWork::Run()
 			DX_Graphics::EndRender(l_pSwapChain);
 		}
 	}
-
 	
 }
 
@@ -210,9 +209,16 @@ bool DX_FrameWork::CreateAppWindow(
 	}
 
 	//	ウィンドウのスタイルを設定
-	int l_style = 
-		WS_OVERLAPPED | WS_SYSMENU | WS_VISIBLE | 
-		WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+	int l_style = WS_OVERLAPPEDWINDOW;
+
+	RECT rect;
+	rect.top = 0;
+	rect.left = 0;
+	rect.right = width;
+	rect.bottom = height;
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
+	rect.right -= rect.left;
+	rect.bottom -= rect.top;
 
 	//	windowを作成する
 	m_hWnd = CreateWindowEx(
@@ -222,8 +228,8 @@ bool DX_FrameWork::CreateAppWindow(
 		l_style,
 		x,
 		y, 
-		width,
-		height,
+		rect.right,
+		rect.bottom,
 		NULL, NULL, 
 		m_hInstance,
 		NULL);
@@ -254,6 +260,8 @@ LRESULT CALLBACK DX_FrameWork::WndProc(
 	LPARAM	lparam
 	)
 {
+	DX_System* pSystem = DX_System::GetInstance();
+
 	switch (msg){
 	case WM_DESTROY:
 		//	メッセージループを抜けます
@@ -265,16 +273,30 @@ LRESULT CALLBACK DX_FrameWork::WndProc(
 		break;
 		
 	case WM_SIZE:
+		if (nullptr == pSystem->GetDevice() || wparam == SIZE_MINIMIZED) {
+			break;
+		}
+
+		pSystem->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
+		pSystem->GetSwapChain()->ResizeBuffers(1, LOWORD(lparam), HIWORD(lparam), DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+		pSystem->InitBuckBuffer();
 		break;
 
 	case WM_KEYDOWN:
 
 		switch (wparam){
-		case VK_ESCAPE: PostMessage(hWnd, WM_CLOSE, 0, 0); return 0;
+		case VK_ESCAPE: 
+			PostMessage(hWnd, WM_CLOSE, 0, 0);;
+			break;
 
 			//	F12を押した場合スクリーンモードを変更
 		case VK_F12:
-			//DX_System::ChengedScreenMode();
+		/*	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
+			if (nullptr != pSwapChain) {
+				BOOL fullScreen = false;
+				pSwapChain->GetFullscreenState(&fullScreen, NULL);
+				pSwapChain->SetFullscreenState(!fullScreen, NULL);
+			}*/
 
 			break;
 		}

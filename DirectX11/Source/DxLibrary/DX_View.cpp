@@ -38,9 +38,6 @@ m_updateFrameNum(0)
 
 	//	視錐台の面を作成
 	CreateFrustum();
-
-	//	RSにビューポートを設定
-	DX_System::GetInstance()->GetDeviceContext()->RSSetViewports(1, &m_viewPort);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -82,12 +79,16 @@ void DX_View::Active()
 //-----------------------------------------------------------------------------------------
 void DX_View::Clear(
 	const bool bZClear,
-	const bool bStencilClear 
+	const bool bStencilClear,
+	ID3D11RenderTargetView* pRtv,
+	ID3D11DepthStencilView* pDsv
 	)
 {
 	DX_System* l_pSystem = DX_System::GetInstance();
 	ID3D11DeviceContext* l_pDeviceContext = l_pSystem->GetDeviceContext();
-	
+	ID3D11RenderTargetView* pClearRtv = pRtv ? pRtv : l_pSystem->GetDefaultRenderTargetView();
+	ID3D11DepthStencilView* pClearDsv = pDsv ? pDsv : l_pSystem->GetDefaultDepthStencilView();
+
 	//	DepthStencilViewの何をクリアするか
 	UINT flags = 0;
 
@@ -95,20 +96,13 @@ void DX_View::Clear(
 	if (bZClear){ flags = D3D11_CLEAR_DEPTH; }
 	if (bStencilClear){ flags |= D3D11_CLEAR_STENCIL; }
 	
+
 	//	RenderTargetViewをクリアする
 	float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	l_pDeviceContext->ClearRenderTargetView(
-		l_pSystem->GetDefaultRenderTargetView(),
-		clearColor
-		);
+	l_pDeviceContext->ClearRenderTargetView(pClearRtv, clearColor);
 
 	//	DepthStencilViewをクリアする
-	l_pDeviceContext->ClearDepthStencilView(
-		l_pSystem->GetDefaultDepthStencilView(),
-		flags,
-		1.0f,
-		0
-		);
+	l_pDeviceContext->ClearDepthStencilView(pClearDsv, flags, 1.0f,0);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -118,12 +112,14 @@ void DX_View::Clear(
 //-----------------------------------------------------------------------------------------
 void DX_View::SetViewPort()
 {
-	m_viewPort.TopLeftX = 0;									//	ビューポート領域の左上X座標
-	m_viewPort.TopLeftY = 0;									//	ビューポート領域の左上Y座標				
-	m_viewPort.Width	= CAST_F(DX_System::GetWindowWidth());	//	ビューポート領域の幅
-	m_viewPort.Height	= CAST_F(DX_System::GetWindowHeight());	//	ビューポート領域の高さ
-	m_viewPort.MinDepth = 0.0f;									//	ビューポート領域の深度値の最小値
-	m_viewPort.MaxDepth = 1.0f;									//	ビューポート領域の深度値の最大値
+	D3D11_TEXTURE2D_DESC desc;
+	DX_System::GetInstance()->GetDepthStencilBuffer()->GetDesc(&desc);
+	m_viewPort.TopLeftX = 0;			//	ビューポート領域の左上X座標
+	m_viewPort.TopLeftY = 0;			//	ビューポート領域の左上Y座標				
+	m_viewPort.Width	= desc.Width;	//	ビューポート領域の幅
+	m_viewPort.Height	= desc.Height;	//	ビューポート領域の高さ
+	m_viewPort.MinDepth = 0.0f;			//	ビューポート領域の深度値の最小値
+	m_viewPort.MaxDepth = 1.0f;			//	ビューポート領域の深度値の最大値
 }
 
 //-----------------------------------------------------------------------------------------

@@ -88,24 +88,24 @@ void DX_RenderState::Initialize()
 	catch (char* pMessage){
 		throw pMessage;
 	}
-
-	//	サンプラーを設定する
-	l_pDeviceContext->PSSetSamplers(0, 1, &m_pSamplerState);
-
-	//	ポリゴン描画設定
-	l_pDeviceContext->RSSetState(m_pRasterizerState);
-
-	//	OMに必要情報を設定
-	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ID3D11RenderTargetView* const targets[1] = { DX_System::GetInstance()->GetDefaultRenderTargetView() };
-	l_pDeviceContext->OMSetRenderTargets(1, targets, DX_System::GetInstance()->GetDefaultDepthStencilView());
-	l_pDeviceContext->OMSetDepthStencilState(m_pDepthStencilState, 0);
-	l_pDeviceContext->OMSetBlendState(m_pBlendState, l_blendFactor, 0xffffffff);
-
-	
 }
 
-
+ID3D11RasterizerState* DX_RenderState::GetDefaultRasterizerState() const
+{
+	return m_pRasterizerState;
+}
+ID3D11BlendState* DX_RenderState::GetDefaultBlendState() const
+{
+	return m_pBlendState;
+}
+ID3D11DepthStencilState* DX_RenderState::GetDefaultDepthStencilState() const
+{
+	return m_pDepthStencilState;
+}
+ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState() const
+{
+	return m_pSamplerState;
+}
 //-----------------------------------------------------------------------------------------
 //
 //  ラスタライザーステートを作成する
@@ -184,25 +184,11 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 	//	depth test parameters
 	l_dsDesc.DepthEnable	= TRUE;
 	l_dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	l_dsDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
+	l_dsDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL; // z値が手前で描画されたものより小さい場合、描画します
 
 	// Stencil test parameters
-	l_dsDesc.StencilEnable		= TRUE;	
-	l_dsDesc.StencilReadMask	= 0xFF;
-	l_dsDesc.StencilWriteMask	= 0xFF;
-
-	// Stencil operations if pixel is front-facing
-	l_dsDesc.FrontFace.StencilFailOp		= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.FrontFace.StencilDepthFailOp	= D3D11_STENCIL_OP::D3D11_STENCIL_OP_INCR;
-	l_dsDesc.FrontFace.StencilPassOp		= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.FrontFace.StencilFunc			= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
-
-	// Stencil operations if pixel is back-facing
-	l_dsDesc.BackFace.StencilFailOp			= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.BackFace.StencilDepthFailOp	= D3D11_STENCIL_OP::D3D11_STENCIL_OP_DECR;
-	l_dsDesc.BackFace.StencilPassOp			= D3D11_STENCIL_OP::D3D11_STENCIL_OP_KEEP;
-	l_dsDesc.BackFace.StencilFunc			= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_ALWAYS;
-
+	l_dsDesc.StencilEnable = FALSE;
+	
 	//	depth stencil stateを作成する
 	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &m_pDepthStencilState))){
 		throw "ID3D11Device::CreateDepthStencilState() : failed";
