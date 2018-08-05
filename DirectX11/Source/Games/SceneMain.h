@@ -2,11 +2,13 @@
 #define __SCENE_MAIN_H_
 
 class CircularBarrageManager;
+class Player;
 
 class SceneMain : public DX_Scene
 {
 private:
 	CircularBarrageManager* circularBarrageManager;
+	Player* player;
 public:
 	SceneMain();
 	~SceneMain();

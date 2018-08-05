@@ -1,5 +1,6 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"CircularBarrageManager.h"
+#include	"Player.h"
 #include	"SceneMain.h"
 #include	"user_helper_class\OGGManager.h"
 
@@ -24,6 +25,7 @@ SceneMain::~SceneMain()
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);
 	DELETE_OBJ(circularBarrageManager);
+	DELETE_OBJ(player);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -39,6 +41,9 @@ bool SceneMain::Initialize()
 	g_tex2 = new DX_2DObject("14_s2bgay4bpz.jpg");
 
 	circularBarrageManager = new CircularBarrageManager();
+
+	player = new Player();
+
 	//DX_Lighting::Initialize();
 	//OGGManager::LoadOGG(0, "Resource\\Sound\\1-0004370502.320.ogg");
 	//OGGManager::Play(0);
@@ -57,6 +62,8 @@ bool SceneMain::Update()
 
 	circularBarrageManager->Update();
 
+	player->Update();
+
 	return true;
 }
 
@@ -68,7 +75,10 @@ bool SceneMain::Update()
 void SceneMain::Render()
 {
 	g_pView->Active();
+	g_pView->Clear();
 
+	player->Render();
+	
 	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
 	circularBarrageManager->Render();
 

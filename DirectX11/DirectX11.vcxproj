@@ -54,6 +54,7 @@
     <ClInclude Include="Source\Games\Bullet.h" />
     <ClInclude Include="Source\Games\CircularBarrageManager.h" />
     <ClInclude Include="Source\Games\CircularBarrage.h" />
+    <ClInclude Include="Source\Games\Player.h" />
     <ClInclude Include="Source\Games\SceneMain.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
     <ClInclude Include="Source\ModelLoader\imoloader.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="Source\Games\Bullet.cpp" />
     <ClCompile Include="Source\Games\CircularBarrageManager.cpp" />
     <ClCompile Include="Source\Games\CircularBarrage.cpp" />
+    <ClCompile Include="Source\Games\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp" />
