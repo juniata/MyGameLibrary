@@ -17,6 +17,7 @@ private:
 	// 弾画像リスト
 	CircularBarrage* circularBarrageList[CircularBarrageManager::CIRCULARBARRAGE_MAX];
 
+	DX_Instance2DObject* m_pInstance2d;
 	// 弾有効化インターバル
 	int interval;
 

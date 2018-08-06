@@ -17,6 +17,8 @@ typedef struct DEFAULT_SHADER{
 	typedef struct _2D{
 		static const char* VERTEX_SHADER;
 		static const char* PIXEL_SHADER;
+
+		static const char* INSTANCE_VERTEX_SHADER;
 	}_2D;
 
 	typedef struct _MESH{
@@ -39,7 +41,8 @@ typedef DEFAULT_SHADER::_SKIN_MESH	DEFAULT_SKIN_MESH_SHADER;
 
 //	2D
 __declspec(selectany) const char* DEFAULT_2D_SHADER::VERTEX_SHADER	= "Source\\ShaderFile\\VS_2DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_2D_SHADER::PIXEL_SHADER	= "Source\\ShaderFile\\PS_2DObject.hlsl";
+__declspec(selectany) const char* DEFAULT_2D_SHADER::PIXEL_SHADER = "Source\\ShaderFile\\PS_2DObject.hlsl";
+__declspec(selectany) const char* DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER = "Source\\ShaderFile\\VS_Instance2D.hlsl";
 
 //	Mesh
 __declspec(selectany) const char* DEFAULT_MESH_SHADER::VERTEX_SHADER	= "Source\\ShaderFile\\VS_3DObject.hlsl";
@@ -159,6 +162,8 @@ public:
 	//------------------------------------------------------------------------------
 	ID3D11InputLayout* GetDefaultInputLayout3D();
 
+	ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		デフォルトのスキンメッシュ描画用InputLayoutを取得する
@@ -190,6 +195,11 @@ public:
 		DX_SHADER_TYPE	shaderType
 		);
 
+	void SetInt(const unsigned int			registerNum,
+		const DirectX::XMINT4&				vec4,
+		ID3D11Device*				pDevice,
+		ID3D11DeviceContext*		pDeviceContext,
+		DX_SHADER_TYPE	shaderType);
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		Vector4をシェーダーに送る
@@ -226,6 +236,9 @@ public:
 		DX_SHADER_TYPE	shaderType
 		);
 
+	void SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3,
+		const unsigned int			vecCount,
+		ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		Vector2をシェーダーに送る
@@ -318,6 +331,7 @@ private:
 	ID3D11InputLayout*	m_pInputLayout3D;
 	ID3D11InputLayout*	m_pInputLayoutSkinMesh;
 	ID3D11InputLayout*	m_pInputLayoutInstanceMesh;
+	ID3D11InputLayout*	m_pInputLayoutInstance2D;
 
 	//	コンピュートシェーダーが使えるかどうか
 	bool m_bCanUsetoComputeShader;

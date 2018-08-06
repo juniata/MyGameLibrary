@@ -10,8 +10,10 @@
 CircularBarrageManager::CircularBarrageManager()
 {
 	circle = new DX_2DObject("circle.png");
-	
-	//circularBarrageList.resize(CIRCULARBARRAGE_MAX, new CircularBarrage());
+
+	// テスト描画
+	m_pInstance2d = new DX_Instance2DObject("kinu.png", CircularBarrageManager::CIRCULARBARRAGE_MAX * 12);
+
 	// determine new length, padding with _Val ele
 	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
@@ -61,7 +63,7 @@ void CircularBarrageManager::Update()
 	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
 	{
 		float _angle = (i % 2 == 0) ? 0.5f : -0.5f;
-		circularBarrageList[i]->Update(_angle, 10.0f);
+		circularBarrageList[i]->Update(_angle, 10.0f, m_pInstance2d->GetPosList(i * 12));
 	}
 }
 
@@ -72,13 +74,11 @@ void CircularBarrageManager::Update()
 //-----------------------------------------------------------------------------------------
 void CircularBarrageManager::Render()
 {
-	//PROFILE(" BulletManager::Render")
-	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)
-	{
-		circularBarrageList[i]->Render();
-	}
 	float circleSize = 720.0f;
 	float circleX = (DX_System::GetWindowWidth() - circleSize) * 0.5f;
 	float circleY = (DX_System::GetWindowHeight() - circleSize) * 0.5f;
 	circle->Render(DirectX::XMFLOAT2(circleX, circleY), DirectX::XMFLOAT2(circleSize, circleSize));
+
+	// テスト描画
+	m_pInstance2d->Render();
 }

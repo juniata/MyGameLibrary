@@ -75,6 +75,7 @@
     <ClCompile Include="Source\DxLibrary\DX_GeometryShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Graphics.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Input.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Instance2DObject.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_InstanceMesh.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_instanceSkinMesh.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Lighting.cpp" />
@@ -164,6 +165,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Source\ShaderFile\VS_SkinMesh.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\ShaderFile\VS_Instance2D.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

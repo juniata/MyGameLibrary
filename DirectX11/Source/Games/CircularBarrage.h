@@ -22,8 +22,7 @@ public:
 	CircularBarrage();
 	~CircularBarrage();
 
-	void Update(float angle, float distance);
-	void Render();
+	void Update(float angle, float distance, DirectX::XMFLOAT3* pPosList);
 
 	//------------------------------------------------------------------------------
 	//

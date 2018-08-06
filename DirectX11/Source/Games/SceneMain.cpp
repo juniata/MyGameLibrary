@@ -81,5 +81,4 @@ void SceneMain::Render()
 	
 	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
 	circularBarrageManager->Render();
-
 }

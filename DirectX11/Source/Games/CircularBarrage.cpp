@@ -38,36 +38,18 @@ CircularBarrage::~CircularBarrage()
 //  çXêV
 //
 //-----------------------------------------------------------------------------------------
-void CircularBarrage::Update(float angle, float distance)
+void CircularBarrage::Update(float angle, float distance, DirectX::XMFLOAT3* pPosList)
 {
 	if (!isEnabled)
 	{
 		return;
 	}
-
 	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
 	{
 		bulletList[i]->Update();
 		bulletList[i]->SetAngle(bulletList[i]->GetAngle() + angle);
 		bulletList[i]->SetDistance(bulletList[i]->GetDistance() + distance);
-	}
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  ï`âÊ
-//
-//-----------------------------------------------------------------------------------------
-void CircularBarrage::Render()
-{
-	if (!isEnabled)
-	{
-		return;
-	}
-
-	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
-	{
-		bulletList[i]->Render();
+		pPosList[i] = bulletList[i]->GetPos();
 	}
 }
 
