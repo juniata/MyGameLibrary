@@ -4,26 +4,11 @@ class CircularBarrage;
 
 //****************************************************************************************************
 //
-//	BulletManager Class
+//	CircularBarrageManager
 //
 //****************************************************************************************************
 class CircularBarrageManager
 {
-private:
-	static const int CIRCULARBARRAGE_MAX = 30;
-
-	DX_2DObject* circle;
-
-	// 弾画像リスト
-	CircularBarrage* circularBarrageList[CircularBarrageManager::CIRCULARBARRAGE_MAX];
-
-	DX_Instance2DObject* m_pInstance2d;
-	// 弾有効化インターバル
-	int interval;
-
-	// 有効化する弾のインデックス
-	int enabledBulletIndex;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -52,6 +37,28 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	void Render();
+
+private:
+	// 生成する円形弾幕の数
+	static const int CIRCULARBARRAGE_MAX = 15;
+
+	// xフレームおきに円形弾幕を生成する
+	static const int CREATE_CIRCULAR_BARRAGE_FRAME = 5;
+
+	DX_2DObject* m_pCircle;
+
+	// サークルオブジェクト一覧
+	CircularBarrage* m_pCircularBarrageList[CircularBarrageManager::CIRCULARBARRAGE_MAX];
+
+	// 2Dインスタンス描画オブジェクト
+	DX_Instance2DObject* m_pInstance2d;
+
+	// 弾有効化インターバル
+	int m_interval;
+
+	// 有効化する弾のインデックス
+	int m_enabledBulletIndex;
+
 };
 
 #endif

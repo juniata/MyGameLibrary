@@ -1,21 +1,21 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"Bullet.h"
+using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
 //  ‰Šú‰»
 //
 //-----------------------------------------------------------------------------------------
-Bullet::Bullet()
+Bullet::Bullet() :
+	m_size(32.0f,32.0f),
+	m_distance(0.0f),
+	m_angle(0.0f),
+	m_isEnabled(false)
 {
-	size = DirectX::XMFLOAT2(32.0f, 32.0f);
-	float basePosX = (DX_System::GetWindowWidth() - size.x) * 0.5f;
-	float basePosY = (DX_System::GetWindowHeight() - size.y) * 0.5f;
-	basePos = DirectX::XMFLOAT2(basePosX, basePosY);
-	pos = basePos;
-	distance = 0.0f;
-	angle = 0.0f;
-	isEnabled = true;
+	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
+	float basePosY = (DX_System::GetWindowHeight() - m_size.y) * 0.5f;
+	m_pos = m_basePos = DirectX::XMFLOAT2(basePosX, basePosY);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -37,9 +37,10 @@ void Bullet::Move()
 	//distance += 5.0f;
 	//if (radius >= 360.0f)radius = 360.0f;
 	//angle += 1.0f;
-	float x = basePos.x + distance*cosf(angle*atanf(1.0f)*(4.0f / 180.0f));
-	float y = basePos.y + distance*sinf(angle*atanf(1.0f)*(4.0f / 180.0f));
-	pos = DirectX::XMFLOAT2(x, y);
+	// m_dis
+	float x = m_basePos.x + m_distance * cosf(m_angle * atanf(1.0f) * (4.0f / 180.0f));
+	float y = m_basePos.y + m_distance * sinf(m_angle * atanf(1.0f) * (4.0f / 180.0f));
+	m_pos = DirectX::XMFLOAT2(x, y);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -49,12 +50,11 @@ void Bullet::Move()
 //-----------------------------------------------------------------------------------------
 void Bullet::Update()
 {
-	if (!isEnabled)
+	if (m_isEnabled)
 	{
-		return;
+		DeathRecord();
+		Move();
 	}
-	DeathRecord();
-	Move();
 }
 
 
@@ -65,17 +65,7 @@ void Bullet::Update()
 //-----------------------------------------------------------------------------------------
 void Bullet::SetEnabled(bool isEnabled)
 {
-	this->isEnabled = isEnabled;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  Ž€–Sƒtƒ‰ƒOŽæ“¾
-//
-//-----------------------------------------------------------------------------------------
-bool Bullet::IsDead()
-{
-	return isDead;
+	m_isEnabled = isEnabled;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -85,10 +75,10 @@ bool Bullet::IsDead()
 //-----------------------------------------------------------------------------------------
 void Bullet::Response()
 {
-	pos = basePos;
-	distance = 0.0f;
-	angle = 0.0f;
-	isEnabled = false;
+	m_pos		= m_basePos;
+	m_distance	= 0.0f;
+	m_angle		= 0.0f;
+	m_isEnabled = false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -98,24 +88,11 @@ void Bullet::Response()
 //-----------------------------------------------------------------------------------------
 void Bullet::DeathRecord()
 {
-	if (pos.x <= 0.0f
-		|| pos.x >= DX_System::GetWindowWidth()
-		|| pos.y <= 0.0f
-		|| pos.y >= DX_System::GetWindowHeight())
+	if (m_pos.x <= 0.0f || m_pos.x >= CAST_F(DX_System::GetWindowWidth()) || 
+		m_pos.y <= 0.0f || m_pos.y >= CAST_F(DX_System::GetWindowHeight()))
 	{
-		isDead = true;
 		Response();
 	}
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  •œŠˆ‚³‚¹‚é
-//
-//-----------------------------------------------------------------------------------------
-void Bullet::Resurrection()
-{
-	isDead = false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -125,7 +102,7 @@ void Bullet::Resurrection()
 //-----------------------------------------------------------------------------------------
 void Bullet::SetAngle(float angle)
 {
-	this->angle = angle;
+	m_angle = angle;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -135,7 +112,7 @@ void Bullet::SetAngle(float angle)
 //-----------------------------------------------------------------------------------------
 void Bullet::SetDistance(float distance)
 {
-	this->distance = distance;
+	m_distance = distance;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -145,11 +122,11 @@ void Bullet::SetDistance(float distance)
 //-----------------------------------------------------------------------------------------
 float Bullet::GetAngle()
 {
-	return this->angle;
+	return m_angle;
 }
 const DirectX::XMFLOAT3 Bullet::GetPos()
 {
-	return DirectX::XMFLOAT3(pos.x, pos.y, 0.0f);
+	return DirectX::XMFLOAT3(m_pos.x, m_pos.y, 0.0f);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -158,5 +135,5 @@ const DirectX::XMFLOAT3 Bullet::GetPos()
 //-----------------------------------------------------------------------------------------
 float Bullet::GetDistance()
 {
-	return this->distance;
+	return m_distance;
 }

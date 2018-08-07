@@ -7,17 +7,13 @@
 //  初期化
 //
 //-----------------------------------------------------------------------------------------
-CircularBarrage::CircularBarrage()
+CircularBarrage::CircularBarrage() :
+	m_isEnabled(false)
 {
 	for (int i = 0; i < BULLET_MAX; ++i)
 	{
-		bulletList[i] = new Bullet();
-		bulletList[i]->SetEnabled(true);
-		bulletList[i]->SetAngle(CAST_F(i * 10));
+		m_pBulletList[i] = new Bullet();
 	}
-	//bulletList[0]->SetEnabled(true);
-	
-	isEnabled = true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -29,7 +25,7 @@ CircularBarrage::~CircularBarrage()
 {
 	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
 	{
-		DELETE_OBJ(bulletList[i]);
+		DELETE_OBJ(m_pBulletList[i]);
 	}
 }
 
@@ -40,23 +36,18 @@ CircularBarrage::~CircularBarrage()
 //-----------------------------------------------------------------------------------------
 void CircularBarrage::Update(float angle, float distance, DirectX::XMFLOAT3* pPosList)
 {
-	if (!isEnabled)
+	if (m_isEnabled)
 	{
-		return;
-	}
-	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
-	{
-		if (bulletList[i]->isEnabled) {
-			bulletList[i]->Update();
-			bulletList[i]->SetAngle(bulletList[i]->GetAngle() + angle);
-			bulletList[i]->SetDistance(bulletList[i]->GetDistance() + distance);
-			pPosList[i] = bulletList[i]->GetPos();
+		for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
+		{
+			// 前回の角度と距離にひたすら加算していき、円形の弾が外側に動くようにする。
+			// 弾が画面外に行くと更新と描画が行われなくなる。
+			// 更新後の座標を2Dインスタンスオブジェクトの座標に設定する。
+			m_pBulletList[i]->SetAngle(m_pBulletList[i]->GetAngle() + angle);
+			m_pBulletList[i]->SetDistance(m_pBulletList[i]->GetDistance() + distance);
+			m_pBulletList[i]->Update();
+			pPosList[i] = m_pBulletList[i]->GetPos();
 		}
-		else {
-			pPosList[i] = bulletList[i]->GetPos();
-			pPosList[i].z = 1.0f;
-		}
-
 	}
 }
 
@@ -67,12 +58,24 @@ void CircularBarrage::Update(float angle, float distance, DirectX::XMFLOAT3* pPo
 //-----------------------------------------------------------------------------------------
 void CircularBarrage::Response()
 {
+	m_isEnabled = true;
 	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
 	{
-		bulletList[i]->SetEnabled(true);
-		bulletList[i]->SetAngle(i * 30.0f);
-		bulletList[i]->SetDistance(0.0f);
+		m_pBulletList[i]->SetEnabled(true);
+		m_pBulletList[i]->SetAngle(i * 30.0f);
+		m_pBulletList[i]->SetDistance(0.0f);
 	}
+}
+
+
+//-----------------------------------------------------------------------------------------
+//
+//  弾の数を取得する
+//
+//-----------------------------------------------------------------------------------------
+int CircularBarrage::GetBulletNum()
+{
+	return BULLET_MAX;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -82,5 +85,5 @@ void CircularBarrage::Response()
 //-----------------------------------------------------------------------------------------
 void CircularBarrage::SetEnabled(bool isEnabled)
 {
-	this->isEnabled = isEnabled;
+	m_isEnabled = isEnabled;
 }
