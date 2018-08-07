@@ -20,6 +20,8 @@ private:
 	float distance;
 	// 角度
 	float angle;
+
+public:
 	// 有効フラグ
 	bool isEnabled;
 	// 死亡フラグ

@@ -11,7 +11,6 @@
 //
 //-----------------------------------------------------------------------------------------
 DX_View*			g_pView		= nullptr;
-DX_Mesh*			g_pMesh		= nullptr;
 DX_2DObject* g_tex = nullptr;
 DX_2DObject* g_tex2 = nullptr;
 
@@ -20,7 +19,6 @@ SceneMain::SceneMain()
 }
 SceneMain::~SceneMain()
 {
-	DELETE_OBJ(g_pMesh);
 	DELETE_OBJ(g_tex);
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);

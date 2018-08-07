@@ -31,6 +31,7 @@
     <ClInclude Include="Source\DxLibrary\DX_Graphics.h" />
     <ClInclude Include="Source\DxLibrary\DX_Input.h" />
     <ClInclude Include="Source\DxLibrary\DX_InputDefines.h" />
+    <ClInclude Include="Source\DxLibrary\DX_Instance2DObject.h" />
     <ClInclude Include="Source\DxLibrary\DX_InstanceMesh.h" />
     <ClInclude Include="Source\DxLibrary\DX_InstanceSkinMesh.h" />
     <ClInclude Include="Source\DxLibrary\DX_Library.h" />
@@ -170,6 +171,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\ShaderFile\VS_Instance2D.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\ShaderFile\GS_Instance2D.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

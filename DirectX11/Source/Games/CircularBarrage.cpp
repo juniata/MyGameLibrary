@@ -46,10 +46,17 @@ void CircularBarrage::Update(float angle, float distance, DirectX::XMFLOAT3* pPo
 	}
 	for (int i = 0; i < CircularBarrage::BULLET_MAX; i++)
 	{
-		bulletList[i]->Update();
-		bulletList[i]->SetAngle(bulletList[i]->GetAngle() + angle);
-		bulletList[i]->SetDistance(bulletList[i]->GetDistance() + distance);
-		pPosList[i] = bulletList[i]->GetPos();
+		if (bulletList[i]->isEnabled) {
+			bulletList[i]->Update();
+			bulletList[i]->SetAngle(bulletList[i]->GetAngle() + angle);
+			bulletList[i]->SetDistance(bulletList[i]->GetDistance() + distance);
+			pPosList[i] = bulletList[i]->GetPos();
+		}
+		else {
+			pPosList[i] = bulletList[i]->GetPos();
+			pPosList[i].z = 1.0f;
+		}
+
 	}
 }
 

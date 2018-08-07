@@ -10,7 +10,6 @@
 //****************************************************************************************************
 class DX_Buffer
 {
-	DX_Buffer() = delete;
 public:
 	
 	//------------------------------------------------------------------------------
@@ -20,10 +19,7 @@ public:
 	//	@param[in]	bufferSize		バッファサイズ
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateConstantBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	bufferSize
-		);
+	static ID3D11Buffer* CreateConstantBuffer(ID3D11Device*	pDevice, const size_t bufferSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -35,11 +31,7 @@ public:
 	//	@note		作成に失敗した場合、nullptrが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateVertexBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	vertexDataSize, 
-		const void*		pVertex
-		);
+	static ID3D11Buffer* CreateVertexBuffer(ID3D11Device* pDevice, const size_t	vertexDataSize, const void* pVertex);
 
 	//------------------------------------------------------------------------------
 	//
@@ -53,12 +45,7 @@ public:
 	//				pDataはバッファにデータを書き込みたい時に使う
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateStructuredBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	elementSize,
-		const size_t	elementCount,
-		void*	pData
-		);
+	static ID3D11Buffer* CreateStructuredBuffer(ID3D11Device* pDevice, const size_t	elementSize, const size_t elementCount, void* pData);
 
 	//------------------------------------------------------------------------------
 	//
@@ -72,12 +59,7 @@ public:
 	//				pDataはバッファにデータを書き込みたい時に使う
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateByteAddressBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	dataSize,
-		void*			pData,
-		const bool		isVertex = false
-		);
+	static ID3D11Buffer* CreateByteAddressBuffer(ID3D11Device* pDevice, const size_t dataSize, void* pData, const bool isVertex = false);
 
 	//------------------------------------------------------------------------------
 	//
@@ -89,11 +71,7 @@ public:
 	//	@note		作成に失敗した場合、nullptrが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateIndexBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	indexDataSize,
-		const void*		pIndex
-		);
+	static ID3D11Buffer* CreateIndexBuffer(ID3D11Device* pDevice, const size_t indexDataSize, const void* pIndex);
 
 	//------------------------------------------------------------------------------
 	//
@@ -105,11 +83,7 @@ public:
 	//	@note		作成に失敗した場合、nullptrが返る
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer*	CreateSkinBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	skinDatasize,
-		const void*		pIndex
-		);
+	static ID3D11Buffer*	CreateSkinBuffer(ID3D11Device* pDevice, const size_t skinDatasize, const void* pIndex);
 
 	//------------------------------------------------------------------------------
 	//
@@ -118,10 +92,7 @@ public:
 	//	@param[in]	bufferDateSize	ジオメトリから出力するデータサイズ
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer*	CreateStreamOutputBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	bufferDateSize
-		);
+	static ID3D11Buffer*	CreateStreamOutputBuffer(ID3D11Device* pDevice, const size_t bufferDateSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -131,10 +102,7 @@ public:
 	//	@note		CPUで読み込むことは不可能
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer*	CPUWriteBuffer(
-		ID3D11Device*	pDevice,
-		const size_t	bufferDateSize
-		);
+	static ID3D11Buffer*	CPUWriteBuffer(ID3D11Device* pDevice, const size_t bufferDateSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -144,11 +112,7 @@ public:
 	//	@note		CPUで読み込むことは不可能
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer*	CPUReadBuffer(
-		ID3D11Device*		pDevice,
-		const size_t		bufferDateSize,
-		const size_t		strctureByteStride = 0
-		);
+	static ID3D11Buffer*	CPUReadBuffer(ID3D11Device* pDevice, const size_t bufferDateSize, const size_t strctureByteStride = 0);
 
 	//------------------------------------------------------------------------------
 	//
@@ -162,11 +126,19 @@ public:
 	//				独自に設定もできるが、描画後にデフォルトに戻す事
 	//
 	//------------------------------------------------------------------------------
-	static void Render2D(
-		ID3D11Buffer*				pVertexBuffer,
-		ID3D11ShaderResourceView*	pShaderRerousceView
-		);
+	static void Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView);
 
-	
+private:
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		バッファを作成する
+	//	@param[in]	pDevice			DXデバイス
+	//	@param[in]	pDesc			作成するバッファ設定
+	//	@param[in]	pSubResource	作成するバッファに設定するデータ
+	//	@return		バッファのポインタ　作成に失敗した場合はnullptr
+	//
+	//------------------------------------------------------------------------------
+	static ID3D11Buffer* CreateBuffer(ID3D11Device* pDevice, D3D11_BUFFER_DESC* pDesc, D3D11_SUBRESOURCE_DATA* pSubResource = nullptr);
 };
 #endif // !__DX_BUFFER_H_

@@ -1,6 +1,7 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"CircularBarrage.h"
 #include	"CircularBarrageManager.h"
+using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -12,7 +13,7 @@ CircularBarrageManager::CircularBarrageManager()
 	circle = new DX_2DObject("circle.png");
 
 	// ƒeƒXƒg•`‰æ
-	m_pInstance2d = new DX_Instance2DObject("kinu.png", CircularBarrageManager::CIRCULARBARRAGE_MAX * 12);
+	m_pInstance2d = new DX_Instance2DObject("kinu.png", CircularBarrageManager::CIRCULARBARRAGE_MAX * 12, XMFLOAT2(32.0f,32.0f));
 
 	// determine new length, padding with _Val ele
 	for (int i = 0; i < CircularBarrageManager::CIRCULARBARRAGE_MAX; i++)

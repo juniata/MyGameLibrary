@@ -161,7 +161,7 @@ void DX_Graphics::BeginRender(IDXGISwapChain* pSwapChain)
 	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	ID3D11RenderTargetView* const targets[1] = { pSystem->GetDefaultRenderTargetView() };
 	l_pDeviceContext->OMSetRenderTargets(1, targets, pSystem->GetDefaultDepthStencilView());
-	l_pDeviceContext->OMSetDepthStencilState(pRenderState->GetDefaultDepthStencilState(), 0);
+	l_pDeviceContext->OMSetDepthStencilState(pRenderState->GetDefaultDepthStencilState(), 1);
 	l_pDeviceContext->OMSetBlendState(pRenderState->GetDefaultBlendState(), l_blendFactor, 0xffffffff);
 }
 

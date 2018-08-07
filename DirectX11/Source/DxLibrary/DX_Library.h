@@ -28,10 +28,10 @@
 #define CAST_D(x) static_cast<double>(x)
 #define CAST_L(x) static_cast<long>(x)
 
-//	STL
-#include	<list>
-#include	<vector>
-#include	<map>
+typedef ID3D11ShaderResourceView	ID3D11SRV;
+typedef ID3D11RenderTargetView		ID3D11RTV;
+typedef ID3D11DepthStencilView		ID3D11DSV;
+typedef ID3D11UnorderedAccessView	ID3D11UAV;
 
 //--------------------------------------------------
 //	4’¸“_
@@ -59,6 +59,7 @@ struct tagRect{
 #include	"DxLibrary\DX_Texture.h"
 #include	"DxLibrary\DX_GameObject.h"
 #include	"DxLibrary\DX_2DObject.h"
+#include	"DxLibrary\DX_Instance2DObject.h"
 #include	"DxLibrary\DX_Mesh.h"
 #include	"DxLibrary\DX_SkinMesh.h"
 #include	"DxLibrary\DX_InstanceMesh.h"

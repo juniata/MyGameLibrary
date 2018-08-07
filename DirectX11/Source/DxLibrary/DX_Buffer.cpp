@@ -5,26 +5,14 @@
 //  定数バッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateConstantBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	bufferSize
-	)
+ID3D11Buffer* DX_Buffer::CreateConstantBuffer(ID3D11Device*	pDevice, const size_t bufferSize)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	D3D11_SUBRESOURCE_DATA	l_subResourceData = { NULL };
+	D3D11_BUFFER_DESC desc	= { NULL };
+	desc.ByteWidth			= static_cast<UINT>(bufferSize);
+	desc.Usage				= D3D11_USAGE_DEFAULT;
+	desc.BindFlags			= D3D11_BIND_CONSTANT_BUFFER;
 
-	l_bufferDesc.ByteWidth	= bufferSize;
-	l_bufferDesc.Usage		= D3D11_USAGE_DEFAULT;
-	l_bufferDesc.BindFlags	= D3D11_BIND_CONSTANT_BUFFER;
-
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc);
 }
 
 
@@ -33,30 +21,18 @@ ID3D11Buffer* DX_Buffer::CreateConstantBuffer(
 //  頂点バッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateVertexBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	vertexDataSize,
-	const void*		pVertex
-	)
+ID3D11Buffer* DX_Buffer::CreateVertexBuffer(ID3D11Device* pDevice, const size_t vertexDataSize, const void*	pVertex)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	D3D11_SUBRESOURCE_DATA	l_subResourceData = { NULL };
-
 	//	bufferの設定
-	l_bufferDesc.ByteWidth		= vertexDataSize;
-	l_bufferDesc.BindFlags		= D3D11_BIND_VERTEX_BUFFER;
+	D3D11_BUFFER_DESC		desc = { NULL };
+	desc.ByteWidth		= static_cast<UINT>(vertexDataSize);
+	desc.BindFlags		= D3D11_BIND_VERTEX_BUFFER;
 
 	//	subResourceDataの設定
-	l_subResourceData.pSysMem = pVertex;
+	D3D11_SUBRESOURCE_DATA	subResource = { NULL };
+	subResource.pSysMem = pVertex;
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-	
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc, &subResource);
 }
 
 
@@ -65,38 +41,18 @@ ID3D11Buffer* DX_Buffer::CreateVertexBuffer(
 //  構造化バッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateStructuredBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	elementSize,
-	const size_t	elementCount,
-	void*	pData
-	)
+ID3D11Buffer* DX_Buffer::CreateStructuredBuffer(ID3D11Device* pDevice, const size_t	elementSize, const size_t elementCount, void* pData)
 {
-	ID3D11Buffer*	l_pBuffer = nullptr;
+	D3D11_BUFFER_DESC desc		= { NULL };
+	desc.BindFlags				= D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	desc.ByteWidth				= static_cast<UINT>(elementSize * elementCount);
+	desc.MiscFlags				= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	desc.StructureByteStride	= static_cast<UINT>(elementSize);
 
-	D3D11_BUFFER_DESC l_bufferDesc = { NULL };
-	l_bufferDesc.BindFlags				= D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	l_bufferDesc.ByteWidth				= elementSize * elementCount;
-	l_bufferDesc.MiscFlags				= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	l_bufferDesc.StructureByteStride	= elementSize;
+	D3D11_SUBRESOURCE_DATA subResource = { NULL };
+	subResource.pSysMem = pData;
 
-	HRESULT l_hr;
-	if (pData){
-		D3D11_SUBRESOURCE_DATA l_subResourceDate = { NULL };
-		l_subResourceDate.pSysMem = pData;
-
-		l_hr = pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceDate, &l_pBuffer);
-	}
-	else{
-		l_hr = pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
-	}
-
-	//	失敗している場合は、nullを返す
-	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc, pData ? &subResource : nullptr);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -104,43 +60,18 @@ ID3D11Buffer* DX_Buffer::CreateStructuredBuffer(
 //  バイトアドレスバッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateByteAddressBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	dataSize,
-	void*			pData,
-	const bool		isVertex
-	)
+ID3D11Buffer* DX_Buffer::CreateByteAddressBuffer(ID3D11Device* pDevice, const size_t dataSize, void* pData, const bool isVertex)
 {
-	ID3D11Buffer*	l_pBuffer = nullptr;
+	D3D11_BUFFER_DESC desc		= { NULL };
+	desc.BindFlags				= isVertex ? (D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_VERTEX_BUFFER) : (D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE);
+	desc.ByteWidth				= static_cast<UINT>(dataSize);
+	desc.MiscFlags				= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+	desc.StructureByteStride	= 0;
 
-	D3D11_BUFFER_DESC l_bufferDesc = { NULL };
-	l_bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	l_bufferDesc.ByteWidth = dataSize;
-	l_bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
-	l_bufferDesc.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA subResource = { NULL };
+	subResource.pSysMem = pData;
 
-	if (isVertex){
-		l_bufferDesc.BindFlags |= D3D11_BIND_VERTEX_BUFFER;
-	}
-
-	HRESULT l_hr;
-
-	if (pData){
-		D3D11_SUBRESOURCE_DATA l_subResourceDate = { NULL };
-		l_subResourceDate.pSysMem = pData;
-
-		l_hr = pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceDate, &l_pBuffer);
-	}
-	else{
-		l_hr = pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
-	}
-
-	//	失敗している場合は、nullを返す
-	if (DX_Debug::GetInstance()->IsHresultCheck(l_hr) == false){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc, pData ? &subResource : nullptr);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -148,30 +79,18 @@ ID3D11Buffer* DX_Buffer::CreateByteAddressBuffer(
 //  インデックスバッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateIndexBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	indexDataSize,
-	const void*		pIndex
-	)
+ID3D11Buffer* DX_Buffer::CreateIndexBuffer(ID3D11Device* pDevice, const size_t indexDataSize, const void* pIndex)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	D3D11_SUBRESOURCE_DATA	l_subResourceData = { NULL };
-
 	//	bufferの設定
-	l_bufferDesc.ByteWidth = indexDataSize;
-	l_bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	D3D11_BUFFER_DESC desc	= { NULL };
+	desc.ByteWidth			= static_cast<UINT>(indexDataSize);
+	desc.BindFlags			= D3D11_BIND_INDEX_BUFFER;
 
 	//	subResourceDataの設定
-	l_subResourceData.pSysMem = pIndex;
+	D3D11_SUBRESOURCE_DATA	subResource = { NULL };
+	subResource.pSysMem = pIndex;
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc, &subResource);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -179,30 +98,18 @@ ID3D11Buffer* DX_Buffer::CreateIndexBuffer(
 //  スキンバッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer*	DX_Buffer::CreateSkinBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	skinDatasize,
-	const void*		pIndex
-	)
+ID3D11Buffer*	DX_Buffer::CreateSkinBuffer(ID3D11Device* pDevice, const size_t skinDatasize, const void* pIndex)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	D3D11_SUBRESOURCE_DATA	l_subResourceData = { NULL };
-
 	//	bufferの設定
-	l_bufferDesc.ByteWidth = skinDatasize;
-	l_bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	D3D11_BUFFER_DESC desc	= { NULL };
+	desc.ByteWidth			= static_cast<UINT>(skinDatasize);
+	desc.BindFlags			= D3D11_BIND_VERTEX_BUFFER;
 
 	//	subResourceDataの設定
-	l_subResourceData.pSysMem = pIndex;
+	D3D11_SUBRESOURCE_DATA	subResource = { NULL };
+	subResource.pSysMem = pIndex;
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, &l_subResourceData, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc, &subResource);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -210,24 +117,14 @@ ID3D11Buffer*	DX_Buffer::CreateSkinBuffer(
 //  ジオメトリストリーム出力用バッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer*	DX_Buffer::CreateStreamOutputBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	bufferDateSize
-	)
+ID3D11Buffer*	DX_Buffer::CreateStreamOutputBuffer(ID3D11Device* pDevice, const size_t	bufferDateSize)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	l_bufferDesc.ByteWidth	= bufferDateSize;
-	l_bufferDesc.Usage		= D3D11_USAGE_DEFAULT;
-	l_bufferDesc.BindFlags	= D3D11_BIND_STREAM_OUTPUT;
+	D3D11_BUFFER_DESC desc	= { NULL };
+	desc.ByteWidth			= static_cast<UINT>(bufferDateSize);
+	desc.Usage				= D3D11_USAGE_DEFAULT;
+	desc.BindFlags			= D3D11_BIND_STREAM_OUTPUT;
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc);
 }
 
 
@@ -236,25 +133,15 @@ ID3D11Buffer*	DX_Buffer::CreateStreamOutputBuffer(
 //  CPUで書き込み可能なバッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer*	DX_Buffer::CPUWriteBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	bufferDateSize
-	)
+ID3D11Buffer*	DX_Buffer::CPUWriteBuffer(ID3D11Device*	pDevice, const size_t bufferDateSize)
 {
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	l_bufferDesc.ByteWidth		= bufferDateSize;
-	l_bufferDesc.Usage			= D3D11_USAGE_DYNAMIC;
-	l_bufferDesc.BindFlags		= D3D11_BIND_SHADER_RESOURCE;
-	l_bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	D3D11_BUFFER_DESC desc	= { NULL };
+	desc.ByteWidth			= static_cast<UINT>(bufferDateSize);
+	desc.Usage				= D3D11_USAGE_DYNAMIC;
+	desc.BindFlags			= D3D11_BIND_SHADER_RESOURCE;
+	desc.CPUAccessFlags		= D3D11_CPU_ACCESS_WRITE;
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc);
 }
 
 
@@ -263,27 +150,16 @@ ID3D11Buffer*	DX_Buffer::CPUWriteBuffer(
 //  CPUで読み込み可能なバッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer*	DX_Buffer::CPUReadBuffer(
-	ID3D11Device*	pDevice,
-	const size_t	bufferDateSize,
-	const size_t	strctureByteStride
-	)
-{
-	D3D11_BUFFER_DESC		l_bufferDesc = { NULL };
-	l_bufferDesc.ByteWidth = bufferDateSize;
-	l_bufferDesc.Usage			= D3D11_USAGE_STAGING;
-	l_bufferDesc.BindFlags		= 0;
-	l_bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	l_bufferDesc.StructureByteStride = strctureByteStride;
+ID3D11Buffer*	DX_Buffer::CPUReadBuffer(ID3D11Device* pDevice, const size_t bufferDateSize, const size_t strctureByteStride)
+{	
+	D3D11_BUFFER_DESC desc		= { NULL };
+	desc.ByteWidth				= static_cast<UINT>(bufferDateSize);
+	desc.Usage					= D3D11_USAGE_STAGING;
+	desc.BindFlags				= 0;
+	desc.CPUAccessFlags			= D3D11_CPU_ACCESS_READ;
+	desc.StructureByteStride	= static_cast<UINT>(strctureByteStride);
 
-	ID3D11Buffer* l_pBuffer = nullptr;
-
-	//	bufferを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer))){
-		//SAFE_RELEASE(l_pBuffer);
-	}
-
-	return l_pBuffer;
+	return CreateBuffer(pDevice, &desc);
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -313,4 +189,21 @@ void DX_Buffer::Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* 
 	//	描画
 	l_deviceContext->Draw(4, 0);
 
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  バッファを作成する
+//
+//-----------------------------------------------------------------------------------------
+ID3D11Buffer* DX_Buffer::CreateBuffer(ID3D11Device* pDevice, D3D11_BUFFER_DESC* pDesc, D3D11_SUBRESOURCE_DATA* pSubResource)
+{
+	ID3D11Buffer* pBuffer = nullptr;
+
+	//	bufferを作成する
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(pDesc, pSubResource, &pBuffer))) {
+		SAFE_RELEASE(pBuffer);
+	}
+	
+	return pBuffer;
 }

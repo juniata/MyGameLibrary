@@ -1,11 +1,21 @@
 #include	"DX_Library.h"
 using namespace DirectX;
 
+//-----------------------------------------------------------------------------------------
+//
+//  デフォルトコンストラクタ
+//
+//-----------------------------------------------------------------------------------------
 DX_Instance2DObject::DX_Instance2DObject() : m_pVertexBuffer(nullptr), m_pShaderResourceView(nullptr), m_pPosList(nullptr), m_instanceNum(0), m_height(0),m_width(0)
 {
 }
 
-DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const size_t num) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num)
+//-----------------------------------------------------------------------------------------
+//
+//  引数付きコンストラクタ
+//
+//-----------------------------------------------------------------------------------------
+DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const size_t num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num)
 {
 	LoadTexture(pFilepath);
 	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
@@ -22,7 +32,7 @@ DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const size_t num
 		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
 	};
 
-	tagRect renderPos(0.0f, 0.0f, 32.0f, 32.0f);
+	tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
 
 	//	左の座標
 	pVertex[1].pos.x = pVertex[0].pos.x = l_centerX * renderPos.x - 1.0f;
@@ -37,23 +47,27 @@ DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const size_t num
 	pVertex[3].pos.x = pVertex[2].pos.x = l_centerX * renderPos.w - 1.0f;
 
 
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, pVertex);
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(pVertex[0]) * 4, pVertex);
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  デストラクタ
+//
+//-----------------------------------------------------------------------------------------
 DX_Instance2DObject::~DX_Instance2DObject()
 {
 	DX_TextureManager::Release(m_pShaderResourceView);
 	DELETE_OBJ_ARRAY(m_pPosList);
 	SAFE_RELEASE(m_pVertexBuffer);
 }
+
 //-----------------------------------------------------------------------------------------
 //
 //  テクスチャを読み込む
 //
 //-----------------------------------------------------------------------------------------
-void DX_Instance2DObject::LoadTexture(
-	const char* pFilepath
-)
+void DX_Instance2DObject::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
 	m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath);
@@ -70,8 +84,8 @@ void DX_Instance2DObject::LoadTexture(
 
 	D3D11_TEXTURE2D_DESC l_texDesc;
 	l_pTexture2D->GetDesc(&l_texDesc);
-	//	テクスチャサイズを取得
 
+	//	テクスチャサイズを取得
 	m_height = l_texDesc.Height;
 	m_width = l_texDesc.Width;
 
@@ -79,15 +93,33 @@ void DX_Instance2DObject::LoadTexture(
 	SAFE_RELEASE(l_pTexture2D);
 }
 
+
+//-----------------------------------------------------------------------------------------
+//
+//  座標一覧を取得する
+//
+//-----------------------------------------------------------------------------------------
 DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList()
 {
 	return m_pPosList;
 }
+
+
+//-----------------------------------------------------------------------------------------
+//
+//  指定した箇所からの座標一覧を取得する
+//
+//-----------------------------------------------------------------------------------------
 DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList(const unsigned int index)
 {
 	return &m_pPosList[index];
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  描画する
+//
+//-----------------------------------------------------------------------------------------
 void DX_Instance2DObject::Render()
 {
 	DX_System* pSystem = DX_System::GetInstance();

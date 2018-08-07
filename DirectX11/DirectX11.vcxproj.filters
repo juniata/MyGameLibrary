@@ -159,6 +159,9 @@
     <ClInclude Include="Source\Games\Player.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DxLibrary\DX_Instance2DObject.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -307,5 +310,6 @@
     <None Include="Source\ShaderFile\VS_ShadowMap.hlsl" />
     <None Include="Source\ShaderFile\VS_SkinMesh.hlsl" />
     <None Include="Source\ShaderFile\VS_Instance2D.hlsl" />
+    <None Include="Source\ShaderFile\GS_Instance2D.hlsl" />
   </ItemGroup>
 </Project>

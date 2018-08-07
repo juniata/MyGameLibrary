@@ -29,11 +29,10 @@ VS_OUT VS_Main(VS_INPUT In)
 	
 	Out.pos.x = In.pos.x + (In.instancePos.x * perScreen.x);
 	Out.pos.y = In.pos.y - (In.instancePos.y * perScreen.y);
-	Out.pos.z = In.pos.z;
+	Out.pos.z = In.pos.z + In.instancePos.z;
 	Out.pos.w = 1.0f;
 
 	Out.tex = In.tex;
-
 	return Out;
 }
 
