@@ -289,27 +289,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\ShaderFile\CS_InstanceMesh.hlsl" />
-    <None Include="Source\ShaderFile\CS_InstanceSkinMesh.hlsl" />
-    <None Include="Source\ShaderFile\CS_Particle.hlsl" />
-    <None Include="Source\ShaderFile\GS_3DObject.hlsl" />
-    <None Include="Source\ShaderFile\GS_CubeMap.hlsl" />
-    <None Include="Source\ShaderFile\GS_Particle.hlsl" />
-    <None Include="Source\ShaderFile\GS_RayPick.hlsl" />
-    <None Include="Source\ShaderFile\PS_2DObject.hlsl" />
-    <None Include="Source\ShaderFile\PS_3DObject.hlsl" />
-    <None Include="Source\ShaderFile\PS_Instancing.hlsl" />
-    <None Include="Source\ShaderFile\PS_Particle.hlsl" />
-    <None Include="Source\ShaderFile\PS_ShadowMap.hlsl" />
-    <None Include="Source\ShaderFile\VS_2DObject.hlsl" />
-    <None Include="Source\ShaderFile\VS_3DObject.hlsl" />
-    <None Include="Source\ShaderFile\VS_CubeMap.hlsl" />
-    <None Include="Source\ShaderFile\VS_InstanceMesh.hlsl" />
-    <None Include="Source\ShaderFile\VS_Instancing.hlsl" />
-    <None Include="Source\ShaderFile\VS_Particle.hlsl" />
-    <None Include="Source\ShaderFile\VS_ShadowMap.hlsl" />
-    <None Include="Source\ShaderFile\VS_SkinMesh.hlsl" />
-    <None Include="Source\ShaderFile\VS_Instance2D.hlsl" />
-    <None Include="Source\ShaderFile\GS_Instance2D.hlsl" />
+    <FxCompile Include="Source\ShaderFile\VS_2DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\PS_2DObject.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\ShaderFile\VS_Instance2D.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

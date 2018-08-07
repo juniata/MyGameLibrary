@@ -48,12 +48,13 @@ void Bullet::Move()
 //  çXêV
 //
 //-----------------------------------------------------------------------------------------
-void Bullet::Update()
+void Bullet::Update(DirectX::XMFLOAT3* pPos)
 {
 	if (m_isEnabled)
 	{
 		DeathRecord();
 		Move();
+		*pPos = XMFLOAT3(m_pos.x, m_pos.y, m_isEnabled ? 0.0f : 1.1f);
 	}
 }
 
@@ -124,10 +125,7 @@ float Bullet::GetAngle()
 {
 	return m_angle;
 }
-const DirectX::XMFLOAT3 Bullet::GetPos()
-{
-	return DirectX::XMFLOAT3(m_pos.x, m_pos.y, 0.0f);
-}
+
 //-----------------------------------------------------------------------------------------
 //
 //  ãóó£éÊìæ

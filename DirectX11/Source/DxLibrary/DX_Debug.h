@@ -20,7 +20,7 @@ enum class SET_PRINT_COLOR : int{
 {																				\
 	if (!bFlag){																\
 		char l_message[128] = { NULL };											\
-		int	 l_strlen = 0;														\
+		size_t	 l_strlen = 0;													\
 																				\
 		const char* l_pDirectory = strstr(__FILE__, "dx_library\\");			\
 		if (l_pDirectory == nullptr){											\

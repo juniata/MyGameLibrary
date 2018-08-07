@@ -94,18 +94,16 @@ void DX_ShaderManager::Initialize()
 		CreateShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 		CreateShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
 
-		//	3D描画用シェーダーを作成
-		CreateShader(DEFAULT_VERTEX_SHADER_3D);
-		CreateShader(DEFAULT_GEOMETRY_SHADER_3D);
-		CreateShader(DEFAULT_PIXEL_SHADER_3D);
-		CreateShader(DEFAULT_VERTEX_SHADER_SKIN_MESH);
+		////	3D描画用シェーダーを作成
+		//CreateShader(DEFAULT_VERTEX_SHADER_3D);
+		//CreateShader(DEFAULT_GEOMETRY_SHADER_3D);
+		//CreateShader(DEFAULT_PIXEL_SHADER_3D);
+		//CreateShader(DEFAULT_VERTEX_SHADER_SKIN_MESH);
+		//CreateShader(DEFAULT_GEOMETRY_SHADER_RAYPICK);
 
-		CreateShader(DEFAULT_GEOMETRY_SHADER_RAYPICK);
-
-		//	3Dインスタンス描画計算用シェーダーを作成
-		CreateShader(COMPUTE_SHADER_INSTANCE_3D);
-		CreateShader(VARTEX_SHADER_INSTANCE_3D);
-
+		////	3Dインスタンス描画計算用シェーダーを作成
+		//CreateShader(COMPUTE_SHADER_INSTANCE_3D);
+		//CreateShader(VARTEX_SHADER_INSTANCE_3D);
 
 		//	インプットレイアウトを作成
 		CreateInputLayout();
@@ -114,19 +112,19 @@ void DX_ShaderManager::Initialize()
 		throw pMessage;
 	}
 
-	D3D11_SO_DECLARATION_ENTRY l_declaration[] = {
-		{ 0, "OUT_POS", 0, 0, 4 ,0 },
-		{ 0, "OUT_NORMAL", 0, 0, 3, 0 }
+	//D3D11_SO_DECLARATION_ENTRY l_declaration[] = {
+	//	{ 0, "OUT_POS", 0, 0, 4 ,0 },
+	//	{ 0, "OUT_NORMAL", 0, 0, 3, 0 }
 
-	};
+	//};
 
-	unsigned int strides[] = { sizeof(DirectX::XMFLOAT4) + sizeof(DirectX::XMFLOAT3) };
-	static_cast<DX_GeometryShader*>(GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK))->CreateGeometryShaderWithStreamOutput(
-		l_declaration,
-		_countof(l_declaration),
-		strides,
-		_countof(strides)
-		);
+	//unsigned int strides[] = { sizeof(DirectX::XMFLOAT4) + sizeof(DirectX::XMFLOAT3) };
+	//static_cast<DX_GeometryShader*>(GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK))->CreateGeometryShaderWithStreamOutput(
+	//	l_declaration,
+	//	_countof(l_declaration),
+	//	strides,
+	//	_countof(strides)
+	//	);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -603,70 +601,71 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 void DX_ShaderManager::CreateInputLayout()
 {
 	//	デバイスを取得
-	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
+	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
 
 	// 2D用レイアウト
-	D3D11_INPUT_ELEMENT_DESC l_layout2D[] = {
+	D3D11_INPUT_ELEMENT_DESC layout2D[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	//	3D用レイアウト
-	D3D11_INPUT_ELEMENT_DESC l_layout3D[] = {
-		{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	
-	//	3Dスキンメッシュ用レイアウト
-	D3D11_INPUT_ELEMENT_DESC l_layoutSkinMesh[] = {
-		{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
-		{ "SKIN_INDEX", 0, DXGI_FORMAT_R32_UINT,			1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "SKIN_WEIGHT",0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	// 2Dインスタンス用レイアウト
-	D3D11_INPUT_ELEMENT_DESC l_layout2DInstance[] = {
+	// 2D用インスタンスレイアウト
+	D3D11_INPUT_ELEMENT_DESC layout2DInstance[] = {
 		{ "POSITION",		0,	DXGI_FORMAT_R32G32B32_FLOAT,	0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD",		0,	DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "INSTANCE_POS",	0,	DXGI_FORMAT_R32G32B32_FLOAT,	1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 
 	};
 
-	//	インスタンスメッシュ描画用レイアウトを作成
-	D3D11_INPUT_ELEMENT_DESC l_insntanceMesh[] = {
-		{ "POSITION",		0,	DXGI_FORMAT_R32G32B32_FLOAT,	0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",		0,	DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",			0,	DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",			0,	DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	////	3D用レイアウト
+	//D3D11_INPUT_ELEMENT_DESC l_layout3D[] = {
+	//	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//};
+	//
+	////	3Dスキンメッシュ用レイアウト
+	//D3D11_INPUT_ELEMENT_DESC l_layoutSkinMesh[] = {
+	//	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-		{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD_MAT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD_MAT", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD_MAT", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-	};
+	//	{ "SKIN_INDEX", 0, DXGI_FORMAT_R32_UINT,			1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "SKIN_WEIGHT",0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//};
+
+
+	////	インスタンスメッシュ描画用レイアウトを作成
+	//D3D11_INPUT_ELEMENT_DESC l_insntanceMesh[] = {
+	//	{ "POSITION",		0,	DXGI_FORMAT_R32G32B32_FLOAT,	0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "TEXCOORD",		0,	DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "NORMAL",			0,	DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	//	{ "COLOR",			0,	DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+	//	{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//	{ "WORLD_MAT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//	{ "WORLD_MAT", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//	{ "WORLD_MAT", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	//};
 
 	
 	try {
 		//	2D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout2D, _countof(l_layout2D), GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER)->GetByteCord(), &m_pInputLayout2D);
-
-		//	3D用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout3D, _countof(l_layout3D), GetShader(DEFAULT_VERTEX_SHADER_3D)->GetByteCord(), &m_pInputLayout3D);
+		CreateInputLayout(pDevice, layout2D, _countof(layout2D), GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER)->GetByteCord(), &m_pInputLayout2D);
 
 		// 2Dインスタンスレイアウトを作成
-		CreateInputLayout(l_pDevice, l_layout2DInstance, _countof(l_layout2DInstance), GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER)->GetByteCord(), &m_pInputLayoutInstance2D);
+		CreateInputLayout(pDevice, layout2DInstance, _countof(layout2DInstance), GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER)->GetByteCord(), &m_pInputLayoutInstance2D);
 
-		//	スキンメッシュ用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH)->GetByteCord(), &m_pInputLayoutInstanceMesh);
+		////	3D用レイアウトを作成
+		//CreateInputLayout(pDevice, l_layout3D, _countof(l_layout3D), GetShader(DEFAULT_VERTEX_SHADER_3D)->GetByteCord(), &m_pInputLayout3D);
 
-		//	インスタンススキンメッシュ描画用レイアウトを作成
-		CreateInputLayout(l_pDevice, l_insntanceMesh, _countof(l_insntanceMesh), GetShader(VARTEX_SHADER_INSTANCE_3D)->GetByteCord(), &m_pInputLayoutSkinMesh);
+		////	スキンメッシュ用レイアウトを作成
+		//CreateInputLayout(pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH)->GetByteCord(), &m_pInputLayoutInstanceMesh);
+
+		////	インスタンススキンメッシュ描画用レイアウトを作成
+		//CreateInputLayout(pDevice, l_insntanceMesh, _countof(l_insntanceMesh), GetShader(VARTEX_SHADER_INSTANCE_3D)->GetByteCord(), &m_pInputLayoutSkinMesh);
 	}
 	catch (char* pMessage){
 		throw pMessage;

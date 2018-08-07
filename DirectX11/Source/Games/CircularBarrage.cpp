@@ -45,8 +45,7 @@ void CircularBarrage::Update(float angle, float distance, DirectX::XMFLOAT3* pPo
 			// 更新後の座標を2Dインスタンスオブジェクトの座標に設定する。
 			m_pBulletList[i]->SetAngle(m_pBulletList[i]->GetAngle() + angle);
 			m_pBulletList[i]->SetDistance(m_pBulletList[i]->GetDistance() + distance);
-			m_pBulletList[i]->Update();
-			pPosList[i] = m_pBulletList[i]->GetPos();
+			m_pBulletList[i]->Update(&pPosList[i]);
 		}
 	}
 }
