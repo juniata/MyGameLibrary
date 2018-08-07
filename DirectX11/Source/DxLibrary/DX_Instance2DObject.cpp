@@ -158,7 +158,7 @@ void DX_Instance2DObject::Render()
 	DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
 	
 	// インスタンス描画を行う
-	pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
+	pDeviceContext->DrawInstanced(4, static_cast<UINT>(m_instanceNum), 0, 0);
 
 	//	シェーダー利用を終了
 	pVertexShader->End(pDeviceContext);

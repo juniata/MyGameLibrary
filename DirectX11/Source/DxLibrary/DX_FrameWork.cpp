@@ -321,7 +321,7 @@ void DX_FrameWork::FPSUpdate()
 	}
 
 	m_fps.deltaTime = (1.0f / CAST_F(m_fps.fps));
-	printf_s("FPS[%d] deltaTime[%f]\n", m_fps.fps, m_fps.deltaTime);
+	DX_Debug::GetInstance()->Printf("FPS[%d] deltaTime[%f]\n", m_fps.fps, m_fps.deltaTime);
 }
 
 //-----------------------------------------------------------------------------------------

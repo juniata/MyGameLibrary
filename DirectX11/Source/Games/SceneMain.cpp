@@ -77,6 +77,6 @@ void SceneMain::Render()
 
 	player->Render();
 	
-	g_tex->Render(tagRect(0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight()));
+	g_tex->Render(tagRect(0, 0, CAST_F(DX_System::GetWindowWidth()), CAST_F(DX_System::GetWindowHeight())));
 	circularBarrageManager->Render();
 }

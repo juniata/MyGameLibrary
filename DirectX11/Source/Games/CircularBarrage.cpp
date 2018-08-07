@@ -13,7 +13,7 @@ CircularBarrage::CircularBarrage()
 	{
 		bulletList[i] = new Bullet();
 		bulletList[i]->SetEnabled(true);
-		bulletList[i]->SetAngle(i * 10);
+		bulletList[i]->SetAngle(CAST_F(i * 10));
 	}
 	//bulletList[0]->SetEnabled(true);
 	

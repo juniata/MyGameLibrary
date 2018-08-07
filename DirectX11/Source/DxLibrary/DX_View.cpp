@@ -116,8 +116,8 @@ void DX_View::SetViewPort()
 	DX_System::GetInstance()->GetDepthStencilBuffer()->GetDesc(&desc);
 	m_viewPort.TopLeftX = 0;			//	ビューポート領域の左上X座標
 	m_viewPort.TopLeftY = 0;			//	ビューポート領域の左上Y座標				
-	m_viewPort.Width	= desc.Width;	//	ビューポート領域の幅
-	m_viewPort.Height	= desc.Height;	//	ビューポート領域の高さ
+	m_viewPort.Width	= static_cast<FLOAT>(desc.Width);	//	ビューポート領域の幅
+	m_viewPort.Height	= static_cast<FLOAT>(desc.Height);	//	ビューポート領域の高さ
 	m_viewPort.MinDepth = 0.0f;			//	ビューポート領域の深度値の最小値
 	m_viewPort.MaxDepth = 1.0f;			//	ビューポート領域の深度値の最大値
 }
