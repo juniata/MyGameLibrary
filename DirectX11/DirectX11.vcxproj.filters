@@ -28,6 +28,9 @@
     <Filter Include="ソース ファイル\Games">
       <UniqueIdentifier>{64b4b67c-dccf-4333-a684-9112eed61e01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Games\Barrage">
+      <UniqueIdentifier>{d7ba4b92-cebb-42a7-a089-4585dedcc676}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DxLibrary\DX_Library.h">
@@ -162,6 +165,15 @@
     <ClInclude Include="Source\DxLibrary\DX_Instance2DObject.h">
       <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\BaseBarrage.h">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\BarrageLaser.h">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\BarrageManager.h">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -287,16 +299,19 @@
     <ClCompile Include="Source\DxLibrary\DX_Instance2DObject.cpp">
       <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Games\BaseBarrage.cpp">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\BarrageLaser.cpp">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\BarrageManager.cpp">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Source\ShaderFile\VS_2DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\PS_2DObject.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Source\ShaderFile\VS_Instance2D.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
+    <None Include="Source\ShaderFile\PS_2DObject.hlsl" />
+    <None Include="Source\ShaderFile\VS_2DObject.hlsl" />
+    <None Include="Source\ShaderFile\VS_Instance2D.hlsl" />
   </ItemGroup>
 </Project>

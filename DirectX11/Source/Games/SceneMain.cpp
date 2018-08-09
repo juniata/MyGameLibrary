@@ -75,8 +75,9 @@ void SceneMain::Render()
 	g_pView->Active();
 	g_pView->Clear();
 
-	player->Render();
-	
 	g_tex->Render(tagRect(0, 0, CAST_F(DX_System::GetWindowWidth()), CAST_F(DX_System::GetWindowHeight())));
 	circularBarrageManager->Render();
+
+	player->Render();
+
 }
