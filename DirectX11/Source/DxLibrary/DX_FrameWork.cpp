@@ -4,6 +4,15 @@
 #include	<mmsystem.h>
 #pragma comment(lib,"winmm.lib")
 
+// メモリリークチェック
+#if defined(DEBUG) || defined(_DEBUG)
+	#define _CRTDBG_MAP_ALLOC
+	#include <cstdlib>
+	#include <crtdbg.h>
+	//#define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
+	//#define new DEBUG_CLIENTBLOCK
+
+#endif
 
 //-----------------------------------------------------------------------------------------
 //
@@ -99,9 +108,13 @@ bool DX_FrameWork::Initialize()
 //-----------------------------------------------------------------------------------------
 void DX_FrameWork::Run()
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	// メモリリークチェック
+	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
+#endif 
+
 	MSG l_msg = { NULL };
-
-
+	
 	//	スワップチェインを取得
 	IDXGISwapChain* l_pSwapChain = DX_System::GetInstance()->GetSwapChain();
 
@@ -350,9 +363,10 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 	l_DX_FrameWork.Run();
 	
 	DX_SceneManager::Release();
+
 	//	DX_Libraryを解放する
 	DX_System::Release();
-	DX_Debug::GetInstance()->ReportLiveDeviceObjects("DX_System::Release");
+
 
 	//	デバッグ時のみコンソール画面を閉じる
 	DEBUG_CLOSE_CONSOLE

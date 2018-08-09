@@ -33,6 +33,7 @@ CircularBarrageManager::~CircularBarrageManager()
 		DELETE_OBJ(m_pCircularBarrageList[i]);
 	}
 	DELETE_OBJ(m_pCircle);
+	DELETE_OBJ(m_pInstance2d);
 }
 
 //-----------------------------------------------------------------------------------------

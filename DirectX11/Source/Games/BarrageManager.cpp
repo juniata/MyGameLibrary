@@ -30,7 +30,7 @@ BarrageManager::~BarrageManager()
 	{
 		DELETE_OBJ(m_pBarrageList[i]);
 	}
-	DELETE_OBJ_ARRAY(*m_pBarrageList);
+	DELETE_OBJ_ARRAY(m_pBarrageList);
 }
 
 //-----------------------------------------------------------------------------------------

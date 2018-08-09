@@ -55,6 +55,9 @@ DX_System::~DX_System()
 	SAFE_RELEASE(m_pDeviceContext);
 	SAFE_RELEASE(m_pDevice);
 
+	// DX_Debug‚ð‰ð•ú
+	DX_Debug::GetInstance()->ReportLiveDeviceObjects("DX_System::Release");
+	DX_Debug::Release();
 
 	//	OGGƒtƒ@ƒCƒ‹‚ð‰ð•ú
 	//	OGGManager::Release();
