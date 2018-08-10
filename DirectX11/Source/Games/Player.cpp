@@ -1,5 +1,6 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"BarrageLaser.h"
+#include	"BarrageBeam.h"
 #include	"BarrageManager.h"
 #include	"Player.h"
 using namespace DirectX;
@@ -20,8 +21,12 @@ Player::Player()
 	// ステータスを設定する
 	m_status.life = INIT_LIFE;
 
-	m_pBarrageManager = new BarrageManager(1);
+	m_pBarrageManager = new BarrageManager(2);
 	m_pBarrageManager->AddBarrage(new BarrageLaser("kinu.png", 11, XMFLOAT2(32.0f, 32.0f)));
+	m_pBarrageManager->AddBarrage(new BarrageBeam("kinu.png", 11, XMFLOAT2(32.0f, 32.0f)));
+
+	// 2つ目の弾幕クラスのインスタンスを有効化する
+	m_pBarrageManager->GetBarrage(0)->Enable();
 }
 
 //-----------------------------------------------------------------------------------------

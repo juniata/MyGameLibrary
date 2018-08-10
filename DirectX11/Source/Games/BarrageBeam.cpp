@@ -1,5 +1,5 @@
 #include "DxLibrary\DX_Library.h"
-#include "BarrageLaser.h"
+#include "BarrageBeam.h"
 using namespace DirectX;
 
 //------------------------------------------------------------------------------
@@ -7,7 +7,7 @@ using namespace DirectX;
 //  @brief		引数付きコンストラクタ
 //
 //------------------------------------------------------------------------------
-BarrageLaser::BarrageLaser(const char* pFilepath, const size_t instanceNum, const XMFLOAT2& renderSize) : 
+BarrageBeam::BarrageBeam(const char* pFilepath, const size_t instanceNum, const XMFLOAT2& renderSize) :
 	BaseBarrage(pFilepath, instanceNum, renderSize)
 {
 	for (size_t i = 0; i < instanceNum; ++i)
@@ -24,8 +24,9 @@ BarrageLaser::BarrageLaser(const char* pFilepath, const size_t instanceNum, cons
 //  @brief		更新
 //
 //------------------------------------------------------------------------------
-void BarrageLaser::DoUpdate()
+void BarrageBeam::DoUpdate()
 {
+	
 }
 
 //------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ void BarrageLaser::DoUpdate()
 //  @brief		描画
 //
 //------------------------------------------------------------------------------
-void BarrageLaser::DoRender()
+void BarrageBeam::DoRender()
 {
 	m_pInstance2D->Render();
 }

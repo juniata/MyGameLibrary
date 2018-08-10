@@ -52,6 +52,7 @@
     <ClInclude Include="Source\DxLibrary\DX_VertexShader.h" />
     <ClInclude Include="Source\DxLibrary\DX_View.h" />
     <ClInclude Include="Source\DxLibrary\DX_XInput.h" />
+    <ClInclude Include="Source\Games\BarrageBeam.h" />
     <ClInclude Include="Source\Games\BarrageLaser.h" />
     <ClInclude Include="Source\Games\BarrageManager.h" />
     <ClInclude Include="Source\Games\BaseBarrage.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="Source\DxLibrary\DX_VertexShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
+    <ClCompile Include="Source\Games\BarrageBeam.cpp" />
     <ClCompile Include="Source\Games\BarrageLaser.cpp" />
     <ClCompile Include="Source\Games\BarrageManager.cpp" />
     <ClCompile Include="Source\Games\BaseBarrage.cpp" />

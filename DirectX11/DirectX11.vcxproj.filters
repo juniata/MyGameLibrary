@@ -174,6 +174,9 @@
     <ClInclude Include="Source\Games\BarrageManager.h">
       <Filter>ソース ファイル\Games\Barrage</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\BarrageBeam.h">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -306,6 +309,9 @@
       <Filter>ソース ファイル\Games\Barrage</Filter>
     </ClCompile>
     <ClCompile Include="Source\Games\BarrageManager.cpp">
+      <Filter>ソース ファイル\Games\Barrage</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\BarrageBeam.cpp">
       <Filter>ソース ファイル\Games\Barrage</Filter>
     </ClCompile>
   </ItemGroup>

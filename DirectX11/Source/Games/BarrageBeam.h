@@ -1,13 +1,13 @@
-#ifndef __BARRAGE_LASER_H_
-#define __BARRAGE_LASER_H_
+#ifndef __BARRAGE_BEAM_H_
+#define __BARRAGE_BEAM_H_
 
 #include "BaseBarrage.h"
 //****************************************************************************************************
 //
-//	弾幕　レーザー
+//	弾幕　ビーム
 //
 //****************************************************************************************************
-class BarrageLaser : public BaseBarrage
+class BarrageBeam : public BaseBarrage
 {
 public:
 	//------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ public:
 	//	@param[in]	renderSize	描画サイズ
 	//
 	//------------------------------------------------------------------------------
-	BarrageLaser(const char* pFilepath, const size_t instanceNum, const DirectX::XMFLOAT2& renderSize);
+	BarrageBeam(const char* pFilepath, const size_t instanceNum, const DirectX::XMFLOAT2& renderSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -39,7 +39,7 @@ private:
 	//  @brief		デフォルトコンストラクタ
 	//
 	//------------------------------------------------------------------------------
-	BarrageLaser() {};
+	BarrageBeam() {};
 };
 
-#endif // !__BARRAGE_LASER_H_
+#endif // !__BARRAGE_BEAM_H_
