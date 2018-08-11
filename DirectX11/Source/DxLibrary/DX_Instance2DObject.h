@@ -19,7 +19,7 @@ public:
 	//	@param[in]	renderSize	描画するサイズ
 	//
 	//------------------------------------------------------------------------------
-	DX_Instance2DObject(const char* pFilepath, const size_t num, const DirectX::XMFLOAT2& renderSize);
+	DX_Instance2DObject(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -92,7 +92,7 @@ private:
 	size_t m_height;
 
 	// インスタンス数
-	size_t m_instanceNum;
+	UINT m_instanceNum;
 
 	// インスタンスの座標リスト
 	DirectX::XMFLOAT3* m_pPosList;

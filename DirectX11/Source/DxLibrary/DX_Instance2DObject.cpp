@@ -6,7 +6,7 @@ using namespace DirectX;
 //  引数付きコンストラクタ
 //
 //-----------------------------------------------------------------------------------------
-DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const size_t num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num)
+DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num)
 {
 	LoadTexture(pFilepath);
 	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
@@ -149,7 +149,7 @@ void DX_Instance2DObject::Render()
 	DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
 	
 	// インスタンス描画を行う
-	pDeviceContext->DrawInstanced(4, static_cast<UINT>(m_instanceNum), 0, 0);
+	pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
 
 	//	シェーダー利用を終了
 	pVertexShader->End(pDeviceContext);
