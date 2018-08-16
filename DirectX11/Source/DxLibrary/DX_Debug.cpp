@@ -118,7 +118,21 @@ bool DX_Debug::IsHresultCheck(HRESULT hr)
 	return true;
 }
 
-
+//-----------------------------------------------------------------------------------------
+//
+//	戻り値をチェックする
+//
+//-----------------------------------------------------------------------------------------
+void DX_Debug::ThrowIfFailed(HRESULT hr, const char* pErrMsg)
+{
+	if (FAILED(hr)) {
+		LPVOID lpMsgBuf = nullptr;
+		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&lpMsgBuf, 0, NULL);
+		MessageBox(NULL, (LPTSTR)&lpMsgBuf, pErrMsg, MB_OK);
+		throw;
+	}
+}
 
 //-----------------------------------------------------------------------------------------
 //

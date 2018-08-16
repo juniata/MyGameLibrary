@@ -30,7 +30,7 @@ DX_ComputeShader::~DX_ComputeShader()
 //  シェーダーを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ComputeShader::CreateShader(const char* pFilepath)
+void DX_ComputeShader::CreateShader(ID3D11Device* pDevice, const char* pFilepath)
 {
 	try{
 
@@ -38,7 +38,7 @@ void DX_ComputeShader::CreateShader(const char* pFilepath)
 		CompileFromFile(pFilepath, CS_ENTRY_POINT, CS_VERSION);
 
 		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
+		CreateShaderObject(pDevice);
 	}
 	catch (char* pMessage){
 		throw pMessage;
@@ -70,23 +70,15 @@ void DX_ComputeShader::End(ID3D11DeviceContext* pDeviceContext)
 //  シェーダーオブジェクトを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ComputeShader::CreateShaderObject()
+void DX_ComputeShader::CreateShaderObject(ID3D11Device* pDevice)
 {
 	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
+	CreateClassLinkage(pDevice);
 
 	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateComputeShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_pComputeShader
-		);
+	HRESULT hr = pDevice->CreateComputeShader(m_pBytecord->GetBufferPointer(), m_pBytecord->GetBufferSize(), m_pClassLinkage, &m_pComputeShader);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
-		throw "ComputeShaderオブジェクトの作成に失敗しました";
-	}
-
+	DX_Debug::GetInstance()->ThrowIfFailed(hr, "ComputeShaderオブジェクトの作成に失敗しました");
 }
 

@@ -42,12 +42,11 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーを作成する
+	//	@param[in]	pDevice		DirectX11のデバイス
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	virtual void CreateShader(
-		const char* pFilepath
-		) = 0;
+	virtual void CreateShader(ID3D11Device* pDevice, const char* pFilepath) = 0;
 
 	//------------------------------------------------------------------------------
 	//
@@ -56,10 +55,7 @@ public:
 	//	@param[in]	classInstanceCount	クラスインスタンスの数
 	//
 	//------------------------------------------------------------------------------
-	virtual void Begin(
-		ID3D11DeviceContext*	pDeviceContext,
-		const unsigned int classInstanceCount = 0
-		) = 0;
+	virtual void Begin(ID3D11DeviceContext*	pDeviceContext, const unsigned int classInstanceCount = 0) = 0;
 
 	//------------------------------------------------------------------------------
 	//
@@ -67,9 +63,7 @@ public:
 	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
 	//
 	//------------------------------------------------------------------------------
-	virtual void End(
-		ID3D11DeviceContext*	pDeviceContext
-		) = 0;
+	virtual void End(ID3D11DeviceContext*	pDeviceContext) = 0;
 
 	//------------------------------------------------------------------------------
 	//
@@ -93,25 +87,23 @@ protected:
 	//	@param[in]	pShaderVersion	シェーダーのバージョン
 	//
 	//------------------------------------------------------------------------------
-	void CompileFromFile(
-		const char* pFilepath, 
-		const char* pEntryPoint,
-		const char* pShaderVersion
-		);
+	void CompileFromFile(const char* pFilepath, const char* pEntryPoint, const char* pShaderVersion);
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーオブジェクトを作成する
+	//	@param[in]	pDevice	DirectX11のデバイス
 	//
 	//------------------------------------------------------------------------------
-	virtual void CreateShaderObject() = 0;
+	virtual void CreateShaderObject(ID3D11Device* pDevice) = 0;
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		動的シェーダーを有効にするリンクを作成
+	//	@param[in]	pDevice	DirectX11のデバイス
 	//
 	//------------------------------------------------------------------------------
-	void CreateClassLinkage();
+	void CreateClassLinkage(ID3D11Device* pDevice);
 };
 
 //	各シェーダーヘッダーをインクルード

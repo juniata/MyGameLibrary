@@ -1,36 +1,53 @@
 #include	"DX_Library.h"
+#include	"Games\SceneMain.h"
 
 //-----------------------------------------------------------------------------------------
 //
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_Scene*	DX_SceneManager::m_pCurScene = nullptr;
-DX_Scene*	DX_SceneManager::m_pNextScene = nullptr;
+DX_SceneManager*	DX_SceneManager::m_pInstance = nullptr;
 
-
+DX_SceneManager::DX_SceneManager() :
+	m_pCurScene(nullptr),
+	m_pNextScene(nullptr)
+{
+}
 //-----------------------------------------------------------------------------------------
 //
 //	メンバー変数を初期化する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Initialize(DX_Scene*	pCurScene)
+void DX_SceneManager::Initialize(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	//	現在のシーンを設定
-	m_pCurScene = pCurScene;
+	m_pCurScene = new SceneMain();
+	m_pCurScene->Initialize();
 }
-void DX_SceneManager::Release()
+DX_SceneManager::~DX_SceneManager()
 {
 	DELETE_OBJ(m_pCurScene);
 	DELETE_OBJ(m_pNextScene);
-	
 }
-//-----------------------------------------------------------------------------------------
-//
-//	現在のシーンを取得する
-//
-//-----------------------------------------------------------------------------------------
-DX_Scene* DX_SceneManager::GetCurScene()
+DX_SceneManager* DX_SceneManager::GetInstance()
 {
-	return m_pCurScene;
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_SceneManager();
+	}
+
+	return m_pInstance;
+}
+
+
+void DX_SceneManager::Release()
+{
+	DELETE_OBJ(m_pInstance);
+}
+
+void DX_SceneManager::Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	m_pCurScene->Update(pSystem, pDevice, pContext);
+}
+void DX_SceneManager::Render(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	m_pCurScene->Render(pSystem, pDevice, pContext);
 }

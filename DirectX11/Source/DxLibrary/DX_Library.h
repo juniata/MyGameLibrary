@@ -43,8 +43,6 @@ struct tagRect{
 	{}
 };
 
-#include	"DxLibrary\DX_Scene.h"
-#include	"DxLibrary\DX_SceneManager.h"
 #include	"DxLibrary\DX_System.h"
 #include	"DxLibrary\DX_FrameWork.h"
 #include	"DxLibrary\DX_Debug.h"
@@ -70,6 +68,8 @@ struct tagRect{
 #include	"DxLibrary\DX_XInput.h"
 #include	"DxLibrary\DX_Particle.h"
 #include	"DxLibrary\DX_Font.h"
+#include	"DxLibrary\DX_Scene.h"
+#include	"DxLibrary\DX_SceneManager.h"
 
 
 

@@ -71,12 +71,7 @@ public:
 	//	@param[in]	bStencilClear	trueならステンシルをクリアする(0でクリア)
 	//
 	//------------------------------------------------------------------------------
-	static void Clear(
-		const bool bZClear			= true,
-		const bool bStencilClear	= true,
-		ID3D11RenderTargetView* pRtv = nullptr,
-		ID3D11DepthStencilView* pDsv = nullptr
-		);
+	static void Clear(ID3D11DeviceContext* pContext, const bool bZClear = true, const bool bStencilClear	= true, ID3D11RenderTargetView* pRtv = nullptr, ID3D11DepthStencilView* pDsv = nullptr);
 
 	//------------------------------------------------------------------------------
 	//

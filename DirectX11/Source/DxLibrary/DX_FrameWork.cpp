@@ -115,12 +115,19 @@ void DX_FrameWork::Run()
 
 	MSG l_msg = { NULL };
 	
+	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11Device* pDevice = pSystem->GetDevice();
+	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+
 	//	スワップチェインを取得
-	IDXGISwapChain* l_pSwapChain = DX_System::GetInstance()->GetSwapChain();
+	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
+
+	// DX_Graphicsを取得
+	DX_Graphics* pGraphics = DX_Graphics::GetInstance();
 
 	//	現在のシーンを取得
-	DX_Scene*	l_pScene = DX_SceneManager::GetCurScene();
-	l_pScene->Initialize();
+	DX_SceneManager* pScenemanager = DX_SceneManager::GetInstance();
+	pScenemanager->Initialize(pSystem, pDevice, pContext);
 
 	//	ループ処理
 	while (l_msg.message != WM_QUIT){
@@ -131,23 +138,23 @@ void DX_FrameWork::Run()
 		else{
 			//	FPSを更新
 			FPSUpdate();
-		
+			
 			//	全キー更新
 			DX_Input::Update(l_msg.message, l_msg.wParam);
 
-			//	シーンの更新
-			l_pScene->Update();
+			// シーンの更新
+			pScenemanager->Update(pSystem, pDevice, pContext);
 
 			//	描画開始
-			DX_Graphics::BeginRender(l_pSwapChain);
+			pGraphics->BeginRender(pContext, pSwapChain);
 
-			l_pScene->Render();
+			// シーンの描画
+			pScenemanager->Render(pSystem, pDevice, pContext);
 
 			//	描画終了
-			DX_Graphics::EndRender(l_pSwapChain);
+			pGraphics->EndRender(pSwapChain);
 		}
 	}
-	
 }
 
 //------------------------------------------------------------------------------
@@ -355,9 +362,6 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 
 	//	DirectXの初期化
 	if (!DX_System::GetInstance()->InitD3D(l_DX_FrameWork.GetHwnd())){ return FALSE; }
-
-	//	シーンを登録する
-	DX_SceneManager::Initialize(new SceneMain());
 
 	//	シーンを走らせる
 	l_DX_FrameWork.Run();

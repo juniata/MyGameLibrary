@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------------------------
 DX_RenderState* DX_RenderState::m_pInstance = nullptr;
 
-
 //-----------------------------------------------------------------------------------------
 //
 //  初期化
@@ -62,75 +61,88 @@ void DX_RenderState::Release()
 //  初期描画の設定を行う
 //
 //-----------------------------------------------------------------------------------------
-void DX_RenderState::Initialize()
+void DX_RenderState::Initialize(ID3D11Device* pDevice)
 {
 	PROFILE("DX_RenderState::Initialize()");
 
-	//	デバイスを取得
-	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
+	DX_RenderState* pRenderState = GetInstance();
 
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
+	//	ラスタライザーステートを作成
+	pRenderState->CreateRasterizerState(pDevice);
 
-	try{
-		//	ラスタライザーステートを作成
-		CreateRasterizerState(l_pDevice);
+	//	ブレンドステートを作成
+	pRenderState->CreateBlendState(pDevice);
 
-		//	ブレンドステートを作成
-		CreateBlendState(l_pDevice);
-
-		//	深度･ステンシルステートを作成
-		CreateDepthStencilState(l_pDevice);
+	//	深度･ステンシルステートを作成
+	pRenderState->CreateDepthStencilState(pDevice);
 		
-		//	サンプラーステートを作成
-		CreateSamplerState(l_pDevice);
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
+	//	サンプラーステートを作成
+	pRenderState->CreateSamplerState(pDevice);
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  ラスタライザステートを作成する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11RasterizerState* DX_RenderState::GetDefaultRasterizerState() const
 {
 	return m_pRasterizerState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  ブレンドステートを作成する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11BlendState* DX_RenderState::GetDefaultBlendState() const
 {
 	return m_pBlendState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  深度･ステンシルステートを作成する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11DepthStencilState* DX_RenderState::GetDefaultDepthStencilState() const
 {
 	return m_pDepthStencilState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  サンプラーステートを作成する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState() const
 {
 	return m_pSamplerState;
 }
+
 //-----------------------------------------------------------------------------------------
 //
 //  ラスタライザーステートを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_RenderState::CreateRasterizerState(ID3D11Device*	pDevice)
+void DX_RenderState::CreateRasterizerState(ID3D11Device* pDevice)
 {
-	D3D11_RASTERIZER_DESC l_rsDesc;
-	ZeroMemory(&l_rsDesc, sizeof(l_rsDesc));
+	D3D11_RASTERIZER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
 
-	l_rsDesc.FillMode				= D3D11_FILL_MODE::D3D11_FILL_SOLID;	//	普通に描画
-	l_rsDesc.CullMode				= D3D11_CULL_MODE::D3D11_CULL_BACK;		//	裏面非描画
-	l_rsDesc.FrontCounterClockwise	= FALSE;	//	時計周りが表面
-	l_rsDesc.DepthBias				= 0;		//	深度バイアス｢0｣
-	l_rsDesc.DepthBiasClamp			= 0;
-	l_rsDesc.SlopeScaledDepthBias	= 0;
-	l_rsDesc.DepthClipEnable		= TRUE;		//	深度クリッピング有り
-	l_rsDesc.ScissorEnable			= FALSE;	//	シザー矩形無し
-	l_rsDesc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
-	l_rsDesc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
+	desc.FillMode				= D3D11_FILL_MODE::D3D11_FILL_SOLID;	//	普通に描画
+	desc.CullMode				= D3D11_CULL_MODE::D3D11_CULL_BACK;		//	裏面非描画
+	desc.FrontCounterClockwise	= FALSE;	//	時計周りが表面
+	desc.DepthBias				= 0;		//	深度バイアス｢0｣
+	desc.DepthBiasClamp			= 0;
+	desc.SlopeScaledDepthBias	= 0;
+	desc.DepthClipEnable		= TRUE;		//	深度クリッピング有り
+	desc.ScissorEnable			= FALSE;	//	シザー矩形無し
+	desc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
+	desc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
 
-												//	rasterizer stateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &m_pRasterizerState))){
-		throw "ID3D11Device::CreateRasterizerState() : failed";
-	}
+	//	rasterizer stateを作成する
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateRasterizerState(&desc, &m_pRasterizerState), "ID3D11Device::CreateRasterizerState() : failed");
 }
 
 
@@ -142,13 +154,13 @@ void DX_RenderState::CreateRasterizerState(ID3D11Device*	pDevice)
 //-----------------------------------------------------------------------------------------
 void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 {
-	D3D11_BLEND_DESC l_blendDesc;
-	ZeroMemory(&l_blendDesc, sizeof(l_blendDesc));
+	D3D11_BLEND_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
 
-	l_blendDesc.AlphaToCoverageEnable		= TRUE;
-	l_blendDesc.IndependentBlendEnable		= FALSE; // RenderTarget0のみblende設定を使用する
-	l_blendDesc.RenderTarget[0].BlendEnable = FALSE;
-	l_blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 全部の色を書き込む
+	desc.AlphaToCoverageEnable		= TRUE;
+	desc.IndependentBlendEnable		= FALSE; // RenderTarget0のみblende設定を使用する
+	desc.RenderTarget[0].BlendEnable = FALSE;
+	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL; // 全部の色を書き込む
 	
 	////	どうブレンドするか
 	//l_blendDesc.RenderTarget[0].BlendOp			= D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
@@ -165,9 +177,7 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 
 
 	//	blendStateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBlendState(&l_blendDesc, &m_pBlendState))){
-		throw "ID3D11Device::CreateBlendState() : failed";
-	}
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateBlendState(&desc, &m_pBlendState), "ID3D11Device::CreateBlendState() : failed");
 }
 
 
@@ -178,21 +188,19 @@ void DX_RenderState::CreateBlendState(ID3D11Device* pDevice)
 //-----------------------------------------------------------------------------------------
 void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 {
-	D3D11_DEPTH_STENCIL_DESC l_dsDesc;
-	ZeroMemory(&l_dsDesc, sizeof(l_dsDesc));
+	D3D11_DEPTH_STENCIL_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
 
 	//	depth test parameters
-	l_dsDesc.DepthEnable	= TRUE;
-	l_dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-	l_dsDesc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL; // z値が手前で描画されたものより小さい場合、描画します
+	desc.DepthEnable	= TRUE;
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
+	desc.DepthFunc		= D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS_EQUAL; // z値が手前で描画されたものより小さい場合、描画します
 
 	// Stencil test parameters
-	l_dsDesc.StencilEnable = FALSE;
+	desc.StencilEnable = FALSE;
 	
 	//	depth stencil stateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateDepthStencilState(&l_dsDesc, &m_pDepthStencilState))){
-		throw "ID3D11Device::CreateDepthStencilState() : failed";
-	}
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateDepthStencilState(&desc, &m_pDepthStencilState), "ID3D11Device::CreateDepthStencilState() : failed");
 }
 
 
@@ -203,24 +211,22 @@ void DX_RenderState::CreateDepthStencilState(ID3D11Device* pDevice)
 //-----------------------------------------------------------------------------------------
 void DX_RenderState::CreateSamplerState(ID3D11Device* pDevice)
 {
-	D3D11_SAMPLER_DESC l_samplerDesc;
-	ZeroMemory(&l_samplerDesc, sizeof(l_samplerDesc));
+	D3D11_SAMPLER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
 
-	l_samplerDesc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	l_samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-	l_samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-	l_samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
-	l_samplerDesc.MipLODBias = .0f;
-	l_samplerDesc.MaxAnisotropy = 0;
-	l_samplerDesc.ComparisonFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
-	l_samplerDesc.BorderColor[0] = .0f;
-	l_samplerDesc.BorderColor[1] = .0f;
-	l_samplerDesc.BorderColor[2] = .0f;
-	l_samplerDesc.BorderColor[3] = .0f;
-	l_samplerDesc.MinLOD = 0;
-	l_samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	desc.Filter = D3D11_FILTER::D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	desc.AddressU = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressV = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressW = D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.MipLODBias = .0f;
+	desc.MaxAnisotropy = 0;
+	desc.ComparisonFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_NEVER;
+	desc.BorderColor[0] = .0f;
+	desc.BorderColor[1] = .0f;
+	desc.BorderColor[2] = .0f;
+	desc.BorderColor[3] = .0f;
+	desc.MinLOD = 0;
+	desc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateSamplerState(&l_samplerDesc, &m_pSamplerState))){
-		throw "ID3D11Device::CreateSamplerState() : failed";
-	}
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateSamplerState(&desc, &m_pSamplerState), "ID3D11Device::CreateSamplerState() : failed");
 }

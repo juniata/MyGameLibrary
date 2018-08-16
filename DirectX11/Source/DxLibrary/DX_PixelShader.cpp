@@ -30,7 +30,7 @@ DX_PixelShader::~DX_PixelShader()
 //  シェーダーを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_PixelShader::CreateShader(const char* pFilepath)
+void DX_PixelShader::CreateShader(ID3D11Device* pDevice, const char* pFilepath)
 {
 	try{
 
@@ -38,7 +38,7 @@ void DX_PixelShader::CreateShader(const char* pFilepath)
 		CompileFromFile(pFilepath, PS_ENTRY_POINT, PS_VERSION);
 
 		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
+		CreateShaderObject(pDevice);
 	}
 	catch (char* pMessage){
 		throw pMessage;
@@ -70,23 +70,15 @@ void DX_PixelShader::End(ID3D11DeviceContext* pDeviceContext)
 //  シェーダーオブジェクトを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_PixelShader::CreateShaderObject()
+void DX_PixelShader::CreateShaderObject(ID3D11Device* pDevice)
 {
 	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
+	CreateClassLinkage(pDevice);
 
 	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreatePixelShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_pPixelShader
-		);
+	HRESULT hr = pDevice->CreatePixelShader(m_pBytecord->GetBufferPointer(), m_pBytecord->GetBufferSize(), m_pClassLinkage, &m_pPixelShader);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
-		throw "PixelShaderオブジェクトの作成に失敗しました";
-	}
-
+	DX_Debug::GetInstance()->ThrowIfFailed(hr, "PixelShaderオブジェクトの作成に失敗しました");
 }
 

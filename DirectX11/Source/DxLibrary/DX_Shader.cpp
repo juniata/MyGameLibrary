@@ -42,11 +42,7 @@ ID3DBlob* DX_Shader::GetByteCord()
 //	シェーダーファイルをコンパイルする
 //
 //-----------------------------------------------------------------------------------------
-void DX_Shader::CompileFromFile(
-	const char* pFilepath,
-	const char* pEntryPoint,
-	const char* pShaderVersion
-	)
+void DX_Shader::CompileFromFile(const char* pFilepath, const char* pEntryPoint, const char* pShaderVersion)
 {
 	
 	//	列優先シェーダー
@@ -101,15 +97,14 @@ void DX_Shader::CompileFromFile(
 	SAFE_RELEASE(l_pErrorBlob);
 }
 
+
 //-----------------------------------------------------------------------------------------
 //
 //	動的シェーダーを有効にするリンクを作成
 //
 //-----------------------------------------------------------------------------------------
-void DX_Shader::CreateClassLinkage()
+void DX_Shader::CreateClassLinkage(ID3D11Device* pDevice)
 {
-	if (!DX_Debug::GetInstance()->IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_pClassLinkage))){
-		SAFE_RELEASE(m_pClassLinkage);
-	}
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateClassLinkage(&m_pClassLinkage), "failed to CreateClassLinkage()");
 }
 

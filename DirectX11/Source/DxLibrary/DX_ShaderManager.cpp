@@ -3,21 +3,12 @@ using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
-//	マクロ定義
+//	シェーダーのファイルパスを定義
 //
 //-----------------------------------------------------------------------------------------
-//	3D描画用
-#define DEFAULT_VERTEX_SHADER_3D		"Source\\ShaderFile\\VS_3DObject.hlsl"
-#define DEFAULT_GEOMETRY_SHADER_3D		"Source\\ShaderFile\\GS_3DObject.hlsl"
-#define DEFAULT_PIXEL_SHADER_3D			"Source\\ShaderFile\\PS_3DObject.hlsl"
-#define DEFAULT_VERTEX_SHADER_SKIN_MESH	"Source\\ShaderFile\\VS_SkinMesh.hlsl"
-#define DEFAULT_GEOMETRY_SHADER_RAYPICK	"Source\\ShaderFile\\GS_RayPick.hlsl"
-
-//	インスタンス描画時の計算用
-#define COMPUTE_SHADER_INSTANCE_3D			"Source\\ShaderFile\\CS_InstanceMesh.hlsl"
-#define VARTEX_SHADER_INSTANCE_3D			"Source\\ShaderFile\\VS_InstanceMesh.hlsl"
-#define COMPUTE_SHADER_INSTANCE_SKIN_MESH	"Source\\ShaderFile\\CS_"
-#define COMPUTE_SHADER_INSTANCE_PARTICLE	"Source\\ShaderFile\\CS_"
+const char* DEFAULT_2D_SHADER::VERTEX_SHADER			= "Source\\ShaderFile\\VS_2DObject.hlsl";
+const char* DEFAULT_2D_SHADER::PIXEL_SHADER				= "Source\\ShaderFile\\PS_2DObject.hlsl";
+const char* DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER	= "Source\\ShaderFile\\VS_Instance2D.hlsl";
 
 //-----------------------------------------------------------------------------------------
 //
@@ -33,15 +24,12 @@ DX_ShaderManager* DX_ShaderManager::m_pInstance = nullptr;
 //-----------------------------------------------------------------------------------------
 DX_ShaderManager::DX_ShaderManager() : 
 	m_bCanUsetoComputeShader(false),
+	m_pDefaultVS2D(nullptr),
+	m_pDefaultPS2D(nullptr),
+	m_pDefaultInstanceVS2D(nullptr),
 	m_pInputLayout2D(nullptr),
-	m_pInputLayout3D(nullptr),
-	m_pInputLayoutInstanceMesh(nullptr),
-	m_pInputLayoutSkinMesh(nullptr),
-	m_pInputLayoutInstance2D(nullptr),
-	m_shaderIndex(0)
-{
-	ZeroMemory(m_shaders, SHADER_NUM);
-}
+	m_pInputLayoutInstance2D(nullptr)
+{}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -50,16 +38,12 @@ DX_ShaderManager::DX_ShaderManager() :
 //-----------------------------------------------------------------------------------------
 DX_ShaderManager::~DX_ShaderManager()
 {
-	SAFE_RELEASE(m_pInputLayout2D);
-	SAFE_RELEASE(m_pInputLayout3D);
-	SAFE_RELEASE(m_pInputLayoutInstanceMesh);
-	SAFE_RELEASE(m_pInputLayoutSkinMesh);
-	SAFE_RELEASE(m_pInputLayoutInstance2D);
+	DELETE_OBJ(m_pDefaultVS2D);
+	DELETE_OBJ(m_pDefaultPS2D);
+	DELETE_OBJ(m_pDefaultInstanceVS2D);
 
-	for (int i = 0; i < SHADER_NUM; ++i) {
-		DELETE_OBJ(m_shaders[i].pShader);
-		m_shaders[i].path = nullptr;
-	}
+	SAFE_RELEASE(m_pInputLayout2D);
+	SAFE_RELEASE(m_pInputLayoutInstance2D);
 }
 
 
@@ -81,50 +65,22 @@ DX_ShaderManager* DX_ShaderManager::GetInstance()
 //	メンバ変数の初期化(シェーダーの作成)
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::Initialize()
+void DX_ShaderManager::Initialize(ID3D11Device* pDevice)
 {
 	PROFILE("DX_ShaderManager::Initialize()");
 
-	try{
-		//	コンピュートシェーダーが使えるかをチェック
-		UsedComputeShaderCheck();
+	DX_ShaderManager* pShaderManager = GetInstance();
+
+	//	コンピュートシェーダーが使えるかをチェック
+	pShaderManager->UsedComputeShaderCheck(pDevice);
 		
-		//	2D描画用シェーダーを作成
-		CreateShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-		CreateShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-		CreateShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
+	//	2D描画用シェーダーを作成
+	pShaderManager ->m_pDefaultVS2D = pShaderManager->CreateShader(pDevice, DEFAULT_2D_SHADER::VERTEX_SHADER);
+	pShaderManager ->m_pDefaultPS2D = pShaderManager->CreateShader(pDevice, DEFAULT_2D_SHADER::PIXEL_SHADER);
+	pShaderManager ->m_pDefaultInstanceVS2D = pShaderManager->CreateShader(pDevice, DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
 
-		////	3D描画用シェーダーを作成
-		//CreateShader(DEFAULT_VERTEX_SHADER_3D);
-		//CreateShader(DEFAULT_GEOMETRY_SHADER_3D);
-		//CreateShader(DEFAULT_PIXEL_SHADER_3D);
-		//CreateShader(DEFAULT_VERTEX_SHADER_SKIN_MESH);
-		//CreateShader(DEFAULT_GEOMETRY_SHADER_RAYPICK);
-
-		////	3Dインスタンス描画計算用シェーダーを作成
-		//CreateShader(COMPUTE_SHADER_INSTANCE_3D);
-		//CreateShader(VARTEX_SHADER_INSTANCE_3D);
-
-		//	インプットレイアウトを作成
-		CreateInputLayout();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
-
-	//D3D11_SO_DECLARATION_ENTRY l_declaration[] = {
-	//	{ 0, "OUT_POS", 0, 0, 4 ,0 },
-	//	{ 0, "OUT_NORMAL", 0, 0, 3, 0 }
-
-	//};
-
-	//unsigned int strides[] = { sizeof(DirectX::XMFLOAT4) + sizeof(DirectX::XMFLOAT3) };
-	//static_cast<DX_GeometryShader*>(GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK))->CreateGeometryShaderWithStreamOutput(
-	//	l_declaration,
-	//	_countof(l_declaration),
-	//	strides,
-	//	_countof(strides)
-	//	);
+	//	インプットレイアウトを作成
+	pShaderManager ->CreateInputLayout(pDevice);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -137,86 +93,34 @@ void DX_ShaderManager::Release()
 	DELETE_OBJ(m_pInstance);
 }
 
-DX_Shader*	DX_ShaderManager::GetShader(const char* pShaderFileName)
+//-----------------------------------------------------------------------------------------
+//
+//	デフォルトの2D頂点シェーダーを取得する
+//
+//-----------------------------------------------------------------------------------------
+DX_Shader* DX_ShaderManager::GetDefaultVertexShader2D() const
 {
-	DX_Shader* pShader = nullptr;
-	for (int i = 0; i < SHADER_NUM; ++i)
-	{
-		// 先頭から順番にデータを格納しているため、nullが見つかった場合最後尾となるためそれ以上の検索は無駄となる
-		if (m_shaders[i].path == nullptr) {
-			break;
-		}
-		if (strcmp(m_shaders[i].path, pShaderFileName) == 0)
-		{
-			pShader = m_shaders[i].pShader;
-		}
-	}
-
-	return pShader;
+	return m_pDefaultVS2D;
 }
 
 //-----------------------------------------------------------------------------------------
 //
-//  デフォルトの3D描画用頂点シェーダーを取得
+//	デフォルトの2Dピクセルシェーダーを取得する
 //
 //-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetDefaultVertexShader3D()
+DX_Shader* DX_ShaderManager::GetDefaultPixelShader2D() const
 {
-	return GetShader(DEFAULT_VERTEX_SHADER_3D);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  デフォルトのスキンメッシュ描画用頂点シェーダーを取得
-//
-//-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetDefaultVertexShaderSkinMesh()
-{
-	return GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  デフォルトのレイピック処理の入った3D描画用ジオメトリシェーダーを取得
-//
-//-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetDefaultGeometryShader3D()
-{
-	return GetShader(DEFAULT_GEOMETRY_SHADER_3D);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  デフォルトの３D描画用ジオメトリシェーダーを取得
-//
-//-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetDefaultGeometryShaderRayPick()
-{
-	return GetShader(DEFAULT_GEOMETRY_SHADER_RAYPICK);
-
+	return m_pDefaultPS2D;
 }
 
 //-----------------------------------------------------------------------------------------
 //
-//  デフォルトの3D描画用ピクセルシェーダーを取得
+//	デフォルトのインスタンス2D頂点シェーダーを取得する
 //
 //-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetDefaultPixelShader3D()
+DX_Shader* DX_ShaderManager::GetDefaultInstanceVertexShader2D() const
 {
-	return GetShader(DEFAULT_PIXEL_SHADER_3D);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  インスタンスメッシュ用コンピュートシェーダーを取得
-//
-//-----------------------------------------------------------------------------------------
-DX_Shader* DX_ShaderManager::GetInstanceMeshComputeShader()
-{
-	return GetShader(COMPUTE_SHADER_INSTANCE_3D);
+	return m_pDefaultInstanceVS2D;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -224,44 +128,21 @@ DX_Shader* DX_ShaderManager::GetInstanceMeshComputeShader()
 //  デフォルトの2D描画用InputLayoutを取得する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D()
+ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout2D() const
 {
 	return m_pInputLayout2D;
 }
 
 //-----------------------------------------------------------------------------------------
 //
-//  デフォルトの3D描画用InputLayoutを取得する
+//  デフォルトのインスタンス2D描画用InputLayoutを取得する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayout3D()
-{
-	return m_pInputLayout3D;
-}
-
-ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutInstance2D()
+ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutInstance2D() const
 {
 	return m_pInputLayoutInstance2D;
 }
-//-----------------------------------------------------------------------------------------
-//
-//  デフォルトのスキンメッシュ描画用InputLayoutを取得する
-//
-//-----------------------------------------------------------------------------------------
-ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutSkinMesh()
-{
-	return m_pInputLayoutSkinMesh;
-}
 
-//-----------------------------------------------------------------------------------------
-//
-//  インスタンスメッシュ描画用InputLayoutを取得する
-//
-//-----------------------------------------------------------------------------------------
-ID3D11InputLayout* DX_ShaderManager::GetInputLayoutInstanceMesh()
-{
-	return m_pInputLayoutInstanceMesh;
-}
 //-----------------------------------------------------------------------------------------
 //
 //  ワールド行列をシェーダーに送る
@@ -545,7 +426,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 //	コンピュートシェーダーが使えるかどうかをチェック
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::UsedComputeShaderCheck()
+void DX_ShaderManager::UsedComputeShaderCheck(ID3D11Device* pDevice)
 {
 	//	LEVEL_11_0ならサポートされているので、チェックしない
 	//if (DX_System::GetFeatureLevel() == D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0){
@@ -553,12 +434,8 @@ void DX_ShaderManager::UsedComputeShaderCheck()
 	//}
 
 	D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS l_hardwareOptions;
-
-
-	DX_System::GetInstance()->GetDevice()->CheckFeatureSupport(
-		D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS,
-		&l_hardwareOptions,
-		sizeof(l_hardwareOptions));
+	
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CheckFeatureSupport(D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS, &l_hardwareOptions, sizeof(l_hardwareOptions)), "CheckFeatureSupport() : failed");
 
 	//	フラグを設定
 	m_bCanUsetoComputeShader = (l_hardwareOptions.ComputeShaders_Plus_RawAndStructuredBuffers_Via_Shader_4_x == TRUE) ? true : false;
@@ -569,28 +446,35 @@ void DX_ShaderManager::UsedComputeShaderCheck()
 //	シェーダーを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::CreateShader(const char* pFilepath)
+DX_Shader* DX_ShaderManager::CreateShader(ID3D11Device* pDevice, const char* pFilepath)
 {
+	DX_Shader* pShader = nullptr;
+
 	//	文字列が無ければNULLが返る
 	if (strstr(pFilepath, "VS_")){
-		m_shaders[m_shaderIndex].pShader = new  DX_VertexShader();
+		pShader = new  DX_VertexShader();
 	}
 	else if (strstr(pFilepath, "PS_")){
-		m_shaders[m_shaderIndex].pShader = new  DX_PixelShader();
+		pShader = new  DX_PixelShader();
 	}
 	else if (strstr(pFilepath, "GS_")){
-		m_shaders[m_shaderIndex].pShader = new  DX_GeometryShader();
+		pShader = new  DX_GeometryShader();
 	}
 	else if (strstr(pFilepath, "CS_")){
 		if (m_bCanUsetoComputeShader == false){
-			throw "ComputeShaderは使えません!";
+			MessageBox(NULL, "ComputeShaderは使えません!", "error", MB_OK);
+			throw;
 		}
-		m_shaders[m_shaderIndex].pShader = new  DX_ComputeShader();
+		pShader  = new  DX_ComputeShader();
+	}
+	else {
+		MessageBox(NULL, "指定してシェーダーは対応していません。", "error", MB_OK);
+		throw;
 	}
 
-	m_shaders[m_shaderIndex].path = pFilepath;
-	m_shaders[m_shaderIndex].pShader->CreateShader(pFilepath);
-	++m_shaderIndex;
+	pShader->CreateShader(pDevice, pFilepath);
+
+	return pShader;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -598,11 +482,8 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 //  InputLauoutを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::CreateInputLayout()
+void DX_ShaderManager::CreateInputLayout(ID3D11Device* pDevice)
 {
-	//	デバイスを取得
-	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
-
 	// 2D用レイアウト
 	D3D11_INPUT_ELEMENT_DESC layout2D[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0,	0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -616,60 +497,13 @@ void DX_ShaderManager::CreateInputLayout()
 		{ "INSTANCE_POS",	0,	DXGI_FORMAT_R32G32B32_FLOAT,	1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 
 	};
-
-	////	3D用レイアウト
-	//D3D11_INPUT_ELEMENT_DESC l_layout3D[] = {
-	//	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//};
-	//
-	////	3Dスキンメッシュ用レイアウト
-	//D3D11_INPUT_ELEMENT_DESC l_layoutSkinMesh[] = {
-	//	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
-	//	{ "SKIN_INDEX", 0, DXGI_FORMAT_R32_UINT,			1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "SKIN_WEIGHT",0, DXGI_FORMAT_R32G32B32A32_FLOAT,	1, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//};
-
-
-	////	インスタンスメッシュ描画用レイアウトを作成
-	//D3D11_INPUT_ELEMENT_DESC l_insntanceMesh[] = {
-	//	{ "POSITION",		0,	DXGI_FORMAT_R32G32B32_FLOAT,	0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "TEXCOORD",		0,	DXGI_FORMAT_R32G32_FLOAT,		0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL",			0,	DXGI_FORMAT_R32G32B32_FLOAT,	0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "COLOR",			0,	DXGI_FORMAT_R32G32B32A32_FLOAT, 0,	D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
-	//	{ "WORLD_MAT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,  D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-	//	{ "WORLD_MAT", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-	//	{ "WORLD_MAT", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-	//	{ "WORLD_MAT", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-	//};
-
 	
-	try {
-		//	2D用レイアウトを作成
-		CreateInputLayout(pDevice, layout2D, _countof(layout2D), GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER)->GetByteCord(), &m_pInputLayout2D);
+	//	2D用レイアウトを作成
+	m_pInputLayout2D = CreateInputLayout(pDevice, layout2D, _countof(layout2D), m_pDefaultVS2D->GetByteCord());
 
-		// 2Dインスタンスレイアウトを作成
-		CreateInputLayout(pDevice, layout2DInstance, _countof(layout2DInstance), GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER)->GetByteCord(), &m_pInputLayoutInstance2D);
+	// 2Dインスタンスレイアウトを作成
+	m_pInputLayoutInstance2D = CreateInputLayout(pDevice, layout2DInstance, _countof(layout2DInstance), m_pDefaultInstanceVS2D->GetByteCord());
 
-		////	3D用レイアウトを作成
-		//CreateInputLayout(pDevice, l_layout3D, _countof(l_layout3D), GetShader(DEFAULT_VERTEX_SHADER_3D)->GetByteCord(), &m_pInputLayout3D);
-
-		////	スキンメッシュ用レイアウトを作成
-		//CreateInputLayout(pDevice, l_layoutSkinMesh, _countof(l_layoutSkinMesh), GetShader(DEFAULT_VERTEX_SHADER_SKIN_MESH)->GetByteCord(), &m_pInputLayoutInstanceMesh);
-
-		////	インスタンススキンメッシュ描画用レイアウトを作成
-		//CreateInputLayout(pDevice, l_insntanceMesh, _countof(l_insntanceMesh), GetShader(VARTEX_SHADER_INSTANCE_3D)->GetByteCord(), &m_pInputLayoutSkinMesh);
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -677,20 +511,11 @@ void DX_ShaderManager::CreateInputLayout()
 //  InputLayoutを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::CreateInputLayout(
-	ID3D11Device*				pDevice,
-	D3D11_INPUT_ELEMENT_DESC*	pInputLayoutDesc,
-	const unsigned int			inputLayoutCount,
-	ID3DBlob*					pByteCord,
-	ID3D11InputLayout**			pInputLayout
-	)
+ID3D11InputLayout* DX_ShaderManager::CreateInputLayout(ID3D11Device* pDevice, D3D11_INPUT_ELEMENT_DESC*	pInputLayoutDesc, const unsigned int inputLayoutCount, ID3DBlob* pByteCord) const
 {
-	HRESULT l_hr = pDevice->CreateInputLayout(pInputLayoutDesc, inputLayoutCount, pByteCord->GetBufferPointer(), pByteCord->GetBufferSize(), pInputLayout);
+	ID3D11InputLayout* pInputLayout = nullptr;
+	DX_Debug::GetInstance()->ThrowIfFailed(pDevice->CreateInputLayout(pInputLayoutDesc, inputLayoutCount, pByteCord->GetBufferPointer(), pByteCord->GetBufferSize(), &pInputLayout), " InputLayout failed()");
 
-	//	戻り値チェック
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
-		throw "create InputLayout failed()";
-	}
-
+	return pInputLayout;
 }
 
