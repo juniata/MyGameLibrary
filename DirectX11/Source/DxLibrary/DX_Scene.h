@@ -16,6 +16,13 @@ public:
 	//  @brief		âΩÇ‡ÇµÇ»Ç¢
 	//
 	//------------------------------------------------------------------------------
+	DX_Scene(){};
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		âΩÇ‡ÇµÇ»Ç¢
+	//
+	//------------------------------------------------------------------------------
 	virtual ~DX_Scene(){};
 
 	//------------------------------------------------------------------------------
@@ -32,14 +39,14 @@ public:
 	//	@return		true:ê¨å˜	false:é∏îs
 	//
 	//------------------------------------------------------------------------------
-	virtual bool Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext) = 0;
+	virtual bool Update() = 0;
 	
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		èÉêàâºëzä÷êî	ï`âÊ
 	//
 	//------------------------------------------------------------------------------
-	virtual void Render(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext) = 0;
+	virtual void Render() = 0;
 
 };
 
@@ -54,8 +61,8 @@ class DX_NullScene : public DX_Scene
 {
 public:
 	bool Initialize(){ return true; }
-	bool Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext){ return true; }
-	void Render(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext){}
+	bool Update(){ return true; }
+	void Render(){}
 
 
 };

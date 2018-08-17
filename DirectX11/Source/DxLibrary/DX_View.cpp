@@ -77,10 +77,15 @@ void DX_View::Active()
 //	RenderTargetViewとDepthStencileViewをクリアする
 //
 //-----------------------------------------------------------------------------------------
-void DX_View::Clear(ID3D11DeviceContext* pContext, const bool bZClear, const bool bStencilClear, ID3D11RenderTargetView* pRtv, ID3D11DepthStencilView* pDsv
+void DX_View::Clear(
+	const bool bZClear,
+	const bool bStencilClear,
+	ID3D11RenderTargetView* pRtv,
+	ID3D11DepthStencilView* pDsv
 	)
 {
 	DX_System* l_pSystem = DX_System::GetInstance();
+	ID3D11DeviceContext* l_pDeviceContext = l_pSystem->GetDeviceContext();
 	ID3D11RenderTargetView* pClearRtv = pRtv ? pRtv : l_pSystem->GetDefaultRenderTargetView();
 	ID3D11DepthStencilView* pClearDsv = pDsv ? pDsv : l_pSystem->GetDefaultDepthStencilView();
 
@@ -94,10 +99,10 @@ void DX_View::Clear(ID3D11DeviceContext* pContext, const bool bZClear, const boo
 
 	//	RenderTargetViewをクリアする
 	float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	pContext->ClearRenderTargetView(pClearRtv, clearColor);
+	l_pDeviceContext->ClearRenderTargetView(pClearRtv, clearColor);
 
 	//	DepthStencilViewをクリアする
-	pContext->ClearDepthStencilView(pClearDsv, flags, 1.0f,0);
+	l_pDeviceContext->ClearDepthStencilView(pClearDsv, flags, 1.0f,0);
 }
 
 //-----------------------------------------------------------------------------------------

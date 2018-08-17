@@ -54,7 +54,7 @@ DirectX::XMFLOAT3 pos;
 //  XV
 //
 //-----------------------------------------------------------------------------------------
-bool SceneMain::Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+bool SceneMain::Update()
 {
 	g_pView->FreeCamera(2.0f);
 
@@ -70,10 +70,10 @@ bool SceneMain::Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceCo
 //  •`‰æ
 //
 //-----------------------------------------------------------------------------------------
-void SceneMain::Render(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void SceneMain::Render()
 {
 	g_pView->Active();
-	g_pView->Clear(pContext);
+	g_pView->Clear();
 
 	g_tex->Render(tagRect(0, 0, CAST_F(DX_System::GetWindowWidth()), CAST_F(DX_System::GetWindowHeight())));
 	circularBarrageManager->Render();

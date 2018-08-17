@@ -28,7 +28,7 @@ DX_GeometryShader::~DX_GeometryShader()
 //  シェーダーを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateShader(ID3D11Device* pDevice, const char* pFilepath)
+void DX_GeometryShader::CreateShader(const char* pFilepath)
 {
 	try{
 
@@ -36,7 +36,7 @@ void DX_GeometryShader::CreateShader(ID3D11Device* pDevice, const char* pFilepat
 		CompileFromFile(pFilepath, GS_ENTRY_POINT, GS_VERSION);
 
 		//	シェーダーオブジェクトを作成
-		CreateShaderObject(pDevice);
+		CreateShaderObject();
 	}
 	catch (char* pMessage){
 		throw pMessage;
@@ -73,16 +73,24 @@ void DX_GeometryShader::End(ID3D11DeviceContext* pDeviceContext)
 //  シェーダーオブジェクトを作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateShaderObject(ID3D11Device* pDevice)
+void DX_GeometryShader::CreateShaderObject()
 {
 	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage(pDevice);
+	CreateClassLinkage();
 
 	//	シェーダーオブジェクトを作成
-	HRESULT hr = pDevice->CreateGeometryShader(m_pBytecord->GetBufferPointer(), m_pBytecord->GetBufferSize(), m_pClassLinkage, &m_pGeometryShader);
+	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShader(
+		m_pBytecord->GetBufferPointer(),
+		m_pBytecord->GetBufferSize(),
+		m_pClassLinkage,
+		&m_pGeometryShader
+		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	DX_Debug::GetInstance()->ThrowIfFailed(hr, "GeometryShaderオブジェクトの作成に失敗しました");
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+		//SAFE_RELEASE(m_pBytecord);
+		throw "GeometryShaderオブジェクトの作成に失敗しました";
+	}
 }
 
 
@@ -91,9 +99,14 @@ void DX_GeometryShader::CreateShaderObject(ID3D11Device* pDevice)
 //  ジオメトリーシェーダーから出力したデータを取得
 //
 //-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(D3D11_SO_DECLARATION_ENTRY	decreation[], const UINT decreationElementCount, unsigned int* pBufferStrides, const UINT stridesElementCount)
+void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(
+	D3D11_SO_DECLARATION_ENTRY	decreation[],
+	const UINT					decreationElementCount,
+	unsigned int*				pBufferStrides,
+	const UINT					stridesElementCount
+	)
 {
-	HRESULT hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(
+	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(
 		m_pBytecord->GetBufferPointer(),
 		m_pBytecord->GetBufferSize(),
 		decreation,
@@ -106,5 +119,9 @@ void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(D3D11_SO_DECLARATIO
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	DX_Debug::GetInstance()->ThrowIfFailed(hr, "GeometryShaderWithStreamOutputオブジェクトの作成に失敗しました");
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+		//SAFE_RELEASE(m_pBytecord);
+		throw "GeometryShaderWithStreamOutputオブジェクトの作成に失敗しました";
+	}
+
 }

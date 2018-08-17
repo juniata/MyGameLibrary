@@ -14,8 +14,8 @@ public:
 	~SceneMain();
 	bool Initialize();
 
-	bool Update(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	void Render(DX_System* pSystem, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	bool Update();
+	void Render();
 
 
 	

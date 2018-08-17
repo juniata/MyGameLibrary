@@ -118,8 +118,9 @@ void DX_Instance2DObject::Render()
 	ID3D11Device* pDevice = pSystem->GetDevice();
 	ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
 
-	DX_Shader* pVertexShader = pShaderManager->GetDefaultInstanceVertexShader2D();
-	DX_Shader* pPixelShader = pShaderManager->GetDefaultPixelShader2D();
+
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダー利用を開始
 	pVertexShader->Begin(pDeviceContext);

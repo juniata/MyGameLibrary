@@ -22,11 +22,12 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーを作成する
-	//	@param[in]	pDevice		DirectX11のデバイス
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	void CreateShader(ID3D11Device* pDevice, const char* pFilepath);
+	void CreateShader(
+		const char* pFilepath
+		);
 
 	//------------------------------------------------------------------------------
 	//
@@ -35,7 +36,10 @@ public:
 	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
 	//
 	//------------------------------------------------------------------------------
-	void Begin(ID3D11DeviceContext*	pDeviceContext, const unsigned int	classInstanceCount = 0);
+	void Begin(
+		ID3D11DeviceContext*	pDeviceContext,
+		const unsigned int		classInstanceCount = 0
+		);
 
 	//------------------------------------------------------------------------------
 	//
@@ -43,7 +47,9 @@ public:
 	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
 	//
 	//------------------------------------------------------------------------------
-	void End(ID3D11DeviceContext*	pDeviceContext);
+	void End(
+		ID3D11DeviceContext*	pDeviceContext
+		);
 
 private:
 	ID3D11ComputeShader*	m_pComputeShader;
@@ -51,9 +57,8 @@ private:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		シェーダーオブジェクトを作成する
-	//	@param[in]	pDevice	DirectX11のデバイス
 	//
 	//------------------------------------------------------------------------------
-	void CreateShaderObject(ID3D11Device* pDevice);
+	void CreateShaderObject();
 };
 #endif // !__DX_COMPUTE_SHADER_H_
