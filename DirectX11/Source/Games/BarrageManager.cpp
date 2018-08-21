@@ -75,7 +75,7 @@ void BarrageManager::Render()
 {
 	for (size_t i = 0; i < m_barrageNum; ++i)
 	{
-		if (m_pBarrageList[i] == nullptr)
+		if (m_pBarrageList[i] != nullptr)
 		{
 			m_pBarrageList[i]->Render();
 		}
