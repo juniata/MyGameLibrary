@@ -19,6 +19,8 @@ CircularBarrageManager::CircularBarrageManager() :
 	{
 		m_pCircularBarrageList[i] = new CircularBarrage();
 	}
+
+	m_pInstance2d->Enable();
 }
 
 //-----------------------------------------------------------------------------------------

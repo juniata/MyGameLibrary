@@ -43,6 +43,16 @@ struct tagRect{
 	{}
 };
 
+//--------------------------------------------------
+//	Meshópí∏ì_èÓïÒ
+//--------------------------------------------------
+struct tagVertex{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT4 color;
+};
+
 #include	"DxLibrary\DX_Scene.h"
 #include	"DxLibrary\DX_SceneManager.h"
 #include	"DxLibrary\DX_System.h"
@@ -64,6 +74,7 @@ struct tagRect{
 #include	"DxLibrary\DX_SkinMesh.h"
 #include	"DxLibrary\DX_InstanceMesh.h"
 #include	"DxLibrary\DX_InstanceSkinMesh.h"
+#include	"DxLibrary\DX_Box.h"
 #include	"DxLibrary\DX_Lighting.h"
 #include	"DxLibrary\DX_Audio.h"
 #include	"DxLibrary\DX_Input.h"

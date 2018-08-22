@@ -76,10 +76,10 @@ void DX_2DObject::Render()
 
 	//	バッファを作成
 	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
-	
 	//	シェーダーを取得
-	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader  = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	デバイスコンテキストを取得
 	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
@@ -114,8 +114,9 @@ void DX_2DObject::Render(const tagRect& renderPos)
 	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
 
 	//	シェーダーを取得
-	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader  = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
@@ -157,7 +158,6 @@ void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSi
 	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
 	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -194,8 +194,9 @@ void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
 
 	//	シェーダーを取得
-	DX_Shader* l_pVertexShader = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader  = DX_ShaderManager::GetInstance()->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();

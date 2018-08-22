@@ -314,6 +314,9 @@
     <ClCompile Include="Source\Games\BarrageBeam.cpp">
       <Filter>ソース ファイル\Games\Barrage</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_Box.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\ShaderFile\PS_2DObject.hlsl">
@@ -323,6 +326,12 @@
       <Filter>ソース ファイル\Shader</Filter>
     </None>
     <None Include="Source\ShaderFile\VS_Instance2D.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Source\ShaderFile\Default\PS_Object.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </None>
+    <None Include="Source\ShaderFile\Default\VS_Object.hlsl">
       <Filter>ソース ファイル\Shader</Filter>
     </None>
   </ItemGroup>

@@ -71,6 +71,7 @@
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_2DObject.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Audio.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Box.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Buffer.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_ComputeShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Debug.cpp" />
@@ -123,6 +124,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Source\ShaderFile\VS_Instance2D.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\ShaderFile\Default\PS_Object.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Source\ShaderFile\Default\VS_Object.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

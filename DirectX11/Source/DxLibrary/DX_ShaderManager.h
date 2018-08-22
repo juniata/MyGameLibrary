@@ -17,42 +17,18 @@ typedef struct DEFAULT_SHADER{
 	typedef struct _2D{
 		static const char* VERTEX_SHADER;
 		static const char* PIXEL_SHADER;
-
 		static const char* INSTANCE_VERTEX_SHADER;
 	}_2D;
 
-	typedef struct _MESH{
+	typedef struct _OBJECT {
 		static const char* VERTEX_SHADER;
-		static const char* GEOMETRY_SHADER;
 		static const char* PIXEL_SHADER;
-	}_MESH;
-
-	typedef struct _SKIN_MESH{
-		static const char* VERTEX_SHADER;
-		static const char* GEOMETRY_SHADER;
-		static const char* PIXEL_SHADER;
-	}_SKIN_MESH;
+	}_OBJECT;
 
 }DEFAULT_SHADER;
 
 typedef DEFAULT_SHADER::_2D			DEFAULT_2D_SHADER;
-typedef DEFAULT_SHADER::_MESH		DEFAULT_MESH_SHADER;
-typedef DEFAULT_SHADER::_SKIN_MESH	DEFAULT_SKIN_MESH_SHADER;
-
-//	2D
-__declspec(selectany) const char* DEFAULT_2D_SHADER::VERTEX_SHADER	= "Source\\ShaderFile\\VS_2DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_2D_SHADER::PIXEL_SHADER = "Source\\ShaderFile\\PS_2DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER = "Source\\ShaderFile\\VS_Instance2D.hlsl";
-
-//	Mesh
-__declspec(selectany) const char* DEFAULT_MESH_SHADER::VERTEX_SHADER	= "Source\\ShaderFile\\VS_3DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_MESH_SHADER::GEOMETRY_SHADER	= "Source\\ShaderFile\\GS_3DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_MESH_SHADER::PIXEL_SHADER		= "Source\\ShaderFile\\PS_3DObject.hlsl";
-
-//	SkinMesh
-__declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::VERTEX_SHADER	= "Source\\ShaderFile\\VS_SkinMesh.hlsl";
-__declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::GEOMETRY_SHADER = "Source\\ShaderFile\\GS_3DObject.hlsl";
-__declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::PIXEL_SHADER	= "Source\\ShaderFile\\PS_3DObject.hlsl";
+typedef DEFAULT_SHADER::_OBJECT		DEFAULT_OBJECT_SHADER;
 
 
 //****************************************************************************************************
@@ -63,13 +39,6 @@ __declspec(selectany) const char* DEFAULT_SKIN_MESH_SHADER::PIXEL_SHADER	= "Sour
 class DX_ShaderManager
 {
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		解放
-	//
-	//------------------------------------------------------------------------------
-	~DX_ShaderManager();
-
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		インスタンスを取得する
@@ -94,58 +63,10 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		指定したシェーダーを取得する
+	//	@return		DX_Shader*
 	//
 	//------------------------------------------------------------------------------
-	DX_Shader*	GetShader(const char* pShaderFileName);
-	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトの3D描画用頂点シェーダーを取得
-	//	@return		DX_VertexShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader* GetDefaultVertexShader3D();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトのスキンメッシュ描画用頂点シェーダーを取得
-	//	@return		DX_VertexShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader* GetDefaultVertexShaderSkinMesh();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトの3D描画用ジオメトリシェーダーを取得
-	//	@return		DX_GeometryShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader*	GetDefaultGeometryShader3D();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトのレイピック処理の入った3D描画用ジオメトリシェーダーを取得
-	//	@return		DX_GeometryShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader*	GetDefaultGeometryShaderRayPick();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトの3D描画用ピクセルシェーダーを取得
-	//	@return		DX_PixelShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader* GetDefaultPixelShader3D();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		インスタンスメッシュ用コンピュートシェーダーを取得
-	//	@return		DX_ComputeShaderが返る
-	//
-	//------------------------------------------------------------------------------
-	DX_Shader* GetInstanceMeshComputeShader();
-
+	DX_Shader* GetShader(const char* pFilepath);
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		デフォルトの2D描画用InputLayoutを取得する
@@ -156,29 +77,11 @@ public:
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		デフォルトの3D描画用InputLayoutを取得する
+	//  @brief		デフォルトのインスタンス2D描画用InputLayoutを取得する
 	//	@return		m_pInplutLayout3Dが返る
 	//
 	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetDefaultInputLayout3D();
-
 	ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デフォルトのスキンメッシュ描画用InputLayoutを取得する
-	//	@return		m_pInputLayoutSkinMeshが返る
-	//
-	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetDefaultInputLayoutSkinMesh();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		インスタンスメッシュ描画用InputLayoutを取得する
-	//	@return		m_pInputLayoutInstanceMeshが返る
-	//
-	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetInputLayoutInstanceMesh();
 
 	//------------------------------------------------------------------------------
 	//
@@ -193,7 +96,7 @@ public:
 		const DirectX::XMFLOAT4X4&				worldMat,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	void SetInt(const unsigned int			registerNum,
 		const DirectX::XMINT4&				vec4,
@@ -216,7 +119,7 @@ public:
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	//------------------------------------------------------------------------------
 	//
@@ -234,7 +137,7 @@ public:
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	void SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3,
 		const unsigned int			vecCount,
@@ -255,7 +158,7 @@ public:
 		ID3D11Device*				pDevice,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	//------------------------------------------------------------------------------
 	//
@@ -271,7 +174,7 @@ public:
 		const DirectX::XMFLOAT4X4&				mat,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	//------------------------------------------------------------------------------
 	//
@@ -289,7 +192,7 @@ public:
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	//------------------------------------------------------------------------------
 	//
@@ -307,7 +210,7 @@ public:
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 	void SetMatrixResoruce(
 		const unsigned int			regiserNum,
@@ -315,23 +218,20 @@ public:
 		const unsigned int			matCount,
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
-		);
+	);
 
 
 private:
-	struct Sharders {
-		const char* path;
+	static const size_t SHADER_NUM = 10;
+	struct Shader {
 		DX_Shader* pShader;
+		const char* pFilepath;
 	};
-	static const int SHADER_NUM = 10;
-	Sharders m_shaders[SHADER_NUM];
-	int m_shaderIndex;
+	Shader m_shaders[SHADER_NUM];
 
 	ID3D11InputLayout*	m_pInputLayout2D;
-	ID3D11InputLayout*	m_pInputLayout3D;
-	ID3D11InputLayout*	m_pInputLayoutSkinMesh;
-	ID3D11InputLayout*	m_pInputLayoutInstanceMesh;
 	ID3D11InputLayout*	m_pInputLayoutInstance2D;
+	ID3D11InputLayout*	m_pInputLayoutObject;
 
 	//	コンピュートシェーダーが使えるかどうか
 	bool m_bCanUsetoComputeShader;
@@ -343,6 +243,14 @@ private:
 	//
 	//------------------------------------------------------------------------------
 	DX_ShaderManager();
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		解放
+	//
+	//------------------------------------------------------------------------------
+	~DX_ShaderManager();
+	
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		コンピュートシェーダーが使えるかどうかをチェック
@@ -356,9 +264,7 @@ private:
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	void CreateShader(
-		const char* pFilepath
-		);
+	void CreateShader(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//

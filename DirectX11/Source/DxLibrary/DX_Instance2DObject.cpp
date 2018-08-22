@@ -6,7 +6,7 @@ using namespace DirectX;
 //  引数付きコンストラクタ
 //
 //-----------------------------------------------------------------------------------------
-DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num)
+DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num), m_enabled(false)
 {
 	LoadTexture(pFilepath);
 	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
@@ -113,50 +113,52 @@ DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList(const unsigned int index)
 //-----------------------------------------------------------------------------------------
 void DX_Instance2DObject::Render()
 {
-	DX_System* pSystem = DX_System::GetInstance();
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	ID3D11Device* pDevice = pSystem->GetDevice();
-	ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
+	if (m_enabled) 
+	{
+		DX_System* pSystem = DX_System::GetInstance();
+		DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+		ID3D11Device* pDevice = pSystem->GetDevice();
+		ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
 
 
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+		DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
+		DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-	//	シェーダー利用を開始
-	pVertexShader->Begin(pDeviceContext);
-	pPixelShader->Begin(pDeviceContext);
+		//	シェーダー利用を開始
+		pVertexShader->Begin(pDeviceContext);
+		pPixelShader->Begin(pDeviceContext);
 
-	unsigned int strides[] = { sizeof(tagVertex2D) ,sizeof(m_pPosList[0]) };
-	unsigned int offsets[] = { 0,0 };
+		unsigned int strides[] = { sizeof(tagVertex2D) ,sizeof(m_pPosList[0]) };
+		unsigned int offsets[] = { 0,0 };
 
-	ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pPosList[0]) * m_instanceNum, m_pPosList);
-	ID3D11Buffer* buffers[] = { m_pVertexBuffer, pInstanceBuffer };
-	
-	
-	// 正規化したウィンドウサイズを送る
-	pShaderManager->SetVector(0, XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pPosList[0]) * m_instanceNum, m_pPosList);
+		ID3D11Buffer* buffers[] = { m_pVertexBuffer, pInstanceBuffer };
 
-	//	VertexBufferを送る
-	pDeviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
 
-	//	InputLayoutの設定を送る
-	pDeviceContext->IASetInputLayout(pShaderManager->GetDefaultInputLayoutInstance2D());
+		// 正規化したウィンドウサイズを送る
+		pShaderManager->SetVector(0, XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
-	//	Primitiveの設定を送る
-	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		//	VertexBufferを送る
+		pDeviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
 
-	// テクスチャ情報を送る
-	DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
-	
-	// インスタンス描画を行う
-	pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
+		//	InputLayoutの設定を送る
+		pDeviceContext->IASetInputLayout(pShaderManager->GetDefaultInputLayoutInstance2D());
 
-	//	シェーダー利用を終了
-	pVertexShader->End(pDeviceContext);
-	pPixelShader->End(pDeviceContext);
+		//	Primitiveの設定を送る
+		pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	SAFE_RELEASE(pInstanceBuffer);
+		// テクスチャ情報を送る
+		DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
 
+		// インスタンス描画を行う
+		pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
+
+		//	シェーダー利用を終了
+		pVertexShader->End(pDeviceContext);
+		pPixelShader->End(pDeviceContext);
+
+		SAFE_RELEASE(pInstanceBuffer);
+	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -170,6 +172,18 @@ void DX_Instance2DObject::Disable(const size_t index)
 	m_pPosList[index].z = 1.1f;
 }
 
+
+//-----------------------------------------------------------------------------------------
+//
+//  指定した番号のオブジェクトを無効化します(描画されなくなる)
+//
+//-----------------------------------------------------------------------------------------
+void DX_Instance2DObject::Disable()
+{
+	m_enabled = false;
+}
+
+
 //-----------------------------------------------------------------------------------------
 //
 //  指定した番号のオブジェクトの有効化する（描画されるようになる）
@@ -178,6 +192,16 @@ void DX_Instance2DObject::Disable(const size_t index)
 void DX_Instance2DObject::Enable(const size_t index)
 {
 	m_pPosList[index].z = 0.0f;
+}
+
+//------------------------------------------------------------------------------
+//
+//  @brief		インタンス描画を行うようにする
+//
+//------------------------------------------------------------------------------
+void DX_Instance2DObject::Enable()
+{
+	m_enabled = true;
 }
 
 //------------------------------------------------------------------------------
@@ -198,4 +222,24 @@ bool DX_Instance2DObject::IsDisable(const size_t index) const
 bool DX_Instance2DObject::IsEnable(const size_t index) const
 {
 	return (m_pPosList[index].z > 1.0f);
+}
+
+//------------------------------------------------------------------------------
+//
+//  @brief		指定したインスタンスが無効かどうか
+//
+//------------------------------------------------------------------------------
+bool DX_Instance2DObject::IsDisable() const
+{
+	return !m_enabled;
+}
+
+//------------------------------------------------------------------------------
+//
+//  @brief		指定したインスタンスが有効かどうか
+//
+//------------------------------------------------------------------------------
+bool DX_Instance2DObject::IsEnable() const
+{
+	return m_enabled;
 }
