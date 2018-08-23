@@ -117,21 +117,21 @@
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\ShaderFile\PS_2DObject.hlsl">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Source\ShaderFile\VS_2DObject.hlsl">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Source\ShaderFile\VS_Instance2D.hlsl">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Source\ShaderFile\Default\PS_Object.hlsl">
       <FileType>Document</FileType>
     </None>
     <None Include="Source\ShaderFile\Default\VS_Object.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\ShaderFile\Default\PS_2DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Source\ShaderFile\Default\VS_2DObject.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Source\ShaderFile\Default\VS_Instance2D.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

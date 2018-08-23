@@ -53,6 +53,12 @@ struct tagVertex{
 	DirectX::XMFLOAT4 color;
 };
 
+struct tagObjectVertext {
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT4 color;
+};
+
 #include	"DxLibrary\DX_Scene.h"
 #include	"DxLibrary\DX_SceneManager.h"
 #include	"DxLibrary\DX_System.h"

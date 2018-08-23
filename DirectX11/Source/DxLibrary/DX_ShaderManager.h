@@ -83,6 +83,11 @@ public:
 	//------------------------------------------------------------------------------
 	ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
 
+	ID3D11InputLayout* GetDefaultInputLayoutObject() {
+		return m_pInputLayoutObject
+			;
+	}
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		ƒ[ƒ‹ƒhs—ñ‚ğ‘—‚é
