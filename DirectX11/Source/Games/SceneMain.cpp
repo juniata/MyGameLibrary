@@ -1,5 +1,4 @@
 #include	"DxLibrary\DX_Library.h"
-#include	"CircularBarrageManager.h"
 #include	"Player.h"
 #include	"SceneMain.h"
 #include	"user_helper_class\OGGManager.h"
@@ -24,7 +23,6 @@ SceneMain::~SceneMain()
 	DELETE_OBJ(g_tex);
 	DELETE_OBJ(g_tex2);
 	DELETE_OBJ(g_pView);
-	DELETE_OBJ(circularBarrageManager);
 	DELETE_OBJ(player);
 }
 DirectX::XMFLOAT3 angle(0.0f,0.0f,0.0f);
@@ -45,8 +43,6 @@ bool SceneMain::Initialize()
 	g_box->SetScale(DirectX::XMFLOAT3(5.0f, 5.0f, 5.0f));
 	g_box->SetPos(DirectX::XMFLOAT3(0.0f, 20.0f, 0.0f));
 
-	circularBarrageManager = new CircularBarrageManager();
-
 	player = new Player();
 
 	//DX_Lighting::Initialize();
@@ -64,8 +60,6 @@ DirectX::XMFLOAT3 pos;
 bool SceneMain::Update()
 {
 	g_pView->FreeCamera(2.0f);
-
-	circularBarrageManager->Update();
 
 	player->Update();
 
@@ -112,7 +106,6 @@ void SceneMain::Render()
 	g_pView->Clear();
 
 	//g_tex->Render(tagRect(0, 0, CAST_F(DX_System::GetWindowWidth()), CAST_F(DX_System::GetWindowHeight())));
-	circularBarrageManager->Render();
 
 	player->Render();
 	g_box->Render();

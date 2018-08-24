@@ -141,12 +141,6 @@
     <ClInclude Include="Source\user_helper_class\WAVManager.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Games\Bullet.h">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\CircularBarrage.h">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Games\SceneMain.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
@@ -154,9 +148,6 @@
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\ModelLoader\imoloader.h">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\CircularBarrageManager.h">
       <Filter>ソース ファイル\Games</Filter>
     </ClInclude>
     <ClInclude Include="Source\Games\Player.h">
@@ -278,12 +269,6 @@
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Games\Bullet.cpp">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\CircularBarrage.cpp">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Games\SceneMain.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
@@ -291,9 +276,6 @@
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\CircularBarrageManager.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
     <ClCompile Include="Source\Games\Player.cpp">
