@@ -18,6 +18,11 @@ DX_RenderState::DX_RenderState() :
 	m_pBlendState(nullptr),
 	m_pDepthStencilState(nullptr),
 	m_pSamplerState(nullptr)
+
+#if defined(DEBUG) || defined(_DEBUG)
+	,m_pWireFrameRS(nullptr),
+	m_bUseSolidRS(true)
+#endif
 {}
 
 //-----------------------------------------------------------------------------------------
@@ -31,6 +36,11 @@ DX_RenderState::~DX_RenderState()
 	SAFE_RELEASE(m_pBlendState);
 	SAFE_RELEASE(m_pDepthStencilState);
 	SAFE_RELEASE(m_pSamplerState);
+
+#if defined(DEBUG) || defined(_DEBUG)
+	SAFE_RELEASE(m_pWireFrameRS);
+#endif
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -90,22 +100,78 @@ void DX_RenderState::Initialize()
 	}
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  ラスタライザステートを取得する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11RasterizerState* DX_RenderState::GetDefaultRasterizerState() const
 {
 	return m_pRasterizerState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  ブレンドステートを取得する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11BlendState* DX_RenderState::GetDefaultBlendState() const
 {
 	return m_pBlendState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  深度/ステンシルステートを取得する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11DepthStencilState* DX_RenderState::GetDefaultDepthStencilState() const
 {
 	return m_pDepthStencilState;
 }
+
+//-----------------------------------------------------------------------------------------
+//
+//  サンプラステートを取得する
+//
+//-----------------------------------------------------------------------------------------
 ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState() const
 {
 	return m_pSamplerState;
 }
+
+#if defined(DEBUG) || defined(_DEBUG)
+//------------------------------------------------------------------------------
+//
+//  ラスタライザーステートを取得する(SwitchSolidRS() SwitchWireframeRS()でラスタライザが切り替わる)
+//
+//------------------------------------------------------------------------------
+ID3D11RasterizerState* DX_RenderState::GetSwitchRasterizer() const
+{
+	return m_bUseSolidRS ? m_pRasterizerState : m_pWireFrameRS;
+}
+
+//------------------------------------------------------------------------------
+//
+//  ラスタライザをソリッド描画に切り替える
+//
+//------------------------------------------------------------------------------
+void DX_RenderState::SwitchSolidRS()
+{
+	m_bUseSolidRS = true;
+}
+
+//------------------------------------------------------------------------------
+//
+//  ラスタライザをワイヤーフレーム描画に切り替える
+//
+//------------------------------------------------------------------------------
+void DX_RenderState::SwitchWireframeRS()
+{
+	m_bUseSolidRS = false;
+}
+#endif
+
 //-----------------------------------------------------------------------------------------
 //
 //  ラスタライザーステートを作成する
@@ -113,24 +179,46 @@ ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState() const
 //-----------------------------------------------------------------------------------------
 void DX_RenderState::CreateRasterizerState(ID3D11Device*	pDevice)
 {
-	D3D11_RASTERIZER_DESC l_rsDesc;
-	ZeroMemory(&l_rsDesc, sizeof(l_rsDesc));
+	D3D11_RASTERIZER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
 
-	l_rsDesc.FillMode				= D3D11_FILL_MODE::D3D11_FILL_SOLID;	//	普通に描画
-	l_rsDesc.CullMode				= D3D11_CULL_MODE::D3D11_CULL_BACK;		//	裏面非描画
-	l_rsDesc.FrontCounterClockwise	= FALSE;	//	時計周りが表面
-	l_rsDesc.DepthBias				= 0;		//	深度バイアス｢0｣
-	l_rsDesc.DepthBiasClamp			= 0;
-	l_rsDesc.SlopeScaledDepthBias	= 0;
-	l_rsDesc.DepthClipEnable		= TRUE;		//	深度クリッピング有り
-	l_rsDesc.ScissorEnable			= FALSE;	//	シザー矩形無し
-	l_rsDesc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
-	l_rsDesc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
+	desc.FillMode				= D3D11_FILL_MODE::D3D11_FILL_SOLID;	//	普通に描画
+	desc.CullMode				= D3D11_CULL_MODE::D3D11_CULL_BACK;		//	裏面非描画
+	desc.FrontCounterClockwise	= FALSE;	//	時計周りが表面
+	desc.DepthBias				= 0;		//	深度バイアス｢0｣
+	desc.DepthBiasClamp			= 0;
+	desc.SlopeScaledDepthBias	= 0;
+	desc.DepthClipEnable		= TRUE;		//	深度クリッピング有り
+	desc.ScissorEnable			= FALSE;	//	シザー矩形無し
+	desc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
+	desc.AntialiasedLineEnable	= FALSE;	//	ライン･アンチエイリアシング無し
 
-												//	rasterizer stateを作成する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&l_rsDesc, &m_pRasterizerState))){
+	//	rasterizer stateを作成する
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&desc, &m_pRasterizerState))){
 		throw "ID3D11Device::CreateRasterizerState() : failed";
 	}
+
+#if defined(DEBUG) || defined(_DEBUG)
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(wireframeDesc));
+
+	wireframeDesc.FillMode				= D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;	//	普通に描画
+	wireframeDesc.CullMode				= D3D11_CULL_MODE::D3D11_CULL_BACK;		//	裏面非描画
+	wireframeDesc.FrontCounterClockwise = FALSE;	//	時計周りが表面
+	wireframeDesc.DepthBias				= 0;		//	深度バイアス｢0｣
+	wireframeDesc.DepthBiasClamp		= 0;
+	wireframeDesc.SlopeScaledDepthBias	= 0;
+	wireframeDesc.DepthClipEnable		= TRUE;		//	深度クリッピング有り
+	wireframeDesc.ScissorEnable			= FALSE;	//	シザー矩形無し
+	wireframeDesc.MultisampleEnable		= FALSE;	//	マルチサンプリング無し
+	wireframeDesc.AntialiasedLineEnable = FALSE;	//	ライン･アンチエイリアシング無し
+	
+	//	rasterizer stateを作成する
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateRasterizerState(&wireframeDesc, &m_pWireFrameRS))) {
+		throw "ID3D11Device::CreateRasterizerState() : failed";
+	}
+
+#endif
 }
 
 

@@ -150,10 +150,14 @@ void DX_Graphics::BeginRender(IDXGISwapChain* pSwapChain)
 	//	サンプラーを設定する
 	ID3D11SamplerState* const sampler[1] = { pRenderState->GetDefaultSamplerState() };
 	l_pDeviceContext->PSSetSamplers(0, 1, sampler);
-
+	
+#if defined(DEBUG) || defined(_DEBUG)
+	//	ポリゴン描画設定
+	l_pDeviceContext->RSSetState(pRenderState->GetSwitchRasterizer());
+#else 
 	//	ポリゴン描画設定
 	l_pDeviceContext->RSSetState(pRenderState->GetDefaultRasterizerState());
-
+#endif
 	//	RSにビューポートを設定
 	l_pDeviceContext->RSSetViewports(1, DX_View::GetViewPort());
 

@@ -4,6 +4,9 @@
 #include	<mmsystem.h>
 #pragma comment(lib,"winmm.lib")
 
+#define FILE_MENU_RENDER_SOLID 1
+#define FILE_MENU_RENDER_WIRE_FRAME 2
+
 // メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -12,14 +15,7 @@
 	//#define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
 	//#define new DEBUG_CLIENTBLOCK
 
-#endif
-
-//-----------------------------------------------------------------------------------------
-//
-//
-//--------------------------------------------------------------------------------
 //	debug時のみコンソール画面を開くための変数と関数---------
-#if defined(DEBUG) || defined(_DEBUG)
 FILE*		g_pConsole = nullptr;
 
 //	コンソール画面を開く
@@ -32,7 +28,7 @@ void OpneConsoleWindow()
 //	コンソール画面を閉じる
 void CloseConsoleWindow()
 {
-	if (g_pConsole){
+	if (g_pConsole) {
 		fclose(g_pConsole);
 		FreeConsole();
 	}
@@ -53,7 +49,6 @@ void CloseConsoleWindow()
 //	マクロ定義
 //
 //-----------------------------------------------------------------------------------------
-
 #define SCENE_INITIALIZE	1
 #define SCENE_UPDATE		2
 #define SCENE_RENDER		3
@@ -214,12 +209,13 @@ bool DX_FrameWork::CreateAppWindow(
 	l_wc.hbrBackground	= (HBRUSH)GetStockObject(BACKUP_SPARSE_BLOCK);
 	l_wc.lpszMenuName	= NULL;
 	l_wc.lpszClassName	= m_pAppName;
-
+	
 	//	クラスを登録する
 	if (!RegisterClassEx(&l_wc)){
 		MessageBox(NULL, "RegisterClassEx() failed", "Error", MB_OK);
 		return false;
 	}
+
 
 	//	ウィンドウのスタイルを設定
 	int l_style = WS_OVERLAPPEDWINDOW;
@@ -243,7 +239,8 @@ bool DX_FrameWork::CreateAppWindow(
 		y, 
 		rect.right,
 		rect.bottom,
-		NULL, NULL, 
+		NULL, 
+		NULL, 
 		m_hInstance,
 		NULL);
 
@@ -257,6 +254,18 @@ bool DX_FrameWork::CreateAppWindow(
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
 
+#if defined(DEBUG) || defined(_DEBUG)
+	//	メニューを作成
+	HMENU hMenu = CreateMenu();
+	HMENU hFileMenu = CreateMenu();
+	AppendMenu(hFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(hFileMenu, MF_STRING, FILE_MENU_RENDER_SOLID, "ソリッド");
+	AppendMenu(hFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(hFileMenu, MF_STRING, FILE_MENU_RENDER_WIRE_FRAME, "ワイヤーフレーム");
+	AppendMenu(hFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, "描画方法");
+	SetMenu(m_hWnd, hMenu);
+#endif
 
 	return true;
 }
@@ -266,12 +275,7 @@ bool DX_FrameWork::CreateAppWindow(
 //	送られたメッセージを元に様々な処理を行う
 //
 //-----------------------------------------------------------------------------------------
-LRESULT CALLBACK DX_FrameWork::WndProc(
-	HWND	hWnd, 
-	UINT	msg,
-	WPARAM	wparam,
-	LPARAM	lparam
-	)
+LRESULT CALLBACK DX_FrameWork::WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 {
 	DX_System* pSystem = DX_System::GetInstance();
 
@@ -313,6 +317,24 @@ LRESULT CALLBACK DX_FrameWork::WndProc(
 
 			break;
 		}
+		break;
+
+	case WM_COMMAND:
+		switch (wparam) {
+#if defined(DEBUG) || defined(_DEBUG)
+		case FILE_MENU_RENDER_SOLID:
+			DX_RenderState::GetInstance()->SwitchSolidRS();
+			break;
+		case FILE_MENU_RENDER_WIRE_FRAME:
+			DX_RenderState::GetInstance()->SwitchWireframeRS();
+			break;
+#endif
+		case NULL:
+			break;
+		default:
+			break;
+		}
+		break;
 	}
 	return DefWindowProc(hWnd, msg, wparam, lparam);
 }

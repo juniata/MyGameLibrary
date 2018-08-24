@@ -1,6 +1,6 @@
 #include	"DX_Library.h"
+#include<stdio.h>
 using namespace DirectX;
-
 
 //-----------------------------------------------------------------------------------------
 //
@@ -434,7 +434,7 @@ void DX_ShaderManager::CreateShader(const char* pFilepath)
 	char path[_MAX_PATH] = { '\0' };
 
 	sprintf_s(path, sizeof(path), "%s%s", "Source\\ShaderFile\\Default\\", pFilepath);
-	
+
 	//	•¶Žš—ñ‚ª–³‚¯‚ê‚ÎNULL‚ª•Ô‚é
 	if (strstr(pFilepath, "VS_")){
 		pShader = new  DX_VertexShader();

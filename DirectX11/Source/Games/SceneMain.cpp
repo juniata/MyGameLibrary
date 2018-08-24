@@ -112,8 +112,8 @@ void SceneMain::Render()
 	g_pView->Clear();
 
 	//g_tex->Render(tagRect(0, 0, CAST_F(DX_System::GetWindowWidth()), CAST_F(DX_System::GetWindowHeight())));
-	//circularBarrageManager->Render();
+	circularBarrageManager->Render();
 
-	//player->Render();
+	player->Render();
 	g_box->Render();
 }
