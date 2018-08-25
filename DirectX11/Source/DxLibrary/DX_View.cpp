@@ -1,18 +1,9 @@
 #include	"DX_Library.h"
 using namespace DirectX;
-//-----------------------------------------------------------------------------------------
-//
-//	staticメンバ変数
-//
-//-----------------------------------------------------------------------------------------
-D3D11_VIEWPORT	DX_View::m_viewPort = {NULL};
-XMFLOAT4X4	DX_View::m_matView;
-XMFLOAT4X4	DX_View::m_matProj;
-XMFLOAT4X4  DX_View::m_matViewProj;
 
 //-----------------------------------------------------------------------------------------
 //
-//	staticメンバ変数
+//	メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
 DX_View::DX_View() :
@@ -20,9 +11,11 @@ m_pos(0.0f,20,-50.0f),
 m_target(0.0f,20.0f, 0.0f),
 m_upDirection(0.0f, 1.0f, 0.0f),
 m_bChanged(true),
-m_updateFrameNum(0)
+m_updateFrameNum(0),
+m_pConstantBuffer(nullptr)
 {
 	//	メンバ変数初期化
+	ZeroMemory(&m_viewPort, sizeof(m_viewPort));
 	ZeroMemory(&m_matView, sizeof(m_matView));
 	ZeroMemory(&m_matProj, sizeof(m_matProj));
 	ZeroMemory(&m_matViewProj, sizeof(m_matViewProj));
@@ -38,6 +31,19 @@ m_updateFrameNum(0)
 
 	//	視錐台の面を作成
 	CreateFrustum();
+
+	m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4) * 3);
+}
+
+
+//-----------------------------------------------------------------------------------------
+//
+//	解放
+//
+//-----------------------------------------------------------------------------------------
+DX_View::~DX_View()
+{
+	SAFE_RELEASE(m_pConstantBuffer);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -66,6 +72,9 @@ void DX_View::Active()
 		//	viewProj行列を作成
 		XMMATRIX viwProj = view * proj;
 		XMStoreFloat4x4(&m_matViewProj, viwProj);
+
+		//	RSにビューポートを設定
+		DX_System::GetInstance()->GetDeviceContext()->RSSetViewports(1, GetViewPort());
 
 		//	フラグをfalseにする
 		m_bChanged = false;
@@ -156,9 +165,18 @@ void DX_View::SetMatrixForTheView()
 	};
 
 	//	行列を送る
-	DX_ShaderManager::GetInstance()->SetMatrix(0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetMatrix(m_pConstantBuffer, 0, l_mat, 3, DX_System::GetInstance()->DX_System::GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//	viewportを取得sうる
+//
+//-----------------------------------------------------------------------------------------
+D3D11_VIEWPORT* DX_View::GetViewPort()
+{ 
+	return &m_viewPort;
+}
 
 //-----------------------------------------------------------------------------------------
 //

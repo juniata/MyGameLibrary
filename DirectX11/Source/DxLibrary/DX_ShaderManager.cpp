@@ -125,13 +125,9 @@ ID3D11InputLayout* DX_ShaderManager::GetDefaultInputLayoutInstance2D()
 //  ワールド行列をシェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetWorldMat(
-	const DirectX::XMFLOAT4X4&				worldMat,
-	ID3D11DeviceContext*		pDeviceContext,
-	DX_SHADER_TYPE	shaderType
-	)
+void DX_ShaderManager::SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT4X4& worldMat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
 {
-	SetMatrix(1, worldMat, pDeviceContext, shaderType);
+	SetMatrix(pBuffer, 1, worldMat, pDeviceContext, shaderType);
 }
 
 void DX_ShaderManager::SetInt(const unsigned int			registerNum,
@@ -269,23 +265,13 @@ void DX_ShaderManager::SetVector(
 //	行列をシェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetMatrix(
-	const unsigned int			regiserNum,
-	const XMFLOAT4X4&				mat,
-	ID3D11DeviceContext*		pDeviceContext,
-	DX_SHADER_TYPE	shaderType
-	)
+void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
 {
-	//	ローカル変数
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4));
-
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &mat, 0, 0);
+	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &mat, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
-
-	SAFE_RELEASE(l_pBuffer);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &pBuffer, shaderType);
 }
 
 
@@ -294,25 +280,13 @@ void DX_ShaderManager::SetMatrix(
 //	行列を複数シェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetMatrix(
-	const unsigned int			regiserNum,
-	const XMFLOAT4X4*				pMat,
-	const unsigned int			matCount,
-	ID3D11DeviceContext*		pDeviceContext,
-	DX_SHADER_TYPE shaderType
-	)
+void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const XMFLOAT4X4* pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType)
 {
-	//	ローカル変数
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4)* matCount);
-
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, pMat, 0, 0);
+	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, pMat, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
-
-	SAFE_RELEASE(l_pBuffer);
-
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &pBuffer, shaderType);
 }
 //-----------------------------------------------------------------------------------------
 //

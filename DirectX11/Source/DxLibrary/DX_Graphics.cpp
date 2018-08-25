@@ -139,34 +139,6 @@ void DX_Graphics::BeginRender(IDXGISwapChain* pSwapChain)
 		if (pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED){ return; }
 		m_stand_by_mode = false;
 	}
-
-
-	DX_View::Clear();
-
-	DX_System* pSystem = DX_System::GetInstance();
-	ID3D11DeviceContext* l_pDeviceContext = pSystem->GetDeviceContext();
-	DX_RenderState* pRenderState = DX_RenderState::GetInstance();
-	
-	//	サンプラーを設定する
-	ID3D11SamplerState* const sampler[1] = { pRenderState->GetDefaultSamplerState() };
-	l_pDeviceContext->PSSetSamplers(0, 1, sampler);
-	
-#if defined(DEBUG) || defined(_DEBUG)
-	//	ポリゴン描画設定
-	l_pDeviceContext->RSSetState(pRenderState->GetSwitchRasterizer());
-#else 
-	//	ポリゴン描画設定
-	l_pDeviceContext->RSSetState(pRenderState->GetDefaultRasterizerState());
-#endif
-	//	RSにビューポートを設定
-	l_pDeviceContext->RSSetViewports(1, DX_View::GetViewPort());
-
-	//	OMに必要情報を設定
-	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ID3D11RenderTargetView* const targets[1] = { pSystem->GetDefaultRenderTargetView() };
-	l_pDeviceContext->OMSetRenderTargets(1, targets, pSystem->GetDefaultDepthStencilView());
-	l_pDeviceContext->OMSetDepthStencilState(pRenderState->GetDefaultDepthStencilState(), 1);
-	l_pDeviceContext->OMSetBlendState(pRenderState->GetDefaultBlendState(), l_blendFactor, 0xffffffff);
 }
 
 //-----------------------------------------------------------------------------------------

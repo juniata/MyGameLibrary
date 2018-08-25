@@ -97,11 +97,7 @@ public:
 	//	@note		ÉåÉWÉXÉ^î‘çÜÇÕ1
 	//
 	//------------------------------------------------------------------------------
-	void SetWorldMat(
-		const DirectX::XMFLOAT4X4&				worldMat,
-		ID3D11DeviceContext*		pDeviceContext,
-		DX_SHADER_TYPE	shaderType
-	);
+	void SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT4X4& worldMat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 
 	void SetInt(const unsigned int			registerNum,
 		const DirectX::XMINT4&				vec4,
@@ -174,12 +170,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	void SetMatrix(
-		const unsigned int			regiserNum,
-		const DirectX::XMFLOAT4X4&				mat,
-		ID3D11DeviceContext*		pDeviceContext,
-		DX_SHADER_TYPE	shaderType
-	);
+	void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -191,13 +182,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//
 	//------------------------------------------------------------------------------
-	void SetMatrix(
-		const unsigned int			regiserNum,
-		const DirectX::XMFLOAT4X4*				pMat,
-		const unsigned int			matCount,
-		ID3D11DeviceContext*		pDeviceContext,
-		DX_SHADER_TYPE	shaderType
-	);
+	void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4*	pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
 
 	//------------------------------------------------------------------------------
 	//

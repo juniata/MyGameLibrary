@@ -17,31 +17,6 @@
 //****************************************************************************************************
 class DX_View
 {
-protected:
-	static D3D11_VIEWPORT m_viewPort;
-	static DirectX::XMFLOAT4X4 m_matView;
-	static DirectX::XMFLOAT4X4 m_matProj;
-	static DirectX::XMFLOAT4X4 m_matViewProj;
-	
-	DirectX::XMFLOAT3 m_pos;
-	DirectX::XMFLOAT3 m_target;
-	DirectX::XMFLOAT3 m_upDirection;
-
-	struct tagViewInfo{
-		float fovY;
-		float znear;
-		float zfar;
-		float aspect;
-	}m_viewInfo;
-
-	bool m_bChanged;
-
-	//	視錐台の面
-	DirectX::XMFLOAT4 m_plane[6];
-
-	//	視錐台の面を何フレームおきに作成するかを設定
-	int m_updateFrameNum;
-
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -52,10 +27,10 @@ public:
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		何もしない
+	//  @brief		解放
 	//
 	//------------------------------------------------------------------------------
-	virtual ~DX_View(){};
+	virtual ~DX_View();
 	
 	//------------------------------------------------------------------------------
 	//
@@ -71,12 +46,7 @@ public:
 	//	@param[in]	bStencilClear	trueならステンシルをクリアする(0でクリア)
 	//
 	//------------------------------------------------------------------------------
-	static void Clear(
-		const bool bZClear			= true,
-		const bool bStencilClear	= true,
-		ID3D11RenderTargetView* pRtv = nullptr,
-		ID3D11DepthStencilView* pDsv = nullptr
-		);
+	void Clear(const bool bZClear = true, const bool bStencilClear = true, ID3D11RenderTargetView* pRtv = nullptr, ID3D11DepthStencilView* pDsv = nullptr);
 
 	//------------------------------------------------------------------------------
 	//
@@ -93,11 +63,7 @@ public:
 	//	@param[in]	zfar	試錐台の奥
 	//
 	//------------------------------------------------------------------------------
-	void SetProjection(
-		const float fovY,
-		const float znear,
-		const float zfar
-		);
+	void SetProjection(const float fovY, const float znear, const float zfar);
 
 
 	//------------------------------------------------------------------------------
@@ -105,9 +71,14 @@ public:
 	//  @brief		viewに関する行列を送る
 	//
 	//------------------------------------------------------------------------------
-	static void SetMatrixForTheView();
+	void SetMatrixForTheView();
 
-	static D3D11_VIEWPORT* GetViewPort() { return &m_viewPort; }
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		viewpportを取得
+	//
+	//------------------------------------------------------------------------------
+	D3D11_VIEWPORT* GetViewPort();
 
 	//------------------------------------------------------------------------------
 	//
@@ -147,9 +118,7 @@ public:
 	//	@param[in]	updateFrameNum	指定したフレームおきに、視錐台の6つの面を算出する
 	//
 	//------------------------------------------------------------------------------
-	void CreateFrustum(
-		const int updateFrameNum = 0	
-		);
+	void CreateFrustum(const int updateFrameNum = 0);
 
 	//------------------------------------------------------------------------------
 	//
@@ -158,9 +127,7 @@ public:
 	//	@return		true:入っている	false:入っていない
 	//
 	//------------------------------------------------------------------------------
-	bool IsCheckPointInFrustum(
-		const DirectX::XMFLOAT3& pos
-		);
+	bool IsCheckPointInFrustum(const DirectX::XMFLOAT3& pos);
 
 	//------------------------------------------------------------------------------
 	//
@@ -170,10 +137,7 @@ public:
 	//	@return		true:入っている	false:入っていない
 	//
 	//------------------------------------------------------------------------------
-	bool IsCheckCubeInFrustum(
-		const DirectX::XMFLOAT3&	center,
-		const float		radius	
-		);
+	bool IsCheckCubeInFrustum(const DirectX::XMFLOAT3& center, const float radius);
 
 	//------------------------------------------------------------------------------
 	//
@@ -183,10 +147,7 @@ public:
 	//	@return		true:入っている	false:入っていない
 	//
 	//------------------------------------------------------------------------------
-	bool IsCheckSphereInFrustum(
-		const DirectX::XMFLOAT3&	center,
-		const float		radius	
-		);
+	bool IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const float radius);
 
 	//------------------------------------------------------------------------------
 	//
@@ -194,6 +155,35 @@ public:
 	//	@param[in]	moveSpeed	カメラの移動速度
 	//
 	//------------------------------------------------------------------------------
-	void	FreeCamera(const float moveSpeed = 1.0f);
+	void FreeCamera(const float moveSpeed = 1.0f);
+
+protected:
+	D3D11_VIEWPORT m_viewPort;
+
+	DirectX::XMFLOAT4X4 m_matView;
+	DirectX::XMFLOAT4X4 m_matProj;
+	DirectX::XMFLOAT4X4 m_matViewProj;
+	
+	DirectX::XMFLOAT3 m_pos;
+	DirectX::XMFLOAT3 m_target;
+	DirectX::XMFLOAT3 m_upDirection;
+
+	ID3D11Buffer* m_pConstantBuffer;
+
+	struct tagViewInfo{
+		float fovY;
+		float znear;
+		float zfar;
+		float aspect;
+	}m_viewInfo;
+
+	bool m_bChanged;
+
+	//	視錐台の面
+	DirectX::XMFLOAT4 m_plane[6];
+
+	//	視錐台の面を何フレームおきに作成するかを設定
+	int m_updateFrameNum;
+
 };
 #endif // !__DX_VIEW_H_

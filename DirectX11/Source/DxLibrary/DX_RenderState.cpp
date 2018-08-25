@@ -76,28 +76,45 @@ void DX_RenderState::Initialize()
 {
 	PROFILE("DX_RenderState::Initialize()");
 
-	//	デバイスを取得
-	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
-
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
+	DX_System*				pSystem		= DX_System::GetInstance();
+	ID3D11Device*			pDevice		= pSystem->GetDevice();
+	ID3D11DeviceContext*	pContext	= pSystem->GetDeviceContext();
 
 	try{
 		//	ラスタライザーステートを作成
-		CreateRasterizerState(l_pDevice);
+		CreateRasterizerState(pDevice);
 
 		//	ブレンドステートを作成
-		CreateBlendState(l_pDevice);
+		CreateBlendState(pDevice);
 
 		//	深度･ステンシルステートを作成
-		CreateDepthStencilState(l_pDevice);
+		CreateDepthStencilState(pDevice);
 		
 		//	サンプラーステートを作成
-		CreateSamplerState(l_pDevice);
+		CreateSamplerState(pDevice);
 	}
 	catch (char* pMessage){
 		throw pMessage;
 	}
+
+
+	//	OMに必要情報を設定
+	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	ID3D11RenderTargetView* const targets[1] = { pSystem->GetDefaultRenderTargetView() };
+	pContext->OMSetRenderTargets(1, targets, pSystem->GetDefaultDepthStencilView());
+	pContext->OMSetDepthStencilState(GetDefaultDepthStencilState(), 1);
+
+	//	サンプラーを設定する
+	ID3D11SamplerState* const sampler[1] = { GetDefaultSamplerState() };
+	pContext->PSSetSamplers(0, 1, sampler);
+
+#if defined(DEBUG) || defined(_DEBUG)
+	//	ポリゴン描画設定
+	pContext->RSSetState(GetSwitchRasterizer());
+#else 
+	//	ポリゴン描画設定
+	pContext->RSSetState(GetDefaultRasterizerState());
+#endif
 }
 
 //-----------------------------------------------------------------------------------------
