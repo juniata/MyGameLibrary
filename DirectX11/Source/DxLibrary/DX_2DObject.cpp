@@ -7,14 +7,21 @@ using namespace DirectX;
 //
 //-----------------------------------------------------------------------------------------
 DX_2DObject::DX_2DObject() :
-
-//	テクスチャを初期化
-m_pShaderResourceView(nullptr),
-
-//	テクスチャサイズを初期化
-m_height(0),
-m_width(0)
+	m_pVertexBuffer(nullptr),
+	m_pShaderResourceView(nullptr),
+	m_height(0),
+	m_width(0),
+	m_bClone(false)
 {
+	tagVertex2D l_pVertex[] = {
+		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
+		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
+		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
+		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
+	};
+
+	//	バッファを作成
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
 }
 
 
@@ -36,8 +43,10 @@ DX_2DObject::DX_2DObject(const char* pFilepath) : DX_2DObject()
 //-----------------------------------------------------------------------------------------
 DX_2DObject::~DX_2DObject()
 {
-	//	テクスチャを解放する
-	DX_TextureManager::Release(m_pShaderResourceView);
+	if (IsOriginal()) {
+		SAFE_RELEASE(m_pVertexBuffer);
+		DX_TextureManager::Release(m_pShaderResourceView);
+	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -67,34 +76,24 @@ unsigned int DX_2DObject::GetWidth()const
 //-----------------------------------------------------------------------------------------
 void DX_2DObject::Render()
 {
-	tagVertex2D l_pVertex[] = {
-		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
-		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
-		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
-		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
-	};
+	//	デバイスコンテキストを取得
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
-	//	バッファを作成
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
 	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
 	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-	//	デバイスコンテキストを取得
-	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
-
 	//	シェーダーを利用
-	l_pVertexShader->Begin(l_deviceContext);
-	l_pPixelShader->Begin(l_deviceContext);
+	l_pVertexShader->Begin(pContext);
+	l_pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(l_pBuffer, m_pShaderResourceView);
-	//	シェーダーを終了
-	l_pVertexShader->End(l_deviceContext);
-	l_pPixelShader->End(l_deviceContext);
+	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
-	SAFE_RELEASE(l_pBuffer);
+	//	シェーダーを終了
+	l_pVertexShader->End(pContext);
+	l_pPixelShader->End(pContext);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -104,36 +103,27 @@ void DX_2DObject::Render()
 //-----------------------------------------------------------------------------------------
 void DX_2DObject::Render(const tagRect& renderPos)
 {
-	//	頂点情報
-	tagVertex2D l_pVertex[4];
+	//	デバイスコンテキストを取得
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(l_pVertex, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
-
-	//	バッファを作成
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	CreateVertex(pContext, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
 	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
 	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
-
 	//	シェーダーを利用
-	l_pVertexShader->Begin(l_pDeviceContext);
-	l_pPixelShader->Begin(l_pDeviceContext);
+	l_pVertexShader->Begin(pContext);
+	l_pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(l_pBuffer, m_pShaderResourceView);
+	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(l_pDeviceContext);
-	l_pPixelShader->End(l_pDeviceContext);
-
-	SAFE_RELEASE(l_pBuffer);
-
+	l_pVertexShader->End(pContext);
+	l_pPixelShader->End(pContext);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -143,38 +133,27 @@ void DX_2DObject::Render(const tagRect& renderPos)
 //-----------------------------------------------------------------------------------------
 void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSize)
 {
-	//	頂点情報
-	tagVertex2D l_pVertex[4];
+	//	デバイスコンテキストを取得
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(l_pVertex, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
-	
-
-	//	バッファを作成
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	CreateVertex(pContext, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
 	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
 	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
-
 	//	シェーダーを利用
-	l_pVertexShader->Begin(l_pDeviceContext);
-	l_pPixelShader->Begin(l_pDeviceContext);
+	l_pVertexShader->Begin(pContext);
+	l_pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(l_pBuffer, m_pShaderResourceView);
+	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(l_pDeviceContext);
-	l_pPixelShader->End(l_pDeviceContext);
-
-
-	SAFE_RELEASE(l_pBuffer);
-
+	l_pVertexShader->End(pContext);
+	l_pPixelShader->End(pContext);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -184,38 +163,27 @@ void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSi
 //-----------------------------------------------------------------------------------------
 void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 {
-	//	頂点情報
-	tagVertex2D l_pVertex[4];
+	//	デバイスコンテキストを取得
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(l_pVertex, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
-
-	//	バッファを作成
-	ID3D11Buffer* l_pBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	CreateVertex(pContext, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
 	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
 	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
-
 	//	シェーダーを利用
-	l_pVertexShader->Begin(l_pDeviceContext);
-	l_pPixelShader->Begin(l_pDeviceContext);
+	l_pVertexShader->Begin(pContext);
+	l_pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(l_pBuffer, m_pShaderResourceView);
+	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(l_pDeviceContext);
-	l_pPixelShader->End(l_pDeviceContext);
-
-
-	SAFE_RELEASE(l_pBuffer);
-
-
+	l_pVertexShader->End(pContext);
+	l_pPixelShader->End(pContext);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -223,9 +191,7 @@ void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 //  テクスチャを読み込む
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::LoadTexture(
-	const char* pFilepath
-	)
+void DX_2DObject::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
 	m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath);
@@ -254,11 +220,47 @@ void DX_2DObject::LoadTexture(
 
 //-----------------------------------------------------------------------------------------
 //
+//	複製する
+//
+//-----------------------------------------------------------------------------------------
+DX_2DObject* DX_2DObject::Clone()
+{
+	DX_2DObject* pObject = new DX_2DObject(*this);
+	pObject->m_bClone = true;
+	
+	return pObject;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	オブジェクトが複製したものかどうか
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::IsClone() const
+{
+	return m_bClone;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	オブジェクトがオリジナルかどうか
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::IsOriginal() const
+{
+	return !m_bClone;
+}
+
+//-----------------------------------------------------------------------------------------
+//
 //  頂点情報を作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::CreateVertex(tagVertex2D* pVertex, const tagRect& renderPos, const tagRect& texturePos)
+void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const tagRect& renderPos, const tagRect& texturePos)
 {
+	//	頂点情報
+	tagVertex2D pVertex[4];
+
 	//	1 ~ 0の値に変換
 	const float l_centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
 	const float l_centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
@@ -299,4 +301,6 @@ void DX_2DObject::CreateVertex(tagVertex2D* pVertex, const tagRect& renderPos, c
 	//	下の座標
 	pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
 
+	// バッファの上書き
+	pContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, pVertex, 0, 0);
 }

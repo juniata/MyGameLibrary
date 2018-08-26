@@ -5,16 +5,15 @@
 //  定数バッファを作成する
 //
 //-----------------------------------------------------------------------------------------
-ID3D11Buffer* DX_Buffer::CreateConstantBuffer(ID3D11Device*	pDevice, const size_t bufferSize)
+ID3D11Buffer* DX_Buffer::CreateConstantBuffer(ID3D11Device*	pDevice, UINT bufferSize)
 {
 	D3D11_BUFFER_DESC desc	= { NULL };
-	desc.ByteWidth			= static_cast<UINT>(bufferSize);
+	desc.ByteWidth			= bufferSize;
 	desc.Usage				= D3D11_USAGE_DEFAULT;
 	desc.BindFlags			= D3D11_BIND_CONSTANT_BUFFER;
 
 	return CreateBuffer(pDevice, &desc);
 }
-
 
 //-----------------------------------------------------------------------------------------
 //
@@ -166,28 +165,25 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(ID3D11Device* pDevice, const size_t buffe
 //  2Dを描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_Buffer::Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
+void DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
 {
 	unsigned int l_stride = sizeof(tagVertex2D);
 	unsigned int l_offset = 0;
 
-	//	デバイスコンテキストを取得
-	auto l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
-
 	//	VertexBufferを送る
-	l_deviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
+	pContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
 
 	//	InputLayoutの設定を送る
-	l_deviceContext->IASetInputLayout(DX_ShaderManager::GetInstance()->GetDefaultInputLayout2D());
+	pContext->IASetInputLayout(pShaderManager->GetDefaultInputLayout2D());
 
 	//	Primitiveの設定を送る
-	l_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//	PixelShaderにテクスチャ情報を送る
-	DX_ResourceManager::SetShaderResources(l_deviceContext, 0, 1, &pShaderRerousceView,DX_SHADER_TYPE::PIXEL_SHADER);
+	DX_ResourceManager::SetShaderResources(pContext, 0, 1, &pShaderRerousceView,DX_SHADER_TYPE::PIXEL_SHADER);
 
 	//	描画
-	l_deviceContext->Draw(4, 0);
+	pContext->Draw(4, 0);
 
 }
 

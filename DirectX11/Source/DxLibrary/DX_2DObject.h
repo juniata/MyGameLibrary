@@ -94,30 +94,49 @@ public:
 	//	@param[in]	pFilepath	テクスチャのファイルパス
 	//
 	//------------------------------------------------------------------------------
-	void LoadTexture(
-		const char* pFilepath
-		);
-
-private:
-	//	テクスチャ情報
-	ID3D11ShaderResourceView*		m_pShaderResourceView;
-	//	テクスチャサイズ
-	unsigned int m_height;
-	unsigned int m_width;
+	void LoadTexture(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
+	//  @brief		複製する
+	//	@return		複製したオブジェクト
+	//
+	//------------------------------------------------------------------------------
+	DX_2DObject* Clone();
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		オブジェクトが複製したものかどうか
+	//	@return		オブジェクトが複製したものならtrue
+	//
+	//------------------------------------------------------------------------------
+	bool IsClone() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		オブジェクトがオリジナルかどうか
+	//	@return		オブジェクトがオリジナルならtrue
+	//
+	//------------------------------------------------------------------------------
+	bool IsOriginal() const;
+private:
+	ID3D11Buffer* m_pVertexBuffer;
+
+	ID3D11ShaderResourceView*		m_pShaderResourceView;
+
+	unsigned int m_height;
+	unsigned int m_width;
+
+	bool m_bClone;
+	//------------------------------------------------------------------------------
+	//
 	//  @brief		頂点情報を作成する
-	//	@param[in]	pVertex		tagVertex2D[4]
+	//	@param[in]	pContext	コンテキスト
 	//	@param[in]	renderPos	画面に描画する範囲	
 	//	@param[in]	texturePos	描画する画像の範囲
 	//
 	//------------------------------------------------------------------------------
-	void CreateVertex(
-		tagVertex2D*	pVertex,
-		const tagRect&	renderPos,
-		const tagRect&	texturePos
-		);
+	void CreateVertex(ID3D11DeviceContext* pContext, const tagRect& renderPos, const tagRect& texturePos);
 
 };
 

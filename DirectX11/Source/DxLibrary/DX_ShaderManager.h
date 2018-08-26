@@ -67,6 +67,7 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	DX_Shader* GetShader(const char* pFilepath);
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		デフォルトの2D描画用InputLayoutを取得する
@@ -83,6 +84,12 @@ public:
 	//------------------------------------------------------------------------------
 	ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
 
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		デフォルトのインスタンス2D描画用InputLayoutを取得する
+	//	@return		m_pInplutLayout3Dが返る
+	//
+	//------------------------------------------------------------------------------
 	ID3D11InputLayout* GetDefaultInputLayoutObject() {
 		return m_pInputLayoutObject
 			;
@@ -99,11 +106,20 @@ public:
 	//------------------------------------------------------------------------------
 	void SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT4X4& worldMat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 
-	void SetInt(const unsigned int			registerNum,
-		const DirectX::XMINT4&				vec4,
-		ID3D11Device*				pDevice,
-		ID3D11DeviceContext*		pDeviceContext,
-		DX_SHADER_TYPE	shaderType);
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		intをシェーダーに送る
+	//	@return		m_pInplutLayout3Dが返る
+	//
+	//------------------------------------------------------------------------------
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const int value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT2& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT3& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT4& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const unsigned int value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT2& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT3& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT4& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		Vector4をシェーダーに送る
@@ -209,7 +225,6 @@ public:
 		ID3D11DeviceContext*		pDeviceContext,
 		DX_SHADER_TYPE	shaderType
 	);
-
 
 private:
 	static const size_t SHADER_NUM = 10;

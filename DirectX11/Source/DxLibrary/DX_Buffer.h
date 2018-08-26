@@ -19,7 +19,7 @@ public:
 	//	@param[in]	bufferSize		バッファサイズ
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11Buffer* CreateConstantBuffer(ID3D11Device*	pDevice, const size_t bufferSize);
+	static ID3D11Buffer* CreateConstantBuffer(ID3D11Device*	pDevice, UINT bufferSize);
 
 	//------------------------------------------------------------------------------
 	//
@@ -117,8 +117,10 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		2Dを描画する
+	//	@param[in]	pContext			コンテキスト
 	//	@param[in]	pVertexBuffer		作成した頂点バッファ
 	//	@param[in]	pShaderRerousceView	作成したSRV
+	//	@param[in]	pInputLayout		インプットレイアウト
 	//	@note		Render2Dを呼ぶ前に頂点シェーダーとピクセルシェーダを
 	//				設定すること(DX_Shader::Begin())
 	//				呼んだ後はシェーダーの終了を終える事(DX_Shader::End())
@@ -126,7 +128,7 @@ public:
 	//				独自に設定もできるが、描画後にデフォルトに戻す事
 	//
 	//------------------------------------------------------------------------------
-	static void Render2D(ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView);
+	static void Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView);
 
 private:
 

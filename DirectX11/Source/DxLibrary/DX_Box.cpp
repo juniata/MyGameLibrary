@@ -15,10 +15,8 @@ DX_Box::DX_Box() :
 	m_bChanged(true),
 	m_bClone(false)
 {
-	if (IsOriginal()) {
-		CreateBuffer();
-		Update();
-	}
+	CreateBuffer();
+	Update();
 }
 
 //-----------------------------------------------------------------------------------------
