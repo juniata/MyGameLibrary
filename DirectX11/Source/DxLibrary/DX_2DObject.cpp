@@ -131,7 +131,7 @@ void DX_2DObject::Render(const tagRect& renderPos)
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSize)
+void DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize)
 {
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();

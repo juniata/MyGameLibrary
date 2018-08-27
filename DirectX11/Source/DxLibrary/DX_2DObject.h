@@ -30,9 +30,7 @@ public:
 	//	@param[in]	pFilepath	テクスチャのファイルパス
 	//
 	//------------------------------------------------------------------------------
-	DX_2DObject(
-		const char* pFilepath
-		);
+	DX_2DObject(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
@@ -86,7 +84,7 @@ public:
 	//	@param[in]	renderSize	描画する画像の範囲
 	//
 	//------------------------------------------------------------------------------
-	void Render(DirectX::XMFLOAT2 renderPos, DirectX::XMFLOAT2 renderSize);
+	void Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize);
 
 	//------------------------------------------------------------------------------
 	//

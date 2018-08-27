@@ -28,21 +28,24 @@
 #define CAST_D(x) static_cast<double>(x)
 #define CAST_L(x) static_cast<long>(x)
 
+typedef ID3D11DeviceContext			ID3D11DC;
 typedef ID3D11ShaderResourceView	ID3D11SRV;
 typedef ID3D11RenderTargetView		ID3D11RTV;
 typedef ID3D11DepthStencilView		ID3D11DSV;
 typedef ID3D11UnorderedAccessView	ID3D11UAV;
+typedef ID3D11InputLayout			ID3D11IL;
+typedef ID3D11VertexShader			ID3D11VS;
+typedef ID3D11HullShader			ID3D11HS;
+typedef ID3D11DomainShader			ID3D11DS;
+typedef ID3D11GeometryShader		ID3D11GS;
+typedef ID3D11ComputeShader			ID3D11CS;
+typedef ID3D11PixelShader			ID3D11PS;
 
-//--------------------------------------------------
-//	4í∏ì_
-//--------------------------------------------------
-struct tagRect{
+struct tagRect {
 	float x, y, w, h;
-	tagRect(const float x, const float y, const float w, const float h) :
-		x(x), y(y), w(w), h(h)
-	{}
+	tagRect() : x(0.0f), y(0.0f), w(0.0f), h(0.0f) {}
+	tagRect(const float x, const float y, const float w, const float h) : x(x), y(y), w(w), h(h){}
 };
-
 //--------------------------------------------------
 //	Meshópí∏ì_èÓïÒ
 //--------------------------------------------------
