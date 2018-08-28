@@ -183,28 +183,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Debug;$(ProjectDir)extern\oggWin32\Debug\;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Debug;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64);$(ProjectDir)extern\ogg\x64\Debug\</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\Win32\\Release;$(ProjectDir)extern\oggWin32\Release\;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x86;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(ProjectDir)extern\DirectXTex\\Desktop_2015_Win10\\x64\\Release;$(LibraryPath);$(UniversalCRT_IncludePath)\x64;$(UniversalCRT_LibraryPath_x64);$(ProjectDir)extern\ogg\x64\Release\</LibraryPath>
     <ExecutablePath>$(FrameworkSdkDir)\bin\10.0.16299.0\x64;$(ExecutablePath)</ExecutablePath>
     <OutDir>$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
