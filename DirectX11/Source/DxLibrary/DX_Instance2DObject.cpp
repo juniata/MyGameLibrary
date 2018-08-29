@@ -60,8 +60,11 @@ DX_Instance2DObject::~DX_Instance2DObject()
 //-----------------------------------------------------------------------------------------
 void DX_Instance2DObject::LoadTexture(const char* pFilepath)
 {
+	char texturePath[MAX_PATH] = { '\n' };
+	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
+
 	//	テクスチャを取得
-	m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath);
+	m_pShaderResourceView = DX_TextureManager::GetTexture(texturePath);
 
 	//	テクスチャがロードできてるかチェック
 	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャのファイルパスが間違っています");

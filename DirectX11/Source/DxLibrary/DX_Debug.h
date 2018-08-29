@@ -79,9 +79,7 @@ public:
 	//  @brief		ID3D系の生存オブジェクトを調査する
 	//
 	//------------------------------------------------------------------------------
-	void ReportLiveDeviceObjects(
-		const char* pMessage
-		);
+	void ReportLiveDeviceObjects(const char* pMessage);
 
 	//------------------------------------------------------------------------------
 	//
@@ -90,9 +88,7 @@ public:
 	//	@retrun		true:成功	false:失敗
 	//
 	//------------------------------------------------------------------------------
-	bool IsHresultCheck(
-		HRESULT hr
-		);
+	bool IsHresultCheck(HRESULT hr);
 
 	//------------------------------------------------------------------------------
 	//
@@ -101,10 +97,7 @@ public:
 	//	@param[in]	pBytecord	D3DX11CompileFromFile()で出来たバイトコード
 	//
 	//------------------------------------------------------------------------------
-	void CheckSourceCordOfShaderFile(
-		HRESULT		hr,
-		ID3DBlob*	pBytecord
-		);
+	void CheckSourceCordOfShaderFile(HRESULT hr, ID3DBlob* pBytecord);
 
 	//------------------------------------------------------------------------------
 	//
@@ -112,9 +105,7 @@ public:
 	//	@param[in]	printColor	SET_PRINT_COLOR
 	//	
 	//------------------------------------------------------------------------------
-	void SetPrintColor(
-		SET_PRINT_COLOR printColor
-		);
+	void SetPrintColor(SET_PRINT_COLOR printColor);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -123,11 +114,8 @@ public:
 	//	@note		debug時のみ出力
 	//	
 	//------------------------------------------------------------------------------
-	void Printf(
-		const char* pFormat,
-		...
-		);
-
+	void Printf(const char* pFormat, ...);
+	
 private:
 #if defined(DEBUG) || defined(_DEBUG)
 	ID3D11Debug* m_pDebug;

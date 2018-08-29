@@ -20,9 +20,6 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(
 	const char* pFilepath
 	)
 {
-	char texturePath[MAX_PATH] = {'\n'};
-	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
-
 	//	あればポインタ、なければnullptrが返る
 	ID3D11ShaderResourceView* l_pTexture = SearchTexture(pFilepath);
 	
@@ -32,14 +29,14 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(
 	//ロケール指定
 	setlocale(LC_ALL, "japanese");
 
-	std::string l_filepath(texturePath);
+	std::string l_filepath(pFilepath);
 
 	size_t l_size;
 	if (0 != mbstowcs_s(&l_size, NULL, 0, l_filepath.c_str(), 0)) {
 		return nullptr;
 	}
 	wchar_t filepath[MAX_PATH] = { NULL };
-	mbstowcs_s(&l_size, filepath, l_size, texturePath, _TRUNCATE);
+	mbstowcs_s(&l_size, filepath, l_size, pFilepath, _TRUNCATE);
 
 	TexMetadata metadata;
 	ScratchImage image;

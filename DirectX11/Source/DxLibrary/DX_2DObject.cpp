@@ -32,7 +32,9 @@ DX_2DObject::DX_2DObject() :
 //-----------------------------------------------------------------------------------------
 DX_2DObject::DX_2DObject(const char* pFilepath) : DX_2DObject()
 {
-	LoadTexture(pFilepath);
+	char texturePath[MAX_PATH] = { '\n' };
+	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
+	LoadTexture(texturePath);
 }
 
 
