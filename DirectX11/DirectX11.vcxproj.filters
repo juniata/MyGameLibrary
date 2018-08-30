@@ -257,9 +257,6 @@
     <ClCompile Include="Source\DxLibrary\DX_Audio.cpp">
       <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Source\user_helper_class\ALManager.cpp">
-      <Filter>ソース ファイル\Games</Filter>
-    </ClCompile>
     <ClCompile Include="Source\user_helper_class\AutoProfile.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
@@ -299,6 +296,9 @@
     <ClCompile Include="Source\DxLibrary\DX_Box.cpp">
       <Filter>ソース ファイル\DX11\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Source\user_helper_class\ALManager.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\ShaderFile\Default\PS_Object.hlsl">
@@ -316,5 +316,10 @@
     <None Include="Source\ShaderFile\Default\VS_Instance2D.hlsl">
       <Filter>ソース ファイル\Shader</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\ShaderFile\Default\GS_Object.hlsl">
+      <Filter>ソース ファイル\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -280,9 +280,11 @@ void DX_Box::CreateBuffer()
 	for (int i = 0; i < VERTEX_NUM; ++i) {
 		pVertices[i].color = XMFLOAT4(0.6f, 0.6f, 0.6f, 0.6f);
 	}
+	
 	// 面法線を計算
-
 	// 頂点法線を計算
+	// 頂点法線を格納
+	// ジオメトリで面法制を計算　ライティングを行う
 
 	// インデックスを設定
 	unsigned short pIndices[] =

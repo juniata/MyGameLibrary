@@ -14,6 +14,7 @@ const char*		DEFAULT_2D_SHADER::PIXEL_SHADER				= "PS_2DObject.hlsl";
 const char*		DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER	= "VS_Instance2D.hlsl";
 
 const char*		DEFAULT_OBJECT_SHADER::VERTEX_SHADER	= "VS_Object.hlsl";
+const char*		DEFAULT_OBJECT_SHADER::GEOMETRY_SHADER	= "GS_Object.hlsl";
 const char*		DEFAULT_OBJECT_SHADER::PIXEL_SHADER		= "PS_Object.hlsl";
 
 //-----------------------------------------------------------------------------------------
@@ -81,7 +82,9 @@ void DX_ShaderManager::Initialize()
 
 		// 
 		CreateShader(DEFAULT_OBJECT_SHADER::VERTEX_SHADER);
+		//CreateShader(DEFAULT_OBJECT_SHADER::GEOMETRY_SHADER);
 		CreateShader(DEFAULT_OBJECT_SHADER::PIXEL_SHADER);
+
 		//	インプットレイアウトを作成
 		CreateInputLayout();
 	}

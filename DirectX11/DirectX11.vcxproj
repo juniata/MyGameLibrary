@@ -129,6 +129,11 @@
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\ShaderFile\Default\GS_Object.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C89352B8-56D2-44B6-8051-4CF5F2FCBB2C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

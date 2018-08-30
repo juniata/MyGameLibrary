@@ -22,6 +22,7 @@ typedef struct DEFAULT_SHADER{
 
 	typedef struct _OBJECT {
 		static const char* VERTEX_SHADER;
+		static const char* GEOMETRY_SHADER;
 		static const char* PIXEL_SHADER;
 	}_OBJECT;
 
