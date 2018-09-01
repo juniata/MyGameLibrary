@@ -12,7 +12,7 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 Player::Player()
 {
-	m_pObj = new DX_2DObject("player.png");
+	m_pObj = new DX_2DObject("players.png"); // テスト中
 	m_size = DirectX::XMFLOAT2(SIZE, SIZE);
 	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
 	float basePosY = (DX_System::GetWindowHeight() - m_size.y);
@@ -95,11 +95,6 @@ void Player::Move()
 //-----------------------------------------------------------------------------------------
 void Player::Attack()
 {
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z))
-	{
-	}
-	m_pBarrageManager->Update();
-
 }
 
 //-----------------------------------------------------------------------------------------
@@ -107,10 +102,13 @@ void Player::Attack()
 //  更新
 //
 //-----------------------------------------------------------------------------------------
-void Player::Update()
+bool Player::Update()
 {
-	Attack();
+	bool result = true;
+
 	Move();
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -118,9 +116,13 @@ void Player::Update()
 //  描画
 //
 //-----------------------------------------------------------------------------------------
-void Player::Render()
+bool Player::Render()
 {
-	m_pBarrageManager->Render();
+	bool result = false;
 
-	m_pObj->Render(m_pos, m_size);
+	result = m_pBarrageManager->Render();
+
+	result = m_pObj->Render(m_pos, m_size);
+
+	return result;
 }

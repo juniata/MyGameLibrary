@@ -10,14 +10,6 @@
 class DX_TextureManager
 {
 public:
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		何もしない
-	//
-	//------------------------------------------------------------------------------
-	~DX_TextureManager(){}
-
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		テクスチャをロードする
@@ -25,9 +17,7 @@ public:
 	//	@return		テクスチャ情報
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11ShaderResourceView* GetTexture(
-		const char* pFilepath
-		);
+	static ID3D11ShaderResourceView* GetTexture(const char* pFilepath);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -35,9 +25,7 @@ public:
 	//	@param[in]	pTexture 使用したテクスチャ
 	//
 	//------------------------------------------------------------------------------
-	static void Release(
-		ID3D11ShaderResourceView* pTexture
-		);
+	static void Release(ID3D11ShaderResourceView* pTexture);
 
 private:
 	struct TextureInfo {
@@ -53,7 +41,14 @@ private:
 	//  @brief		何もしない
 	//
 	//------------------------------------------------------------------------------
-	DX_TextureManager() = delete;
+	DX_TextureManager() {};
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		何もしない
+	//
+	//------------------------------------------------------------------------------
+	~DX_TextureManager() {}
 
 	//------------------------------------------------------------------------------
 	//
@@ -62,8 +57,6 @@ private:
 	//	@return		発見:ポインタ	未発見:nullptr
 	//
 	//------------------------------------------------------------------------------
-	static ID3D11ShaderResourceView* SearchTexture(
-		const char* pfilepath
-		);
+	static ID3D11ShaderResourceView* SearchTexture(const char* pfilepath);
 };
 #endif // !__DX_TEXTURE_H_

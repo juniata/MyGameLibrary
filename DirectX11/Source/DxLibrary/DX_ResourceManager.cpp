@@ -28,13 +28,7 @@ int										DX_ResourceManager::m_srvRegisterNum = _NO_RESOURCE;
 //  指定したシェーダーステージにバッファを設定する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ResourceManager::SetConstantbuffers(
-	ID3D11DeviceContext*		pDeviceContext,
-	const int					registerNum,
-	const int					viewCount,
-	ID3D11Buffer* const*		pBuffers,
-	DX_SHADER_TYPE	shaderType
-	)
+bool DX_ResourceManager::SetConstantbuffers(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11Buffer* const* pBuffers, DX_SHADER_TYPE shaderType)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
 	DEBUG_VALUE_CHECK((registerNum < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています｡");
@@ -65,6 +59,8 @@ void DX_ResourceManager::SetConstantbuffers(
 	tagResourceInfo* l_pBufferInfo = &m_bufferInfo[registerNum];
 	l_pBufferInfo->registerNum = registerNum;
 	l_pBufferInfo->viewCount = viewCount;
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -72,13 +68,7 @@ void DX_ResourceManager::SetConstantbuffers(
 //  指定したシェーダーステージにリソースを設定する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ResourceManager::SetShaderResources(
-	ID3D11DeviceContext*				pDeviceContext,
-	const int							registerNum,
-	const int							viewCount, 
-	ID3D11ShaderResourceView* const*	pShaderResourceView,
-	DX_SHADER_TYPE			shaderType
-	)
+bool DX_ResourceManager::SetShaderResources(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11ShaderResourceView* const* pShaderResourceView, DX_SHADER_TYPE shaderType)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
 	DEBUG_VALUE_CHECK((registerNum < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています｡");
@@ -109,6 +99,8 @@ void DX_ResourceManager::SetShaderResources(
 	tagResourceInfo* l_pResoucrInfo = &m_srvInfo[registerNum];
 	l_pResoucrInfo->registerNum = registerNum;
 	l_pResoucrInfo->viewCount	= viewCount;
+
+	return true;
 }
 
 
@@ -117,13 +109,7 @@ void DX_ResourceManager::SetShaderResources(
 //  指定したシェーダーステージにバッファを設定する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ResourceManager::SelectSetShaderConstantBuffers(
-	ID3D11DeviceContext*		pDeviceContext,
-	const int					registerNum,
-	const int					viewCount,
-	ID3D11Buffer* const*		pBuffers,
-	DX_SHADER_TYPE	shaderType
-	)
+void DX_ResourceManager::SelectSetShaderConstantBuffers(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11Buffer* const* pBuffers, DX_SHADER_TYPE shaderType)
 {
 	switch (shaderType)
 	{
@@ -150,7 +136,6 @@ void DX_ResourceManager::SelectSetShaderConstantBuffers(
 	case DX_SHADER_TYPE::COMPUTE_SHADER:
 		pDeviceContext->CSSetConstantBuffers(registerNum, viewCount, pBuffers);
 		break;
-
 	}
 
 }
@@ -160,13 +145,7 @@ void DX_ResourceManager::SelectSetShaderConstantBuffers(
 //  指定したシェーダーステージにリソースを設定する
 //
 //-----------------------------------------------------------------------------------------
-void DX_ResourceManager::SelectSetShaderResources(
-	ID3D11DeviceContext*				pDeviceContext,
-	const int							registerNum, 
-	const int							viewCount,
-	ID3D11ShaderResourceView* const*	pShaderResourceView,
-	DX_SHADER_TYPE 			shaderType
-	)
+void DX_ResourceManager::SelectSetShaderResources(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11ShaderResourceView* const* pShaderResourceView, DX_SHADER_TYPE shaderType)
 {
 	switch (shaderType)
 	{
@@ -193,7 +172,5 @@ void DX_ResourceManager::SelectSetShaderResources(
 	case DX_SHADER_TYPE::COMPUTE_SHADER:
 		pDeviceContext->CSSetShaderResources(registerNum, viewCount, pShaderResourceView);
 		break;
-
 	}
-
 }

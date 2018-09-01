@@ -76,26 +76,33 @@ unsigned int DX_2DObject::GetWidth()const
 //  全画面に描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::Render()
+bool DX_2DObject::Render()
 {
+	bool result = false;
+
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
+
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダーを利用
-	l_pVertexShader->Begin(pContext);
-	l_pPixelShader->Begin(pContext);
+	pVertexShader->Begin(pContext);
+	pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(pContext);
-	l_pPixelShader->End(pContext);
+	pVertexShader->End(pContext);
+	pPixelShader->End(pContext);
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -103,8 +110,13 @@ void DX_2DObject::Render()
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::Render(const tagRect& renderPos)
+bool DX_2DObject::Render(const tagRect& renderPos)
 {
+	bool result = false;
+
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
+
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -113,19 +125,21 @@ void DX_2DObject::Render(const tagRect& renderPos)
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダーを利用
-	l_pVertexShader->Begin(pContext);
-	l_pPixelShader->Begin(pContext);
+	pVertexShader->Begin(pContext);
+	pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(pContext);
-	l_pPixelShader->End(pContext);
+	pVertexShader->End(pContext);
+	pPixelShader->End(pContext);
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -133,8 +147,13 @@ void DX_2DObject::Render(const tagRect& renderPos)
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize)
+bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize)
 {
+	bool result = false;
+
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
+
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -143,19 +162,21 @@ void DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダーを利用
-	l_pVertexShader->Begin(pContext);
-	l_pPixelShader->Begin(pContext);
+	pVertexShader->Begin(pContext);
+	pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(pContext);
-	l_pPixelShader->End(pContext);
+	pVertexShader->End(pContext);
+	pPixelShader->End(pContext);
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -163,8 +184,13 @@ void DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
+bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 {
+	bool result = false;
+
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
+
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -173,19 +199,21 @@ void DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* l_pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* l_pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダーを利用
-	l_pVertexShader->Begin(pContext);
-	l_pPixelShader->Begin(pContext);
+	pVertexShader->Begin(pContext);
+	pPixelShader->Begin(pContext);
 
 	//	描画
-	DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
-	l_pVertexShader->End(pContext);
-	l_pPixelShader->End(pContext);
+	pVertexShader->End(pContext);
+	pPixelShader->End(pContext);
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -199,24 +227,24 @@ void DX_2DObject::LoadTexture(const char* pFilepath)
 	m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath);
 
 	//	テクスチャがロードできてるかチェック
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャのファイルパスが間違っています");
+	if (m_pShaderResourceView) {
+		//	テクスチャを細かな情報を取得
+		ID3D11Resource* l_pResource = nullptr;
+		m_pShaderResourceView->GetResource(&l_pResource);
 
-	//	テクスチャを細かな情報を取得
-	ID3D11Resource* l_pResource = nullptr;
-	m_pShaderResourceView->GetResource(&l_pResource);
+		ID3D11Texture2D* l_pTexture2D = nullptr;
+		l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
 
-	ID3D11Texture2D* l_pTexture2D = nullptr;
-	l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
+		D3D11_TEXTURE2D_DESC l_texDesc;
+		l_pTexture2D->GetDesc(&l_texDesc);
+		//	テクスチャサイズを取得
 
-	D3D11_TEXTURE2D_DESC l_texDesc;
-	l_pTexture2D->GetDesc(&l_texDesc);
-	//	テクスチャサイズを取得
+		m_height = l_texDesc.Height;
+		m_width = l_texDesc.Width;
 
-	m_height = l_texDesc.Height;
-	m_width = l_texDesc.Width;
-
-	SAFE_RELEASE(l_pResource);
-	SAFE_RELEASE(l_pTexture2D);
+		SAFE_RELEASE(l_pResource);
+		SAFE_RELEASE(l_pTexture2D);
+	}
 }
 
 

@@ -111,13 +111,13 @@ public:
 	//  @brief		頂点シェーダーで行うライト情報を設定
 	//
 	//------------------------------------------------------------------------------
-	static void SetLightVertexShader();
+	static bool SetLightVertexShader();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		ピクセルシェーダーで行うライト情報を設定
 	//
 	//------------------------------------------------------------------------------
-	static void SetLightPixelShader();
+	static bool SetLightPixelShader();
 };
 #endif // !__DX_LIGHTING_H_

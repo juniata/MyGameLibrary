@@ -55,15 +55,21 @@ void BarrageManager::AddBarrage(BaseBarrage* pCreateBarrage)
 //	XV
 //
 //-----------------------------------------------------------------------------------------
-void BarrageManager::Update()
+bool BarrageManager::Update()
 {
+	bool result = false;
+
 	for (size_t i = 0; i < m_barrageNum; ++i)
 	{
 		if (m_pBarrageList[i])
 		{
-			m_pBarrageList[i]->Update();
+			if (false == (result = m_pBarrageList[i]->Update())) {
+				break;
+			}
 		}
 	}
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -71,15 +77,21 @@ void BarrageManager::Update()
 //	•`‰æ
 //
 //-----------------------------------------------------------------------------------------
-void BarrageManager::Render()
+bool BarrageManager::Render()
 {
+	bool result = false;
+
 	for (size_t i = 0; i < m_barrageNum; ++i)
 	{
 		if (m_pBarrageList[i] != nullptr)
 		{
-			m_pBarrageList[i]->Render();
+			if (false == (result = m_pBarrageList[i]->Render())) {
+				break;
+			}
 		}
 	}
+
+	return result;
 }
 
 

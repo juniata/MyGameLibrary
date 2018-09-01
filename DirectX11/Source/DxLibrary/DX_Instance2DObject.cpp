@@ -67,24 +67,24 @@ void DX_Instance2DObject::LoadTexture(const char* pFilepath)
 	m_pShaderResourceView = DX_TextureManager::GetTexture(texturePath);
 
 	//	テクスチャがロードできてるかチェック
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャのファイルパスが間違っています");
+	if (m_pShaderResourceView) {
+		//	テクスチャを細かな情報を取得
+		ID3D11Resource* l_pResource = nullptr;
+		m_pShaderResourceView->GetResource(&l_pResource);
 
-	//	テクスチャを細かな情報を取得
-	ID3D11Resource* l_pResource = nullptr;
-	m_pShaderResourceView->GetResource(&l_pResource);
+		ID3D11Texture2D* l_pTexture2D = nullptr;
+		l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
 
-	ID3D11Texture2D* l_pTexture2D = nullptr;
-	l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
+		D3D11_TEXTURE2D_DESC l_texDesc;
+		l_pTexture2D->GetDesc(&l_texDesc);
 
-	D3D11_TEXTURE2D_DESC l_texDesc;
-	l_pTexture2D->GetDesc(&l_texDesc);
+		//	テクスチャサイズを取得
+		m_height = l_texDesc.Height;
+		m_width = l_texDesc.Width;
 
-	//	テクスチャサイズを取得
-	m_height = l_texDesc.Height;
-	m_width = l_texDesc.Width;
-
-	SAFE_RELEASE(l_pResource);
-	SAFE_RELEASE(l_pTexture2D);
+		SAFE_RELEASE(l_pResource);
+		SAFE_RELEASE(l_pTexture2D);
+	}
 }
 
 
@@ -114,8 +114,13 @@ DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList(const unsigned int index)
 //  描画する
 //
 //-----------------------------------------------------------------------------------------
-void DX_Instance2DObject::Render()
+bool DX_Instance2DObject::Render()
 {
+	bool result = false;
+
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "頂点バッファの作成に失敗しました。");
+	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャのファイルパスが間違っています");
+	
 	if (m_enabled) 
 	{
 		DX_System* pSystem = DX_System::GetInstance();
@@ -136,6 +141,7 @@ void DX_Instance2DObject::Render()
 
 		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pPosList[0]) * m_instanceNum, m_pPosList);
 		ID3D11Buffer* buffers[] = { m_pVertexBuffer, pInstanceBuffer };
+		DEBUG_VALUE_CHECK(pInstanceBuffer, "インスタンスバッファの作成に失敗しました。");
 
 
 		// 正規化したウィンドウサイズを送る
@@ -151,7 +157,7 @@ void DX_Instance2DObject::Render()
 		pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		// テクスチャ情報を送る
-		DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
+		result = DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
 
 		// インスタンス描画を行う
 		pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
@@ -162,6 +168,8 @@ void DX_Instance2DObject::Render()
 
 		SAFE_RELEASE(pInstanceBuffer);
 	}
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------

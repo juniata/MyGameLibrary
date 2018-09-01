@@ -120,42 +120,47 @@ void DX_Lighting::SetViewPos(const DirectX::XMFLOAT3& pos)
 //  頂点シェーダーで行うライト情報を設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_Lighting::SetLightVertexShader()
+bool DX_Lighting::SetLightVertexShader()
 {
-	auto	l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
+	bool result = false;
+
+	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
 	//	ローカル変数
-	ID3D11Buffer*				l_pBuffer = nullptr;
-	D3D11_BUFFER_DESC			l_bufferDesc = { NULL };
-	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
+	ID3D11Buffer*				pBuffer = nullptr;
+	D3D11_BUFFER_DESC			bufferDesc = { NULL };
 
 	//	頂点シェーダーに送る情報
-	tagVertexLighting l_vertexLighting;
-	l_vertexLighting.ambient	= m_ambient;
-	l_vertexLighting.diffuse	= m_diffuse;
-	l_vertexLighting.viewPos	= m_viewPos;
-	l_vertexLighting.lightDir	= m_lightDir;
-	l_vertexLighting.lightPos	= m_lightPos;
+	tagVertexLighting vertexLighting;
+	vertexLighting.ambient	= m_ambient;
+	vertexLighting.diffuse	= m_diffuse;
+	vertexLighting.viewPos	= m_viewPos;
+	vertexLighting.lightDir	= m_lightDir;
+	vertexLighting.lightPos	= m_lightPos;
 
 	//	16byte alignment check
-	DEBUG_VALUE_CHECK((sizeof(l_vertexLighting) % 16 == 0) ? true : false, "16で割り切れません");
+	DEBUG_VALUE_CHECK((sizeof(vertexLighting) % 16 == 0) ? true : false, "16で割り切れません");
 
 	//	定数バッファを作成
-	l_bufferDesc.ByteWidth		= sizeof(tagVertexLighting);
-	l_bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
-	l_bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
-	l_bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.ByteWidth		= sizeof(tagVertexLighting);
+	bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
+	//DX_Buffer::CreateConstantBuffer();	// TODO:こいつを使う
+	DX_System::GetInstance()->GetDevice()->CreateBuffer(&bufferDesc, nullptr, &pBuffer);
 
 	//	updateSubResource
-	l_deviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_vertexLighting, 0, 0);
+	pContext->UpdateSubresource(pBuffer, 0, nullptr, &vertexLighting, 0, 0);
 
 	//	PSに送る
-	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 3, 1, &l_pBuffer, DX_SHADER_TYPE::VERTEX_SHADER);
+	result = DX_ResourceManager::SetConstantbuffers(pContext, 3, 1, &pBuffer, DX_SHADER_TYPE::VERTEX_SHADER);
 
-	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(pBuffer);
+
+	return result;
 }
 
 
@@ -164,39 +169,43 @@ void DX_Lighting::SetLightVertexShader()
 //  ピクセルシェーダーで行うライト情報を設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_Lighting::SetLightPixelShader()
+bool DX_Lighting::SetLightPixelShader()
 {
-	auto l_deviceContext = DX_System::GetInstance()->GetDeviceContext();
+	bool result = false;
+
+	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
 	//	ローカル変数
-	ID3D11Buffer*				l_pBuffer = nullptr;
-	D3D11_BUFFER_DESC			l_bufferDesc = { NULL };
-	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
+	ID3D11Buffer*				pBuffer = nullptr;
+	D3D11_BUFFER_DESC			bufferDesc = { NULL };
 
 	//	頂点シェーダーに送る情報
-	tagPixelLighting l_pixelLighting;
-	l_pixelLighting.specular	= m_specular;
-	l_pixelLighting.viewPos		= m_viewPos;
-	l_pixelLighting.lightDir	= m_lightDir;
+	tagPixelLighting pixelLighting;
+	pixelLighting.specular	= m_specular;
+	pixelLighting.viewPos		= m_viewPos;
+	pixelLighting.lightDir	= m_lightDir;
 
 	//	16byte alignment check
-	DEBUG_VALUE_CHECK((sizeof(l_pixelLighting) % 16 == 0) ? true : false, "16で割り切れません");
+	DEBUG_VALUE_CHECK((sizeof(pixelLighting) % 16 == 0) ? true : false, "16で割り切れません");
 
 	//	定数バッファを作成
-	l_bufferDesc.ByteWidth		= sizeof(tagPixelLighting);
-	l_bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
-	l_bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
-	l_bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.ByteWidth		= sizeof(tagPixelLighting);
+	bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
+	//DX_Buffer::CreateConstantBuffer();	// TODO:こいつを使う
+	DX_System::GetInstance()->GetDevice()->CreateBuffer(&bufferDesc, nullptr, &pBuffer);
 
 	//	updateSubResource
-	l_deviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_pixelLighting, 0, 0);
+	pContext->UpdateSubresource(pBuffer, 0, nullptr, &pixelLighting, 0, 0);
 
 	//	PSに送る
-	DX_ResourceManager::SetConstantbuffers(l_deviceContext, 0, 1, &l_pBuffer, DX_SHADER_TYPE::PIXEL_SHADER);
+	result = DX_ResourceManager::SetConstantbuffers(pContext, 0, 1, &pBuffer, DX_SHADER_TYPE::PIXEL_SHADER);
 
-	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(pBuffer);
 
+	return result;
 }

@@ -36,13 +36,7 @@ public:
 	//	@param[in]	shaderType		リソースを送るステージのタイプ
 	//
 	//------------------------------------------------------------------------------
-	static void SetConstantbuffers(
-		ID3D11DeviceContext*		pDeviceContext,
-		const int					registerNum,
-		const int					viewCount,
-		ID3D11Buffer* const*		pBuffers,
-		DX_SHADER_TYPE	shaderType
-		);
+	static bool SetConstantbuffers(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11Buffer* const* pBuffers, DX_SHADER_TYPE shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -53,13 +47,7 @@ public:
 	//	@param[in]	shaderType		リソースを送るステージのタイプ
 	//
 	//------------------------------------------------------------------------------
-	static void SetShaderResources(
-		ID3D11DeviceContext*				pDeviceContext, 
-		const int							registerNum, 
-		const int							viewCount, 
-		ID3D11ShaderResourceView* const*	pShaderResourceView, 
-		DX_SHADER_TYPE			shaderType
-		);
+	static bool SetShaderResources(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11ShaderResourceView* const* pShaderResourceView, DX_SHADER_TYPE shaderType);
 
 private:
 	//------------------------------------------------------------------------------
@@ -71,13 +59,7 @@ private:
 	//	@param[in]	shaderType		リソースを送るステージのタイプ
 	//
 	//------------------------------------------------------------------------------
-	static void SelectSetShaderConstantBuffers(
-		ID3D11DeviceContext*		pDeviceContext,
-		const int					registerNum,
-		const int					viewCount,
-		ID3D11Buffer* const*		pBuffers,
-		DX_SHADER_TYPE	shaderType
-		);
+	static void SelectSetShaderConstantBuffers(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11Buffer* const* pBuffers, DX_SHADER_TYPE shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -88,13 +70,7 @@ private:
 	//	@param[in]	shaderType		リソースを送るステージのタイプ
 	//
 	//------------------------------------------------------------------------------
-	static void SelectSetShaderResources(
-		ID3D11DeviceContext*				pDeviceContext,
-		const int							registerNum,
-		const int							viewCount, 
-		ID3D11ShaderResourceView* const*	pShaderResourceView,
-		DX_SHADER_TYPE			shaderType
-		);
+	static void SelectSetShaderResources(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11ShaderResourceView* const* pShaderResourceView, DX_SHADER_TYPE shaderType);
 };
 
 #endif // !__DX_RESOURCE_MANAGER_H_

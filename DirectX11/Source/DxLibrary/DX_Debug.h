@@ -2,7 +2,7 @@
 #define __DX_DEBUG_H_
 
 //	コンソール画面に出力する文字の色
-enum class SET_PRINT_COLOR : int{
+enum class SET_PRINT_COLOR : int {
 	BLUE,		//	青色
 	RED,		//	赤色
 	GREEN,		//	緑	
@@ -16,24 +16,18 @@ enum class SET_PRINT_COLOR : int{
 //
 //****************************************************************************************************
 #if defined(DEBUG) || defined(_DEBUG)
-#define DEBUG_VALUE_CHECK(bFlag, pMessage)										\
-{																				\
-	if (!bFlag){																\
-		char l_message[128] = { NULL };											\
-		size_t	 l_strlen = 0;													\
-																				\
-		const char* l_pDirectory = strstr(__FILE__, "dx_library\\");			\
-		if (l_pDirectory == nullptr){											\
-			l_pDirectory = strstr(__FILE__, "myself_made_source\\");			\
-			l_strlen = strlen("myself_made_source\\");							\
-		}else{																	\
-			l_strlen = strlen("dx_library\\");									\
-		}																		\
-		sprintf_s(l_message, "%s line[%d]", &l_pDirectory[l_strlen], __LINE__);	\
-		MessageBox(NULL, pMessage, l_message, MB_OK);							\
-		exit(EXIT_FAILURE);														\
-	}																			\
-}																				
+template<class T> bool __DebugValueCheck(T value, const char* pErrMsg)
+{
+	bool result = value ? true : false;
+	
+	if (result == false) {
+		// TODO:文字化けを直す
+		MessageBox(NULL, pErrMsg,  "Error", MB_OK);
+	}
+
+	return result;
+}
+#define DEBUG_VALUE_CHECK(value, pErrMsg) if (false ==__DebugValueCheck(value, pErrMsg)) { return false; }
 #else
 #define DEBUG_VALUE_CHECK(bFlag,pMessage)
 #endif
@@ -115,7 +109,7 @@ public:
 	//	
 	//------------------------------------------------------------------------------
 	void Printf(const char* pFormat, ...);
-	
+
 private:
 #if defined(DEBUG) || defined(_DEBUG)
 	ID3D11Debug* m_pDebug;

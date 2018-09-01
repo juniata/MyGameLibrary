@@ -7,7 +7,7 @@ using namespace DirectX;
 //  @brief		引数付きコンストラクタ
 //
 //------------------------------------------------------------------------------
-BarrageBeam::BarrageBeam(const char* pFilepath, const size_t instanceNum, const XMFLOAT2& renderSize) :
+BarrageBeam::BarrageBeam(const char* pFilepath, const UINT instanceNum, const XMFLOAT2& renderSize) :
 	BaseBarrage(pFilepath, instanceNum, renderSize)
 {
 	for (size_t i = 0; i < instanceNum; ++i)
@@ -24,9 +24,9 @@ BarrageBeam::BarrageBeam(const char* pFilepath, const size_t instanceNum, const 
 //  @brief		更新
 //
 //------------------------------------------------------------------------------
-void BarrageBeam::DoUpdate()
+bool BarrageBeam::DoUpdate()
 {
-	
+	return true;
 }
 
 //------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ void BarrageBeam::DoUpdate()
 //  @brief		描画
 //
 //------------------------------------------------------------------------------
-void BarrageBeam::DoRender()
+bool BarrageBeam::DoRender()
 {
-	m_pInstance2D->Render();
+	return m_pInstance2D->Render();
 }

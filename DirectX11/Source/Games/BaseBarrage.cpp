@@ -7,7 +7,7 @@ using namespace DirectX;
 //	引数付きコンストラクタ
 //
 //-----------------------------------------------------------------------------------------
-BaseBarrage::BaseBarrage(const char* pFilepath, const size_t instanceNum, const XMFLOAT2& renderSize) :
+BaseBarrage::BaseBarrage(const char* pFilepath, const UINT instanceNum, const XMFLOAT2& renderSize) :
 	m_pInstance2D(new DX_Instance2DObject(pFilepath, instanceNum, renderSize)),
 	m_instanecNum(instanceNum),
 	m_bActive(false)
@@ -30,9 +30,9 @@ BaseBarrage::~BaseBarrage()
 //	描画 子クラスで実装されている場合そちらを
 //
 //-----------------------------------------------------------------------------------------
-void BaseBarrage::DoRender()
+bool BaseBarrage::DoRender()
 {
-	m_pInstance2D->Render();
+	return m_pInstance2D->Render();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -40,12 +40,16 @@ void BaseBarrage::DoRender()
 //	更新 子クラスで実装された更新関数を実行
 //
 //-----------------------------------------------------------------------------------------
-void BaseBarrage::Update()
+bool BaseBarrage::Update()
 {
+	bool result = true;
+
 	if (m_bActive)
 	{
-		DoUpdate();
+		result = DoUpdate();
 	}
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -53,12 +57,16 @@ void BaseBarrage::Update()
 //	描画 子クラスで実装された描画関数を実行
 //
 //-----------------------------------------------------------------------------------------
-void BaseBarrage::Render()
+bool BaseBarrage::Render()
 {
+	bool result = true;
+
 	if (m_bActive)
 	{
-		DoRender();
+		result = DoRender();
 	}
+
+	return result;
 }
 
 

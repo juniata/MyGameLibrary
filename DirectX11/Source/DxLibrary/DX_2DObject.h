@@ -58,7 +58,7 @@ public:
 	//  @brief		‘S‰æ–Ê‚É•`‰æ
 	//
 	//------------------------------------------------------------------------------
-	void Render();
+	bool Render();
 
 	//------------------------------------------------------------------------------
 	//
@@ -66,7 +66,7 @@ public:
 	//	@param[in]	renderPos	•`‰æ‚·‚é”ÍˆÍ
 	//
 	//------------------------------------------------------------------------------
-	void Render(const tagRect& renderPos);
+	bool Render(const tagRect& renderPos);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -75,7 +75,7 @@ public:
 	//	@param[in]	texturePos	•`‰æ‚·‚é‰æ‘œ‚Ì”ÍˆÍ
 	//
 	//------------------------------------------------------------------------------
-	void Render(const tagRect& renderPos,const tagRect& texturePos);
+	bool Render(const tagRect& renderPos,const tagRect& texturePos);
 
 	//------------------------------------------------------------------------------
 	//
@@ -84,7 +84,7 @@ public:
 	//	@param[in]	renderSize	•`‰æ‚·‚é‰æ‘œ‚Ì”ÍˆÍ
 	//
 	//------------------------------------------------------------------------------
-	void Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize);
+	bool Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize);
 
 	//------------------------------------------------------------------------------
 	//

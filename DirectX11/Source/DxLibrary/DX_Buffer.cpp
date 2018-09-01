@@ -165,8 +165,10 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(ID3D11Device* pDevice, const size_t buffe
 //  2D‚ğ•`‰æ
 //
 //-----------------------------------------------------------------------------------------
-void DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
+bool DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
 {
+	bool result = false;
+
 	unsigned int l_stride = sizeof(tagVertex2D);
 	unsigned int l_offset = 0;
 
@@ -180,11 +182,12 @@ void DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* 
 	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//	PixelShader‚ÉƒeƒNƒXƒ`ƒƒî•ñ‚ğ‘—‚é
-	DX_ResourceManager::SetShaderResources(pContext, 0, 1, &pShaderRerousceView,DX_SHADER_TYPE::PIXEL_SHADER);
+	result = DX_ResourceManager::SetShaderResources(pContext, 0, 1, &pShaderRerousceView,DX_SHADER_TYPE::PIXEL_SHADER);
 
 	//	•`‰æ
 	pContext->Draw(4, 0);
 
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
