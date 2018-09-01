@@ -1,4 +1,5 @@
 #include	"DX_Library.h"
+#include	<stdio.h>
 using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
