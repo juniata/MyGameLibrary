@@ -1,5 +1,6 @@
 #include	"DX_Library.h"
 //#include	"../../Resource/icon/resource.h"
+#include	"Games\SceneTitle.h"
 #include	"Games\SceneMain.h"
 #include	<mmsystem.h>
 #pragma comment(lib,"winmm.lib")
@@ -108,41 +109,40 @@ void DX_FrameWork::Run()
 	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 #endif 
 
-	MSG l_msg = { NULL };
+	MSG msg = { NULL };
 	
 	//	スワップチェインを取得
-	IDXGISwapChain* l_pSwapChain = DX_System::GetInstance()->GetSwapChain();
+	IDXGISwapChain* pSwapChain = DX_System::GetInstance()->GetSwapChain();
 
 	//	現在のシーンを取得
-	DX_Scene*	l_pScene = DX_SceneManager::GetCurScene();
-	l_pScene->Initialize();
+	DX_SceneManager* pSceneManager = DX_SceneManager::GetInstance();
+	pSceneManager->SetStartScene(new SceneTitle());
 
 	//	ループ処理
-	while (l_msg.message != WM_QUIT){
-		if (PeekMessage(&l_msg, NULL, 0, 0, PM_REMOVE)){
-			TranslateMessage(&l_msg);
-			DispatchMessage(&l_msg);
+	while (msg.message != WM_QUIT){
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 		else{
 			//	FPSを更新
 			FPSUpdate();
 		
-			//	全キー更新
-			DX_Input::Update(l_msg.message, l_msg.wParam);
+			// シーンの更新
+			pSceneManager->Update(msg.message, msg.wParam);
 
-			//	シーンの更新
-			l_pScene->Update();
+			// シーンの描画
+			pSceneManager->Render(pSwapChain);
 
-			//	描画開始
-			DX_Graphics::BeginRender(l_pSwapChain);
-
-			l_pScene->Render();
-
-			//	描画終了
-			DX_Graphics::EndRender(l_pSwapChain);
+			// ゲームエンドか？
+			if (pSceneManager->IsGameEnd()) {
+				break;
+			}
 		}
 	}
 	
+	// シーンマネージャーの開放
+	DX_SceneManager::Release();
 }
 
 //------------------------------------------------------------------------------
@@ -302,10 +302,6 @@ LRESULT CALLBACK DX_FrameWork::WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARA
 	case WM_KEYDOWN:
 
 		switch (wparam){
-		case VK_ESCAPE: 
-			PostMessage(hWnd, WM_CLOSE, 0, 0);;
-			break;
-
 			//	F12を押した場合スクリーンモードを変更
 		case VK_F12:
 		/*	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
@@ -370,25 +366,19 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 	DEBUG_OPNE_CONSOLE
 
 	//	フレームワークを生成
-	DX_FrameWork l_DX_FrameWork;
+	DX_FrameWork dxFramework;
 
 	//	フレームワークの初期化
-	if (!l_DX_FrameWork.Initialize()){ return FALSE; }
+	if (!dxFramework.Initialize()){ return FALSE; }
 
 	//	DirectXの初期化
-	if (!DX_System::GetInstance()->InitD3D(l_DX_FrameWork.GetHwnd())){ return FALSE; }
-
-	//	シーンを登録する
-	DX_SceneManager::Initialize(new SceneMain());
+	if (!DX_System::GetInstance()->InitD3D(dxFramework.GetHwnd())){ return FALSE; }
 
 	//	シーンを走らせる
-	l_DX_FrameWork.Run();
+	dxFramework.Run();
 	
-	DX_SceneManager::Release();
-
 	//	DX_Libraryを解放する
 	DX_System::Release();
-
 
 	//	デバッグ時のみコンソール画面を閉じる
 	DEBUG_CLOSE_CONSOLE

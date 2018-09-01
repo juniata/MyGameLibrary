@@ -58,6 +58,7 @@
     <ClInclude Include="Source\Games\BaseBarrage.h" />
     <ClInclude Include="Source\Games\Player.h" />
     <ClInclude Include="Source\Games\SceneMain.h" />
+    <ClInclude Include="Source\Games\SceneTitle.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
     <ClInclude Include="Source\ModelLoader\imoloader.h" />
     <ClInclude Include="Source\user_helper_class\ALManager.h" />
@@ -88,6 +89,7 @@
     <ClCompile Include="Source\DxLibrary\DX_RenderState.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Resource.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_ResourceManager.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_Scene.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_SceneManager.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Shader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_ShaderManager.cpp" />
@@ -103,6 +105,7 @@
     <ClCompile Include="Source\Games\BaseBarrage.cpp" />
     <ClCompile Include="Source\Games\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain.cpp" />
+    <ClCompile Include="Source\Games\SceneTitle.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp" />
     <ClCompile Include="Source\user_helper_class\ALManager.cpp" />

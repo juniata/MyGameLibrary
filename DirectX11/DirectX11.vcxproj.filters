@@ -31,6 +31,9 @@
     <Filter Include="ソース ファイル\Games\Barrage">
       <UniqueIdentifier>{d7ba4b92-cebb-42a7-a089-4585dedcc676}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Games\SceneTitle">
+      <UniqueIdentifier>{9234ad86-181a-48f7-8f9a-d0a9d68e60bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DxLibrary\DX_Library.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="Source\Games\BarrageBeam.h">
       <Filter>ソース ファイル\Games\Barrage</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\SceneTitle.h">
+      <Filter>ソース ファイル\Games\SceneTitle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -299,6 +305,12 @@
     <ClCompile Include="Source\user_helper_class\ALManager.cpp">
       <Filter>ソース ファイル\Games</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Games\SceneTitle.cpp">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_Scene.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\ShaderFile\Default\PS_Object.hlsl">
@@ -316,10 +328,6 @@
     <None Include="Source\ShaderFile\Default\VS_Instance2D.hlsl">
       <Filter>ソース ファイル\Shader</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Source\ShaderFile\Default\GS_Object.hlsl">
-      <Filter>ソース ファイル\Shader</Filter>
-    </FxCompile>
+    <None Include="Source\ShaderFile\Default\GS_Object.hlsl" />
   </ItemGroup>
 </Project>

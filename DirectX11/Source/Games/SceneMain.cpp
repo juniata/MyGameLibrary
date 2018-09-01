@@ -1,21 +1,18 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"Player.h"
 #include	"SceneMain.h"
-#include	"user_helper_class\OGGManager.h"
 
 //-----------------------------------------------------------------------------------------
 //
 //  ƒOƒ[ƒoƒ‹•Ï”
 //
 //-----------------------------------------------------------------------------------------
-DX_View*			g_pView		= nullptr;
 DX_Box* g_box;
 SceneMain::SceneMain()
 {
 }
 SceneMain::~SceneMain()
 {
-	DELETE_OBJ(g_pView);
 	DELETE_OBJ(g_box);
 	DELETE_OBJ(player);
 }
@@ -28,8 +25,6 @@ SceneMain::~SceneMain()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Initialize()
 {
-	g_pView = new DX_View();
-
 	g_box = new DX_Box();
 	player = new Player();
 
@@ -50,10 +45,13 @@ bool SceneMain::Initialize()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Update()
 {
-	g_pView->FreeCamera(2.0f);
+	m_pView->FreeCamera(2.0f);
 
 	player->Update();
 
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_ESCAPE)) {
+		DX_SceneManager::GetInstance()->GameEnd();
+	}
 	return true;
 }
 
@@ -64,9 +62,9 @@ bool SceneMain::Update()
 //-----------------------------------------------------------------------------------------
 void SceneMain::Render()
 {
-	g_pView->Active();
-	g_pView->Clear();
-	g_pView->SetMatrixForTheView();
+	m_pView->Active();
+	m_pView->Clear();
+	m_pView->SetMatrixForTheView();
 
 	g_box->Render();
 	player->Render();
