@@ -20,8 +20,7 @@ DX_RenderState::DX_RenderState() :
 	m_pSamplerState(nullptr)
 
 #if defined(DEBUG) || defined(_DEBUG)
-	,m_pWireFrameRS(nullptr),
-	m_bUseSolidRS(true)
+	,m_pWireFrameRS(nullptr)
 #endif
 {}
 
@@ -108,13 +107,8 @@ void DX_RenderState::Initialize()
 	ID3D11SamplerState* const sampler[1] = { GetDefaultSamplerState() };
 	pContext->PSSetSamplers(0, 1, sampler);
 
-#if defined(DEBUG) || defined(_DEBUG)
-	//	ポリゴン描画設定
-	pContext->RSSetState(GetSwitchRasterizer());
-#else 
 	//	ポリゴン描画設定
 	pContext->RSSetState(GetDefaultRasterizerState());
-#endif
 }
 
 //-----------------------------------------------------------------------------------------
@@ -160,22 +154,12 @@ ID3D11SamplerState* DX_RenderState::GetDefaultSamplerState() const
 #if defined(DEBUG) || defined(_DEBUG)
 //------------------------------------------------------------------------------
 //
-//  ラスタライザーステートを取得する(SwitchSolidRS() SwitchWireframeRS()でラスタライザが切り替わる)
-//
-//------------------------------------------------------------------------------
-ID3D11RasterizerState* DX_RenderState::GetSwitchRasterizer() const
-{
-	return m_bUseSolidRS ? m_pRasterizerState : m_pWireFrameRS;
-}
-
-//------------------------------------------------------------------------------
-//
 //  ラスタライザをソリッド描画に切り替える
 //
 //------------------------------------------------------------------------------
 void DX_RenderState::SwitchSolidRS()
 {
-	m_bUseSolidRS = true;
+	DX_System::GetInstance()->GetDeviceContext()->RSSetState(GetDefaultRasterizerState());
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +169,7 @@ void DX_RenderState::SwitchSolidRS()
 //------------------------------------------------------------------------------
 void DX_RenderState::SwitchWireframeRS()
 {
-	m_bUseSolidRS = false;
+	DX_System::GetInstance()->GetDeviceContext()->RSSetState(m_pWireFrameRS);
 }
 #endif
 

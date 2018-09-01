@@ -74,14 +74,6 @@ public:
 #if defined(DEBUG) || defined(_DEBUG)
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		ラスタライザーステートを取得する(SwitchSolidRS() SwitchWireframeRS()でラスタライザが切り替わる)
-	//	@return		ラスタライザーステート
-	//
-	//------------------------------------------------------------------------------
-	ID3D11RasterizerState* GetSwitchRasterizer() const;
-
-	//------------------------------------------------------------------------------
-	//
 	//  @brief		ラスタライザをソリッド描画に切り替える
 	//
 	//------------------------------------------------------------------------------
@@ -144,7 +136,6 @@ private:
 
 #if defined(DEBUG) || defined(_DEBUG)
 	ID3D11RasterizerState*		m_pWireFrameRS;
-	bool m_bUseSolidRS;
 #endif
 };
 #endif // !__DX_RENDER_STATE_H_
