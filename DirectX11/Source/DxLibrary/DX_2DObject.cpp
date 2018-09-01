@@ -47,7 +47,7 @@ DX_2DObject::~DX_2DObject()
 {
 	if (IsOriginal()) {
 		SAFE_RELEASE(m_pVertexBuffer);
-		DX_TextureManager::Release(m_pShaderResourceView);
+		DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
 	}
 }
 
@@ -224,7 +224,7 @@ bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 void DX_2DObject::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
-	m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath);
+	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
 
 	//	テクスチャがロードできてるかチェック
 	if (m_pShaderResourceView) {

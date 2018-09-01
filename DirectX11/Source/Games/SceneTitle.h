@@ -41,5 +41,10 @@ public:
 	bool Render();
 private:
 	DX_2DObject* m_pTitle;
+	DX_2DObject* m_pMenu;
+	bool m_IsRenderMenu;
+	
+	static const int BUTTON_NUM = 10;
+	DX_2DObject*	m_pButtonList[BUTTON_NUM];
 };
 #endif // !__SCENE_TITLE_H_

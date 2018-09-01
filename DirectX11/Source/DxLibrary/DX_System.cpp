@@ -41,8 +41,11 @@ DX_System::~DX_System()
 	//	シェーダーの解放を行う
 	DX_ShaderManager::Release();
 
-	// レンダーステートを初期化する
+	// レンダーステートの解放を行う
 	DX_RenderState::Release();
+
+	// テクスチャの解放を行う
+	DX_TextureManager::Release();
 
 	m_pSwapChain->SetFullscreenState(FALSE, nullptr);
 	m_pDeviceContext->ClearState();
@@ -109,6 +112,9 @@ bool DX_System::InitD3D(const HWND& hWnd)
 
 		//	シェーダーを初期化
 		DX_ShaderManager::GetInstance()->Initialize();
+
+		// テクスチャの初期化を行う(インスタンス生成でのコンストラクタで初期化が行われる)
+		DX_TextureManager::GetInstance();
 
 		//	ALManagerを初期化
 		//ALManager::Initialize();

@@ -48,7 +48,7 @@ DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, 
 //-----------------------------------------------------------------------------------------
 DX_Instance2DObject::~DX_Instance2DObject()
 {
-	DX_TextureManager::Release(m_pShaderResourceView);
+	DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
 	DELETE_OBJ_ARRAY(m_pPosList);
 	SAFE_RELEASE(m_pVertexBuffer);
 }
@@ -64,7 +64,7 @@ void DX_Instance2DObject::LoadTexture(const char* pFilepath)
 	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
 
 	//	テクスチャを取得
-	m_pShaderResourceView = DX_TextureManager::GetTexture(texturePath);
+	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(texturePath);
 
 	//	テクスチャがロードできてるかチェック
 	if (m_pShaderResourceView) {

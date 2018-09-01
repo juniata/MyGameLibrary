@@ -9,7 +9,61 @@ using namespace DirectX;
 //  staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_TextureManager::TextureInfo DX_TextureManager::m_textureList[TEXTURE_NUM] = { NULL };
+DX_TextureManager* DX_TextureManager::m_pInstance = nullptr;
+
+//-----------------------------------------------------------------------------------------
+//
+//	初期化
+//
+//-----------------------------------------------------------------------------------------
+DX_TextureManager::DX_TextureManager()
+{
+	for (int i = 0; i < TEXTURE_NUM; ++i)
+	{
+		ZeroMemory(m_textureList[i].filepath, sizeof(m_textureList[i].filepath));
+		m_textureList[i].pSrv = nullptr;
+	}
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	解放
+//
+//-----------------------------------------------------------------------------------------
+DX_TextureManager::~DX_TextureManager()
+{
+	// 本来ここでは解放されない。(Release(ID3D11ShaderResourceView*)ですべて開放されるためである。)
+	for (int i = 0; i < TEXTURE_NUM; ++i)
+	{
+		if (m_textureList[i].pSrv) {
+			SAFE_RELEASE(m_textureList[i].pSrv);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  インスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
+DX_TextureManager* DX_TextureManager::GetInstance()
+{
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_TextureManager();
+	}
+
+	return m_pInstance;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  インスタンスを解放する
+//
+//-----------------------------------------------------------------------------------------
+void DX_TextureManager::Release()
+{
+	DELETE_OBJ(m_pInstance);
+}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -58,7 +112,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetTexture(const char* pFilepath)
 	for (int i = 0; i < TEXTURE_NUM; ++i) {
 		if (m_textureList[i].pSrv == nullptr) {
 			m_textureList[i].pSrv = pTexture;
-			m_textureList[i].pFilepath = pFilepath;
+			strcpy_s(m_textureList[i].filepath, _MAX_PATH, pFilepath);
 			break;
 		}
 		++texCount;
@@ -109,11 +163,11 @@ ID3D11ShaderResourceView* DX_TextureManager::SearchTexture(const char* pFilepath
 
 	for (int i = 0; i < TEXTURE_NUM; ++i)
 	{
-		if (m_textureList[i].pFilepath == NULL)
+		if (m_textureList[i].filepath == NULL)
 		{
 			continue;
 		}
-		if (strcmp(m_textureList[i].pFilepath, pFilepath) == 0)
+		if (strcmp(m_textureList[i].filepath, pFilepath) == 0)
 		{
 			pSrv = m_textureList[i].pSrv;
 			break;
