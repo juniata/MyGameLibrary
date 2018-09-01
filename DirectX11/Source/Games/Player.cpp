@@ -12,7 +12,7 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 Player::Player()
 {
-	m_pObj = new DX_2DObject("players.png"); // ƒeƒXƒg’†
+	m_pObj = new DX_2DObject("player.png");
 	m_size = DirectX::XMFLOAT2(SIZE, SIZE);
 	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
 	float basePosY = (DX_System::GetWindowHeight() - m_size.y);

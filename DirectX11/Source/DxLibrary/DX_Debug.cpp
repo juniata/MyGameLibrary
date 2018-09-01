@@ -62,7 +62,6 @@ void DX_Debug::Initialize()
 
 #endif
 
-
 	try{
 		//	デバッグデバイスを作成する
 		CreateDebugDevice();
@@ -108,14 +107,17 @@ void DX_Debug::ReportLiveDeviceObjects(const char* pMessage)
 //-----------------------------------------------------------------------------------------
 bool DX_Debug::IsHresultCheck(HRESULT hr)
 {
+	bool result = true;
+
 	if (FAILED(hr)){
 		LPVOID lpMsgBuf = nullptr;
 		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 			(LPTSTR)&lpMsgBuf, 0, NULL);
-		MessageBox(NULL, (LPTSTR)&lpMsgBuf, NULL, MB_OK);
-		return false;
+		MessageBox(DX_System::GetInstance()->GetWindowHandle(), (LPTSTR)lpMsgBuf, NULL, MB_OK);
+		result = false;
 	}
-	return true;
+
+	return result;
 }
 
 
@@ -125,10 +127,7 @@ bool DX_Debug::IsHresultCheck(HRESULT hr)
 //	シェーダーファイルをチェックする
 //
 //-----------------------------------------------------------------------------------------
-void DX_Debug::CheckSourceCordOfShaderFile(
-	HRESULT		hr,
-	ID3DBlob*	pBytecord
-	)
+void DX_Debug::CheckSourceCordOfShaderFile(HRESULT hr, ID3DBlob* pBytecord)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 
@@ -137,8 +136,7 @@ void DX_Debug::CheckSourceCordOfShaderFile(
 		
 		//	シェーダーファイルがあった場合,デバッグウィンドウに情報を出力
 		if (pBytecord){
-			MessageBox(NULL, (char*)pBytecord->GetBufferPointer(), NULL, MB_OK);
-			//DXTRACE_ERR((char*)pBytecord->GetBufferPointer(), hr);
+			MessageBox(DX_System::GetInstance()->GetWindowHandle(), (char*)pBytecord->GetBufferPointer(), NULL, MB_OK);
 			throw "ShaderFile Compile Error";
 		}
 		else{
