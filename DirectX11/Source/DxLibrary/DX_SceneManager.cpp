@@ -75,7 +75,9 @@ void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM w
 	switch (m_state)
 	{
 	case DX_SceneManager::STATE::INIT:
-		m_pCurScene->Initialize();
+		if (false == m_pCurScene->Initialize()) {
+			ErrorGameEnd();
+		}
 		m_state = DX_SceneManager::STATE::UPDATE;
 	case DX_SceneManager::STATE::UPDATE:
 		//	全キー更新
@@ -168,6 +170,9 @@ void DX_SceneManager::ChangeScene()
 		m_pCurScene = m_pNextScene;
 		m_pNextScene = nullptr;
 		m_state = DX_SceneManager::STATE::INIT;
+	}
+	else {
+		ErrorGameEnd();
 	}
 	
 }
