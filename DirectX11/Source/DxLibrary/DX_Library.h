@@ -78,6 +78,7 @@ struct tagObjectVertext {
 #include	"DxLibrary\DX_Texture.h"
 #include	"DxLibrary\DX_GameObject.h"
 #include	"DxLibrary\DX_2DObject.h"
+#include	"DxLibrary\DX_Button.h"
 #include	"DxLibrary\DX_Instance2DObject.h"
 #include	"DxLibrary\DX_Mesh.h"
 #include	"DxLibrary\DX_SkinMesh.h"

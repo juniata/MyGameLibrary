@@ -81,7 +81,7 @@ public:
 	//
 	//  @brief		指定した範囲、指定した画像座標で描画
 	//	@param[in]	renderPos	描画する範囲
-	//	@param[in]	renderSize	描画する画像の範囲
+	//	@param[in]	renderSize	描画する画像のサイズ
 	//
 	//------------------------------------------------------------------------------
 	bool Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize);

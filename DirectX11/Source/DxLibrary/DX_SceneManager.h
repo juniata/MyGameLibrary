@@ -37,11 +37,12 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief	シーンを更新する
+	//	@param	HWND	hWnd	ウィンドウハンドル	
 	//	@param	UINT	message ウィンドウメッセージ
 	//	@param	WPARAM  wParam ウィンドウズパラメーター
 	//
 	//------------------------------------------------------------------------------
-	 void Update(const UINT message, const WPARAM wParam);
+	 void Update(const HWND hWnd, const UINT message, const WPARAM wParam);
 
 	 //------------------------------------------------------------------------------
 	 //

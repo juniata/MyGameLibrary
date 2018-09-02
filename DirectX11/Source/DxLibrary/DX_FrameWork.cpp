@@ -129,7 +129,7 @@ void DX_FrameWork::Run()
 			FPSUpdate();
 		
 			// シーンの更新
-			pSceneManager->Update(msg.message, msg.wParam);
+			pSceneManager->Update(m_hWnd, msg.message, msg.wParam);
 
 			// シーンの描画
 			pSceneManager->Render(pSwapChain);

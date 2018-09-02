@@ -3,18 +3,20 @@
 #include	"SceneMain.h"
 #include	"SceneTitle.h"
 
-
+using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 //
 //	コンストラクタ
 //
 //-----------------------------------------------------------------------------------------
 SceneTitle::SceneTitle() : 
-	m_pTitle(new DX_2DObject("title.png")),
-	m_pMenu(new DX_2DObject("menu.png")),
+	m_pTitle(new DX_2DObject("SceneTitle\\title.png")),
+	m_pMenu(new DX_2DObject("SceneTitle\\menu.png")),
 	m_IsRenderMenu(false)
 {
-	ZeroMemory(m_pButtonList, BUTTON_NUM);
+	ZeroMemory(m_stageButtonList, BUTTON_NUM);
+
+	AddStageButton();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -29,7 +31,7 @@ SceneTitle::~SceneTitle()
 
 	for (int i = 0; i < BUTTON_NUM; ++i)
 	{
-		DELETE_OBJ(m_pButtonList[i]);
+		DELETE_OBJ(m_stageButtonList[i].pButton);
 	}
 }
 
@@ -45,9 +47,16 @@ bool SceneTitle::Update()
 		m_IsRenderMenu = true;
 	}
 
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RETURN))
-	{
-		DX_SceneManager::GetInstance()->ChangeScene(new SceneMain());
+	if (m_IsRenderMenu) {
+		for (int i = 0; i < BUTTON_NUM; ++i) {
+			if (m_stageButtonList[i].pButton == nullptr) {
+				continue;
+			}
+
+			if (m_stageButtonList[i].pButton->IsClickRelease()) {
+				DX_SceneManager::GetInstance()->ChangeScene(new SceneMain());
+			}
+		}
 	}
 	return true;
 }
@@ -65,7 +74,47 @@ bool SceneTitle::Render()
 	m_pView->Active();
 	m_pView->Clear();
 
-	result = m_IsRenderMenu ? m_pMenu->Render() : m_pTitle->Render();
+	if (m_IsRenderMenu) {
+		result = m_pMenu->Render();
+
+		for (int i = 0; i < BUTTON_NUM; ++i) {
+			if (m_stageButtonList[i].pButton == nullptr) {
+				continue;
+			}
+
+			if (false == (result = m_stageButtonList[i].pButton->Render())) {
+				break;
+			}
+		}
+	}
+	else {
+		result = m_pTitle->Render();
+	}
 
 	return result;
+}
+
+
+//-----------------------------------------------------------------------------------------
+//
+//	ステージボタンを追加する
+//
+//-----------------------------------------------------------------------------------------
+void SceneTitle::AddStageButton()
+{
+	const float renderposX = CAST_F(DX_System::GetInstance()->GetWindowWidth()) * 0.8f;
+	const float renderposY = CAST_F(DX_System::GetInstance()->GetWindowHeight()) * 0.2f;
+
+	for (int i = 0; i < BUTTON_NUM; ++i)
+	{
+		if (m_stageButtonList[i].pButton == nullptr) {			
+			m_stageButtonList[i].pos.x = renderposX;
+			m_stageButtonList[i].pos.y = renderposY;
+
+			char filepath[_MAX_PATH] = { '0' };
+			sprintf_s(filepath, "SceneTitle\\%s%i.png", "stage_button_", i + 1);
+			m_stageButtonList[i].pButton = new DX_Button(filepath, m_stageButtonList[i].pos, XMFLOAT2(256,128));
+			break;
+		}
+	}
 }

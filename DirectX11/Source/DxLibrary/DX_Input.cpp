@@ -1,15 +1,18 @@
 #include	"DX_Library.h"
+using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
 //  staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-bool	DX_Input::m_bKeys[INPUT_KEY_MAX]		= { false };
-bool	DX_Input::m_bPrevKeys[INPUT_KEY_MAX]	= { false };
-int		DX_Input::m_bMouseButtons[MOUSE_BUTTON_MAX]		= { 0 };
-int		DX_Input::m_bPrevMouseButtons[MOUSE_BUTTON_MAX] = { 0 };
-int		DX_Input::m_mouseWheelRotateCount = 0;
+bool			DX_Input::m_bKeys[INPUT_KEY_MAX]				= { false };
+bool			DX_Input::m_bPrevKeys[INPUT_KEY_MAX]			= { false };
+int				DX_Input::m_bMouseButtons[MOUSE_BUTTON_MAX]		= { 0 };
+int				DX_Input::m_bPrevMouseButtons[MOUSE_BUTTON_MAX] = { 0 };
+int				DX_Input::m_mouseWheelRotateCount				= 0;
+DirectX::XMINT2	DX_Input::m_mousePos							= XMINT2(0, 0);
+DirectX::XMINT2	DX_Input::m_mouseClientPos						= XMINT2(0, 0);
 
 //-----------------------------------------------------------------------------------------
 //
@@ -196,17 +199,48 @@ int DX_Input::GetMouseWheelDown()
 
 //-----------------------------------------------------------------------------------------
 //
+//	マウス座標を取得する
+//
+//-----------------------------------------------------------------------------------------
+void DX_Input::GetMousePos(DirectX::XMINT2* pPos)
+{
+	pPos->x = m_mousePos.x;
+	pPos->y = m_mousePos.y;
+}
+void DX_Input::GetMousePos(DirectX::XMFLOAT2* pPos)
+{
+	pPos->x = CAST_F(m_mousePos.x);
+	pPos->y = CAST_F(m_mousePos.y);
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	ゲーム画面でのマウス座標を取得する
+//
+//-----------------------------------------------------------------------------------------
+void DX_Input::GetMouseClientPos(DirectX::XMINT2* pPos)
+{
+	pPos->x = m_mouseClientPos.x;
+	pPos->y = m_mouseClientPos.y;
+}
+void DX_Input::GetMouseClientPos(DirectX::XMFLOAT2* pPos)
+{
+	pPos->x = CAST_F(m_mouseClientPos.x);
+	pPos->y = CAST_F(m_mouseClientPos.y);
+}
+//-----------------------------------------------------------------------------------------
+//
 //  デバイスの入力情報を更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_Input::Update(const unsigned int message,const WPARAM wParam)
+void DX_Input::Update(const HWND hWnd, const unsigned int message,const WPARAM wParam)
 {
 
 	//	キーの更新を行う
 	KeyUpdate();
 
 	//	マウスの更新を行う
-	MouseUpdate(message, wParam);
+	MouseUpdate(hWnd, message, wParam);
 
 }
 
@@ -242,7 +276,7 @@ void DX_Input::KeyUpdate()
 //  マウスの更新を行う
 //
 //-----------------------------------------------------------------------------------------
-void DX_Input::MouseUpdate(const unsigned int message, const WPARAM	 wParam)
+void DX_Input::MouseUpdate(HWND hWnd, const unsigned int message, const WPARAM	 wParam)
 {
 	//	回転数を０にする
 	m_mouseWheelRotateCount = 0;
@@ -304,5 +338,14 @@ void DX_Input::MouseUpdate(const unsigned int message, const WPARAM	 wParam)
 		break;
 	}
 
+	//カーソル位置を取得する
+	tagPOINT point;
+	GetCursorPos(&point);
+	m_mousePos.x = (int32_t)point.x;
+	m_mousePos.y = (int32_t)point.y;
 
+	// クライアント領域の座標に変換する
+	ScreenToClient(hWnd,  &point);
+	m_mouseClientPos.x = (int32_t)point.x;
+	m_mouseClientPos.y = (int32_t)point.y;
 }

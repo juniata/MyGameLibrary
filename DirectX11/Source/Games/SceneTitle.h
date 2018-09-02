@@ -40,11 +40,22 @@ public:
 	//------------------------------------------------------------------------------
 	bool Render();
 private:
+	struct Button {
+		DirectX::XMFLOAT2 pos;
+		DX_Button*	pButton;
+	};
 	DX_2DObject* m_pTitle;
 	DX_2DObject* m_pMenu;
 	bool m_IsRenderMenu;
 	
 	static const int BUTTON_NUM = 10;
-	DX_2DObject*	m_pButtonList[BUTTON_NUM];
+	Button m_stageButtonList[BUTTON_NUM];
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		ステージボタンを追加する
+	//
+	//------------------------------------------------------------------------------
+	void AddStageButton();
 };
 #endif // !__SCENE_TITLE_H_

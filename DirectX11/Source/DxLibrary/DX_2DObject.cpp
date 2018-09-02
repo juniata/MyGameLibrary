@@ -145,7 +145,7 @@ bool DX_2DObject::Render(const tagRect& renderPos)
 
 //-----------------------------------------------------------------------------------------
 //
-//  指定した範囲に描画
+//  指定した範囲、指定した画像サイズを描画
 //
 //-----------------------------------------------------------------------------------------
 bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize)

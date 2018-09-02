@@ -70,7 +70,7 @@ void DX_SceneManager::SetStartScene(DX_Scene* pScene)
 //	シーンを更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Update(const UINT message, const WPARAM wParam)
+void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM wParam)
 {
 	switch (m_state)
 	{
@@ -79,7 +79,7 @@ void DX_SceneManager::Update(const UINT message, const WPARAM wParam)
 		m_state = DX_SceneManager::STATE::UPDATE;
 	case DX_SceneManager::STATE::UPDATE:
 		//	全キー更新
-		DX_Input::Update(message, wParam);
+		DX_Input::Update(hWnd, message, wParam);
 
 		// シーンの更新
 		if (false == m_pCurScene->Update()) {
