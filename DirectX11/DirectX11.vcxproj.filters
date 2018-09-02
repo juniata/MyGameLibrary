@@ -34,6 +34,9 @@
     <Filter Include="ソース ファイル\Games\SceneTitle">
       <UniqueIdentifier>{9234ad86-181a-48f7-8f9a-d0a9d68e60bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Games\SceneMenu">
+      <UniqueIdentifier>{604a688a-da9d-44b1-94d5-f5c42c38d13a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DxLibrary\DX_Library.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="Source\DxLibrary\DX_Button.h">
       <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\SceneMenu.h">
+      <Filter>ソース ファイル\Games\SceneMenu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -316,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="Source\DxLibrary\DX_Button.cpp">
       <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMenu.cpp">
+      <Filter>ソース ファイル\Games\SceneMenu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

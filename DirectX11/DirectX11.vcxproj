@@ -59,6 +59,7 @@
     <ClInclude Include="Source\Games\BaseBarrage.h" />
     <ClInclude Include="Source\Games\Player.h" />
     <ClInclude Include="Source\Games\SceneMain.h" />
+    <ClInclude Include="Source\Games\SceneMenu.h" />
     <ClInclude Include="Source\Games\SceneTitle.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
     <ClInclude Include="Source\ModelLoader\imoloader.h" />
@@ -107,6 +108,7 @@
     <ClCompile Include="Source\Games\BaseBarrage.cpp" />
     <ClCompile Include="Source\Games\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain.cpp" />
+    <ClCompile Include="Source\Games\SceneMenu.cpp" />
     <ClCompile Include="Source\Games\SceneTitle.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp" />
