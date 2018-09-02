@@ -13,30 +13,7 @@ DX_2DObject::DX_2DObject() :
 	m_height(0),
 	m_width(0),
 	m_bClone(false)
-{
-	tagVertex2D l_pVertex[] = {
-		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
-		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
-		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
-		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
-	};
-
-	//	バッファを作成
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  メンバー変数を初期化し、2DObjectを作成する
-//
-//-----------------------------------------------------------------------------------------
-DX_2DObject::DX_2DObject(const char* pFilepath) : DX_2DObject()
-{
-	char texturePath[MAX_PATH] = { '\n' };
-	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
-	LoadTexture(texturePath);
-}
+{}
 
 
 //-----------------------------------------------------------------------------------------
@@ -51,6 +28,35 @@ DX_2DObject::~DX_2DObject()
 		DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
 	}
 }
+
+
+//-----------------------------------------------------------------------------------------
+//
+//	テクスチャ読み込みと頂点バッファの作成を行う。
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::Initialize(const char* pFilepath)
+{
+	bool result = false;
+
+	//	頂点バッファを作成
+	tagVertex2D l_pVertex[] = {
+		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
+		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
+		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
+		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
+	};
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+
+	// テクスチャを読み込む
+	char texturePath[MAX_PATH] = { '\n' };
+	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
+	result = LoadTexture(texturePath);
+
+	return result;
+}
+
 
 //-----------------------------------------------------------------------------------------
 //
@@ -80,9 +86,6 @@ unsigned int DX_2DObject::GetWidth()const
 bool DX_2DObject::Render()
 {
 	bool result = false;
-
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
 
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
@@ -114,9 +117,6 @@ bool DX_2DObject::Render()
 bool DX_2DObject::Render(const tagRect& renderPos)
 {
 	bool result = false;
-
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
 
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
@@ -152,9 +152,6 @@ bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 {
 	bool result = false;
 
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
-
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -189,9 +186,6 @@ bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 {
 	bool result = false;
 
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャの読み込みができていません。");
-
 	//	デバイスコンテキストを取得
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -222,7 +216,7 @@ bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 //  テクスチャを読み込む
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::LoadTexture(const char* pFilepath)
+bool DX_2DObject::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
 	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
@@ -246,6 +240,11 @@ void DX_2DObject::LoadTexture(const char* pFilepath)
 		SAFE_RELEASE(l_pResource);
 		SAFE_RELEASE(l_pTexture2D);
 	}
+	else {
+		DEBUG_VALUE_CHECK(false, "テクスチャの読み込みができていません。");
+	}
+
+	return true;
 }
 
 

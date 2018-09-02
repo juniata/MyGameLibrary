@@ -5,10 +5,9 @@ class DX_Button
 {
 public:
 	DX_Button();
-	DX_Button(const char* pFilepath, DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2& size);
 	~DX_Button();
 
-	void LoadTexture(const char* pFilepath);
+	bool Initialize(const char* pFilepath, DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2& size);
 	bool Render();
 
 	bool IsClick()const;

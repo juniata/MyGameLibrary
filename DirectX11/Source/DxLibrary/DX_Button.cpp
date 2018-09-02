@@ -2,21 +2,21 @@
 using namespace DirectX;
 
 DX_Button::DX_Button() :
-	m_pObject(new DX_2DObject())
+	m_pObject(new DX_2DObject()),
+	m_pos(XMFLOAT2(0.0f, 0.0f)),
+	m_size(XMFLOAT2(0.0f, 0.0f))
 {}
-DX_Button::DX_Button(const char* pFilepath, XMFLOAT2& pos, XMFLOAT2& size) :
-	m_pObject(new DX_2DObject(pFilepath)),
-	m_pos(pos),
-	m_size(size)
-{
-}
+
 DX_Button::~DX_Button()
 {
 	DELETE_OBJ(m_pObject);
 }
-void DX_Button::LoadTexture(const char* pFilepath)
+bool DX_Button::Initialize(const char* pFilepath, DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2& size)
 {
-	m_pObject->LoadTexture(pFilepath);
+	m_pos = pos;
+	m_size = size;
+
+	return m_pObject->Initialize(pFilepath);
 }
 bool DX_Button::Render()
 {

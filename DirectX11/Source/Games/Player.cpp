@@ -7,26 +7,19 @@ using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
-//  初期化
+//  コンストラクタ
 //
 //-----------------------------------------------------------------------------------------
-Player::Player()
+Player::Player() :
+	m_pObj(new DX_2DObject()),
+	m_size(XMFLOAT2(SIZE, SIZE))
 {
-	m_pObj = new DX_2DObject("SceneMain\\player.png");
-	m_size = DirectX::XMFLOAT2(SIZE, SIZE);
 	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
 	float basePosY = (DX_System::GetWindowHeight() - m_size.y);
 	m_pos = DirectX::XMFLOAT2(basePosX, basePosY);
 
 	// ステータスを設定する
 	m_status.life = INIT_LIFE;
-
-	m_pBarrageManager = new BarrageManager(2);
-	m_pBarrageManager->AddBarrage(new BarrageLaser("SceneMain\\kinu.png", 11, XMFLOAT2(32.0f, 32.0f)));
-	m_pBarrageManager->AddBarrage(new BarrageBeam("SceneMain\\kinu.png", 11, XMFLOAT2(32.0f, 32.0f)));
-
-	// 2つ目の弾幕クラスのインスタンスを有効化する
-	m_pBarrageManager->GetBarrage(0)->Enable();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -37,7 +30,20 @@ Player::Player()
 Player::~Player()
 {
 	DELETE_OBJ(m_pObj);
-	DELETE_OBJ(m_pBarrageManager);
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  初期化
+//
+//-----------------------------------------------------------------------------------------
+bool Player::Initialize()
+{
+	bool result = false;
+
+	result = m_pObj->Initialize("SceneMain\\player.png");
+
+	return result;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -119,8 +125,6 @@ bool Player::Update()
 bool Player::Render()
 {
 	bool result = false;
-
-	result = m_pBarrageManager->Render();
 
 	result = m_pObj->Render(m_pos, m_size);
 

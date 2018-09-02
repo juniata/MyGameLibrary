@@ -10,7 +10,7 @@ using namespace DirectX;
 //
 //-----------------------------------------------------------------------------------------
 SceneTitle::SceneTitle() : 
-	m_pTitle(new DX_2DObject("SceneTitle\\title.png"))
+	m_pTitle(new DX_2DObject())
 {}
 
 //-----------------------------------------------------------------------------------------
@@ -25,17 +25,33 @@ SceneTitle::~SceneTitle()
 
 //-----------------------------------------------------------------------------------------
 //
+//	初期化
+//
+//-----------------------------------------------------------------------------------------
+bool SceneTitle::Initialize()
+{
+	bool result = false;
+
+	result = m_pTitle->Initialize("SceneTitle\\title.png");
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------
+//
 //	更新
 //
 //-----------------------------------------------------------------------------------------
 bool SceneTitle::Update()
 {
+	bool result = true;
+
 	// タイトル画面の時に左クリックをしたらメニュー画面を表示
 	if (DX_Input::IsMouseButtonRelease(DX_MOUSE_BUTTON_KIND::BUTTON_L)) {
 		DX_SceneManager::GetInstance()->ChangeScene(new SceneMenu());
 	}
 
-	return true;
+	return result;
 }
 
 

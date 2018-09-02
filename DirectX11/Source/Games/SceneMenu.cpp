@@ -9,11 +9,9 @@ using namespace DirectX;
 //
 //-----------------------------------------------------------------------------------------
 SceneMenu::SceneMenu() :
-	m_pMenu(new DX_2DObject("SceneTitle\\menu.png"))
+	m_pMenu(new DX_2DObject())
 {
 	ZeroMemory(m_stageButtonList, BUTTON_NUM);
-
-	AddStageButton();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -31,6 +29,20 @@ SceneMenu::~SceneMenu()
 	}
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//	初期化
+//
+//-----------------------------------------------------------------------------------------
+bool SceneMenu::Initialize()
+{
+	bool result = false;
+
+	result = m_pMenu->Initialize("SceneMenu\\menu.png");
+	result = AddStageButton();
+
+	return result;
+}
 //-----------------------------------------------------------------------------------------
 //
 //	更新
@@ -85,8 +97,10 @@ bool SceneMenu::Render()
 //	ステージボタンを追加する
 //
 //-----------------------------------------------------------------------------------------
-void SceneMenu::AddStageButton()
+bool SceneMenu::AddStageButton()
 {
+	bool result = false;
+
 	const float renderposX = CAST_F(DX_System::GetInstance()->GetWindowWidth()) * 0.8f;
 	const float renderposY = CAST_F(DX_System::GetInstance()->GetWindowHeight()) * 0.2f;
 
@@ -97,9 +111,12 @@ void SceneMenu::AddStageButton()
 			m_stageButtonList[i].pos.y = renderposY;
 
 			char filepath[_MAX_PATH] = { '0' };
-			sprintf_s(filepath, "SceneTitle\\%s%i.png", "stage_button_", i + 1);
-			m_stageButtonList[i].pButton = new DX_Button(filepath, m_stageButtonList[i].pos, XMFLOAT2(256, 128));
+			sprintf_s(filepath, "SceneMenu\\%s%i.png", "stage_button_", i + 1);
+			m_stageButtonList[i].pButton = new DX_Button();
+			result = m_stageButtonList[i].pButton->Initialize(filepath, m_stageButtonList[i].pos, XMFLOAT2(256, 128));
 			break;
 		}
 	}
+
+	return result;
 }
