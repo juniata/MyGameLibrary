@@ -69,26 +69,21 @@ DX_ShaderManager* DX_ShaderManager::GetInstance()
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::Initialize()
 {
-	try{
-		//	コンピュートシェーダーが使えるかをチェック
-		UsedComputeShaderCheck();
+	//	コンピュートシェーダーが使えるかをチェック
+	UsedComputeShaderCheck();
 		
-		//	2D描画用シェーダーを作成
-		CreateShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-		CreateShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-		CreateShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
+	//	2D描画用シェーダーを作成
+	CreateShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	CreateShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	CreateShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
 
-		// 
-		CreateShader(DEFAULT_OBJECT_SHADER::VERTEX_SHADER);
-		//CreateShader(DEFAULT_OBJECT_SHADER::GEOMETRY_SHADER);
-		CreateShader(DEFAULT_OBJECT_SHADER::PIXEL_SHADER);
+	// 
+	CreateShader(DEFAULT_OBJECT_SHADER::VERTEX_SHADER);
+	//CreateShader(DEFAULT_OBJECT_SHADER::GEOMETRY_SHADER);
+	CreateShader(DEFAULT_OBJECT_SHADER::PIXEL_SHADER);
 
-		//	インプットレイアウトを作成
-		CreateInputLayout();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
+	//	インプットレイアウトを作成
+	CreateInputLayout();
 }
 
 //-----------------------------------------------------------------------------------------

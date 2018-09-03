@@ -77,22 +77,17 @@ void DX_RenderState::Initialize()
 	ID3D11Device*			pDevice		= pSystem->GetDevice();
 	ID3D11DeviceContext*	pContext	= pSystem->GetDeviceContext();
 
-	try{
-		//	ラスタライザーステートを作成
-		CreateRasterizerState(pDevice);
+	//	ラスタライザーステートを作成
+	CreateRasterizerState(pDevice);
 
-		//	ブレンドステートを作成
-		CreateBlendState(pDevice);
+	//	ブレンドステートを作成
+	CreateBlendState(pDevice);
 
-		//	深度･ステンシルステートを作成
-		CreateDepthStencilState(pDevice);
+	//	深度･ステンシルステートを作成
+	CreateDepthStencilState(pDevice);
 		
-		//	サンプラーステートを作成
-		CreateSamplerState(pDevice);
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
+	//	サンプラーステートを作成
+	CreateSamplerState(pDevice);
 
 
 	//	OMに必要情報を設定

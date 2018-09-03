@@ -105,7 +105,6 @@ bool DX_System::InitD3D(const HWND& hWnd)
 	
 		//	デバッグデバイスを作成する
 		DX_Debug::GetInstance()->Initialize();
-		DX_Debug::GetInstance()->ReportLiveDeviceObjects("dx_debug initialize");
 	
 		// バックバッファを作成する
 		InitBuckBuffer();

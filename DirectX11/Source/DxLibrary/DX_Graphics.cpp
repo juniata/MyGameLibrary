@@ -1,5 +1,4 @@
 #include	"DX_Library.h"
-
 //-----------------------------------------------------------------------------------------
 //
 //	マクロ定義
@@ -61,90 +60,87 @@ void DX_Graphics::Initialize()
 	DXGI_ADAPTER_DESC	l_adpterDesc = { NULL };
 	unsigned int		l_numModes		= 0;
 
-	try {
-		//	factryを作成
-		if (!DX_Debug::GetInstance()->IsHresultCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&l_pFactory))) {
-			throw "CreateDXGIFactory() : failed";
+	DX_Debug* pDebug = DX_Debug::GetInstance();
+
+	//	factryを作成
+	if (!pDebug->IsHresultCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&l_pFactory))) {
+		throw "CreateDXGIFactory() : failed";
+	}
+
+	// adaptersを作成
+	if (!pDebug->IsHresultCheck(l_pFactory->EnumAdapters(0, &l_pAdapter))) {
+		throw "IDXGIFactory::EnumAdapters() : failed";
+	}
+
+	//	enumOutputを作成
+	if (!pDebug->IsHresultCheck(l_pAdapter->EnumOutputs(0, &l_pOutput))) {
+		throw "IDXGIAdapter::EnumOutputs() : failed";
+	}
+
+	//	displayModeListの数を取得
+	if (!pDebug->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
+		throw "IDXGIOutput::GetDisplayModeList() : DXGI_MODE_DESC element failed";
+	}
+
+	//	listの数だけ生成
+	l_pDisplayModeList = new DXGI_MODE_DESC[l_numModes];
+
+	//	listの内容を取得
+	if (!DX_Debug::GetInstance()->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
+		throw "IDXGIOutput::GetDisplayModeList() : numModels failed";
+	}
+
+	unsigned int width	= DX_System::GetWindowWidth();
+	unsigned int height = DX_System::GetWindowHeight();
+
+	//	ウィンドウサイズに一致したGPU情報を取得
+	//	ウィンドウサイズに一致するリフレッシュシートを取得
+	for (unsigned int i = 0; i < l_numModes; ++i) {
+		DXGI_MODE_DESC displayMode = l_pDisplayModeList[i];
+
+		//DX_Debug::GetInstance()->Printf("Width = %d", displayMode.Width);
+		//DX_Debug::GetInstance()->Printf(" height = %d", displayMode.Height);
+		//DX_Debug::GetInstance()->Printf(" m_refreshRateD = %d", displayMode.RefreshRate.Denominator);
+		//DX_Debug::GetInstance()->Printf(" m_refreshRateN = %d", displayMode.RefreshRate.Numerator);
+		//DX_Debug::GetInstance()->Printf(" m_scaling = %d", displayMode.Scaling);
+		//DX_Debug::GetInstance()->Printf(" m_scanlineOrder = %d", displayMode.ScanlineOrdering);
+		//DX_Debug::GetInstance()->Printf(" m_format = %d", displayMode.Format);
+		//DX_Debug::GetInstance()->Printf("\n\n");
+		//	スクリーンの幅が一致している場合
+		if (displayMode.Width == width && displayMode.Height == height) {
+			//	GPUの情報を取得
+			m_refreshRateD	= displayMode.RefreshRate.Denominator;
+			m_refreshRateN	= displayMode.RefreshRate.Numerator;
+			m_scaling		= displayMode.Scaling;
+			m_scanlineOrder = displayMode.ScanlineOrdering;
+			m_format		= displayMode.Format;
 		}
-
-		// adaptersを作成
-		if (!DX_Debug::GetInstance()->IsHresultCheck(l_pFactory->EnumAdapters(0, &l_pAdapter))) {
-			throw "IDXGIFactory::EnumAdapters() : failed";
-		}
-
-		//	enumOutputを作成
-		if (!DX_Debug::GetInstance()->IsHresultCheck(l_pAdapter->EnumOutputs(0, &l_pOutput))) {
-			throw "IDXGIAdapter::EnumOutputs() : failed";
-		}
-
-		//	displayModeListの数を取得
-		if (!DX_Debug::GetInstance()->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
-				throw "IDXGIOutput::GetDisplayModeList() : DXGI_MODE_DESC element failed";
-		}
-
-		//	listの数だけ生成
-		l_pDisplayModeList = new DXGI_MODE_DESC[l_numModes];
-
-		//	listの内容を取得
-		if (!DX_Debug::GetInstance()->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
-			throw "IDXGIOutput::GetDisplayModeList() : numModels failed";
-		}
-
-		unsigned int width	= DX_System::GetWindowWidth();
-		unsigned int height = DX_System::GetWindowHeight();
-
-		//	ウィンドウサイズに一致したGPU情報を取得
-		//	ウィンドウサイズに一致するリフレッシュシートを取得
-		for (unsigned int i = 0; i < l_numModes; ++i) {
-			DXGI_MODE_DESC displayMode = l_pDisplayModeList[i];
-
-			//DX_Debug::GetInstance()->Printf("Width = %d", displayMode.Width);
-			//DX_Debug::GetInstance()->Printf(" height = %d", displayMode.Height);
-			//DX_Debug::GetInstance()->Printf(" m_refreshRateD = %d", displayMode.RefreshRate.Denominator);
-			//DX_Debug::GetInstance()->Printf(" m_refreshRateN = %d", displayMode.RefreshRate.Numerator);
-			//DX_Debug::GetInstance()->Printf(" m_scaling = %d", displayMode.Scaling);
-			//DX_Debug::GetInstance()->Printf(" m_scanlineOrder = %d", displayMode.ScanlineOrdering);
-			//DX_Debug::GetInstance()->Printf(" m_format = %d", displayMode.Format);
-			//DX_Debug::GetInstance()->Printf("\n\n");
-			//	スクリーンの幅が一致している場合
-			if (displayMode.Width == width && displayMode.Height == height) {
-				//	GPUの情報を取得
-				m_refreshRateD	= displayMode.RefreshRate.Denominator;
-				m_refreshRateN	= displayMode.RefreshRate.Numerator;
-				m_scaling		= displayMode.Scaling;
-				m_scanlineOrder = displayMode.ScanlineOrdering;
-				m_format		= displayMode.Format;
-			}
-		}
+	}
 		
-		//	リフレッシュレートが取得できていない場合
-		if (m_refreshRateD == 0 && m_refreshRateN == 0) {
-			throw "Get RefreshReate failed";
-		}
-
-		//	DXGI_ADAPTER_DESCを取得
-		if (!DX_Debug::GetInstance()->IsHresultCheck(l_pAdapter->GetDesc(&l_adpterDesc))) {
-			throw "IDXGIAdapter::GetDesc(): failed";
-		}
-
-		//	byte→MegaByte
-		m_videoCardMemory = unsigned int(l_adpterDesc.DedicatedVideoMemory / 1024 / 1024);
-
-		//	文字列を変換
-		size_t	l_stringLendth = 0;
-		if (::wcstombs_s(&l_stringLendth, m_videoCardDescription, sizeof(m_videoCardDescription), l_adpterDesc.Description, sizeof(m_videoCardDescription)) != 0) {
-			throw "wcstombs_s() failed";
-		}
-
-		//	解放処理
-		DELETE_OBJ_ARRAY(l_pDisplayModeList);
-		SAFE_RELEASE(l_pFactory);
-		SAFE_RELEASE(l_pAdapter);
-		SAFE_RELEASE(l_pOutput);
+	//	リフレッシュレートが取得できていない場合
+	if (m_refreshRateD == 0 && m_refreshRateN == 0) {
+		throw "Get RefreshReate failed";
 	}
-	catch (char* pErrorMsg){
-		throw  pErrorMsg;
+
+	//	DXGI_ADAPTER_DESCを取得
+	if (!pDebug->IsHresultCheck(l_pAdapter->GetDesc(&l_adpterDesc))) {
+		throw "IDXGIAdapter::GetDesc(): failed";
 	}
+
+	//	byte→MegaByte
+	m_videoCardMemory = unsigned int(l_adpterDesc.DedicatedVideoMemory / 1024 / 1024);
+
+	//	文字列を変換
+	size_t	l_stringLendth = 0;
+	if (::wcstombs_s(&l_stringLendth, m_videoCardDescription, sizeof(m_videoCardDescription), l_adpterDesc.Description, sizeof(m_videoCardDescription)) != 0) {
+		throw "wcstombs_s() failed";
+	}
+
+	//	解放処理
+	DELETE_OBJ_ARRAY(l_pDisplayModeList);
+	SAFE_RELEASE(l_pFactory);
+	SAFE_RELEASE(l_pAdapter);
+	SAFE_RELEASE(l_pOutput);
 }
 
 //-----------------------------------------------------------------------------------------
