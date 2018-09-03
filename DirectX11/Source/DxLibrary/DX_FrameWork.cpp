@@ -184,13 +184,7 @@ HINSTANCE DX_FrameWork::GetHinstance()const
 //	ウィンドウを作成する
 //
 //-----------------------------------------------------------------------------------------
-bool DX_FrameWork::CreateAppWindow(
-	char* pAppName,
-	const int x,
-	const int y,
-	const int width,
-	const int height
-	)
+bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, const int width, const int height)
 {
 	//	アプリケーション名を保存
 	m_pAppName = pAppName;
@@ -224,13 +218,14 @@ bool DX_FrameWork::CreateAppWindow(
 	//	ウィンドウのスタイルを設定
 	int l_style = WS_OVERLAPPEDWINDOW;
 
+	// 画面の中心に描画されるようにする
 	RECT rect;
 	rect.top = 0;
 	rect.left = 0;
 	rect.right = width;
 	rect.bottom = height;
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
-	rect.right -= rect.left;
+	rect.right += rect.left;
 	rect.bottom -= rect.top;
 
 	//	windowを作成する

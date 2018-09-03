@@ -304,19 +304,14 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 {
 	DX_Graphics* pGrapchics = DX_Graphics::GetInstance();
 
-	RECT rc;
-	GetClientRect(hWnd, &rc);
-	UINT width	= rc.right - rc.left;
-	UINT height = rc.bottom - rc.top;
-
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = { NULL };
 
 	//	バックバッファ数
 	swapChainDesc.BufferCount = 1;
 
 	//	バックバッファの幅と高さ
-	swapChainDesc.BufferDesc.Width	= width;
-	swapChainDesc.BufferDesc.Height	= height;
+	swapChainDesc.BufferDesc.Width	= m_windowWidth;
+	swapChainDesc.BufferDesc.Height	= m_windowHeight;
 
 	//	フォーマット
 	swapChainDesc.BufferDesc.Format = pGrapchics->GetFortmat();
