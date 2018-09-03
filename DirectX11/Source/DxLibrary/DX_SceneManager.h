@@ -1,6 +1,7 @@
 #ifndef __DX_SCENE_MANAGER_H_
 #define __DX_SCENE_MANAGER_H_
 
+class DX_Graphics;
 //****************************************************************************************************
 //
 //	DX_SceneManager
@@ -47,10 +48,11 @@ public:
 	 //------------------------------------------------------------------------------
 	 //
 	 // @brief	シーンを描画する
+	 //	@param	pGraphics	DX_Graphics
 	 //	@param	pSwapChain	スワップチェイン
 	 //
 	 //------------------------------------------------------------------------------
-	 void Render(IDXGISwapChain* pSwapChain);
+	 void Render(DX_Graphics* pGrapchis, IDXGISwapChain* pSwapChain);
 
 	 //------------------------------------------------------------------------------
 	 //

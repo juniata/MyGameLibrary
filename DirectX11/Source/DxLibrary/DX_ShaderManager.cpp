@@ -69,8 +69,6 @@ DX_ShaderManager* DX_ShaderManager::GetInstance()
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::Initialize()
 {
-	PROFILE("DX_ShaderManager::Initialize()");
-
 	try{
 		//	コンピュートシェーダーが使えるかをチェック
 		UsedComputeShaderCheck();

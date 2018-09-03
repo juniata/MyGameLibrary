@@ -11,7 +11,6 @@
 #include	<d3d11.h>
 #include	<DirectXMath.h>
 #include	<d3dcompiler.h>
-//#include	<d3d9.h>
 #include	<XAudio2.h>
 #include	<XInput.h>
 
@@ -92,7 +91,4 @@ struct tagObjectVertext {
 #include	"DxLibrary\DX_Particle.h"
 #include	"DxLibrary\DX_Font.h"
 
-
-
-#include	"../user_helper_class/AutoProfile.h"
 #endif // !__DX_LIBRARY_H_

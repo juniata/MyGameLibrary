@@ -98,14 +98,14 @@ void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM w
 //	シーンを描画する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
+void DX_SceneManager::Render(DX_Graphics* pGrapchis, IDXGISwapChain* pSwapChain)
 {
 	switch (m_state)
 	{
 	case DX_SceneManager::STATE::UPDATE:
 
 		//	描画開始
-		DX_Graphics::BeginRender(pSwapChain);
+		pGrapchis->BeginRender(pSwapChain);
 
 		//	シーンを描画
 		if (false == m_pCurScene->Render()) {
@@ -114,7 +114,7 @@ void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
 		}
 
 		//	描画終了
-		DX_Graphics::EndRender(pSwapChain);
+		pGrapchis->EndRender(pSwapChain);
 
 		// 次のシーンが設定されたらシーンを変更する(現在のシーンが描画され終わった後に次のシーンへの遷移を行う)
 		if (m_pNextScene) {

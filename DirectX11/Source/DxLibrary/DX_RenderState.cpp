@@ -73,8 +73,6 @@ void DX_RenderState::Release()
 //-----------------------------------------------------------------------------------------
 void DX_RenderState::Initialize()
 {
-	PROFILE("DX_RenderState::Initialize()");
-
 	DX_System*				pSystem		= DX_System::GetInstance();
 	ID3D11Device*			pDevice		= pSystem->GetDevice();
 	ID3D11DeviceContext*	pContext	= pSystem->GetDeviceContext();

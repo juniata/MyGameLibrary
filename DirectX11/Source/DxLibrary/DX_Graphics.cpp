@@ -13,15 +13,38 @@
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-bool						DX_Graphics::m_stand_by_mode = false;
-unsigned int				DX_Graphics::m_refreshRateD = 0;
-unsigned int				DX_Graphics::m_refreshRateN = 0;
-unsigned int				DX_Graphics::m_videoCardMemory = 0;
-char						DX_Graphics::m_videoCardDescription[128];
-DXGI_MODE_SCANLINE_ORDER	DX_Graphics::m_scanlineOrder;
-DXGI_MODE_SCALING			DX_Graphics::m_scaling;
-DXGI_FORMAT					DX_Graphics::m_format;
+DX_Graphics* DX_Graphics::m_pInstance = nullptr;
 
+//-----------------------------------------------------------------------------------------
+//
+//	コンストラクタ
+//
+//-----------------------------------------------------------------------------------------
+DX_Graphics::DX_Graphics() :
+	m_stand_by_mode(false),
+	m_refreshRateD(0),
+	m_refreshRateN(0),
+	m_videoCardMemory(0),
+	m_scanlineOrder(DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED),
+	m_scaling(DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED),
+	m_format(DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM)
+{
+	ZeroMemory(m_videoCardDescription, 128);
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	自身のインスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
+DX_Graphics* DX_Graphics::GetInstance()
+{
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_Graphics();
+	}
+
+	return m_pInstance;
+}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -30,8 +53,6 @@ DXGI_FORMAT					DX_Graphics::m_format;
 //-----------------------------------------------------------------------------------------
 void DX_Graphics::Initialize()
 {
-	PROFILE("DX_Graphics::Initialize()");
-
 	//	変数定義
 	IDXGIFactory*		l_pFactory			= nullptr;
 	IDXGIAdapter*		l_pAdapter			= nullptr;
@@ -126,6 +147,15 @@ void DX_Graphics::Initialize()
 	}
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//	インスタンスの開放を行う
+//
+//-----------------------------------------------------------------------------------------
+void DX_Graphics::Release()
+{
+	DELETE_OBJ(m_pInstance);
+}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -160,7 +190,7 @@ void DX_Graphics::EndRender(IDXGISwapChain* pSwapChain)
 //	リフレッシュシートの分母を取得
 //
 //-----------------------------------------------------------------------------------------
-unsigned int DX_Graphics::GetRefreshRateN()
+unsigned int DX_Graphics::GetRefreshRateN() const
 {
 	return m_refreshRateN;
 }
@@ -170,7 +200,7 @@ unsigned int DX_Graphics::GetRefreshRateN()
 //	リフレッシュシートの分子を取得
 //
 //-----------------------------------------------------------------------------------------
-unsigned int DX_Graphics::GetRefreshRateD()
+unsigned int DX_Graphics::GetRefreshRateD() const
 {
 	return m_refreshRateD;
 }
@@ -180,7 +210,7 @@ unsigned int DX_Graphics::GetRefreshRateD()
 //	ビデオカードのメモリ量の取得
 //
 //-----------------------------------------------------------------------------------------
-unsigned int DX_Graphics::GetVieoCardMemory()
+unsigned int DX_Graphics::GetVieoCardMemory() const
 {
 	return m_videoCardMemory;
 }
@@ -189,7 +219,7 @@ unsigned int DX_Graphics::GetVieoCardMemory()
 //	ビデオカードの名前を取得
 //
 //-----------------------------------------------------------------------------------------
-char* DX_Graphics::GetVideoCardDescription()
+const char* DX_Graphics::GetVideoCardDescription() const
 {
 	return m_videoCardDescription;
 }

@@ -47,6 +47,9 @@ DX_System::~DX_System()
 	// テクスチャの解放を行う
 	DX_TextureManager::Release();
 
+	// グラフィックスの開放を行う。
+	DX_Graphics::Release();
+
 	m_pSwapChain->SetFullscreenState(FALSE, nullptr);
 	m_pDeviceContext->ClearState();
 
@@ -95,7 +98,7 @@ bool DX_System::InitD3D(const HWND& hWnd)
 
 	try{
 		//	DX_Graphicsを初期化
-		DX_Graphics::Initialize();
+		DX_Graphics::GetInstance()->Initialize();
 
 		//	SwapChainを作成する
 		CreateDeviceAndSwapChain(hWnd);
@@ -300,8 +303,8 @@ void DX_System::InitBuckBuffer()
 //-----------------------------------------------------------------------------------------
 void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 {
-	PROFILE("DX_System::CreateDeviceAndSwapChain()");
-	
+	DX_Graphics* pGrapchics = DX_Graphics::GetInstance();
+
 	RECT rc;
 	GetClientRect(hWnd, &rc);
 	UINT width	= rc.right - rc.left;
@@ -317,15 +320,15 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	swapChainDesc.BufferDesc.Height	= height;
 
 	//	フォーマット
-	swapChainDesc.BufferDesc.Format = DX_Graphics::GetFortmat();
+	swapChainDesc.BufferDesc.Format = pGrapchics->GetFortmat();
 
 	//	リフレッシュレートの分母と分子
-	swapChainDesc.BufferDesc.RefreshRate.Numerator		= DX_Graphics::GetRefreshRateN();
-	swapChainDesc.BufferDesc.RefreshRate.Denominator	= DX_Graphics::GetRefreshRateD();
+	swapChainDesc.BufferDesc.RefreshRate.Numerator		= pGrapchics->GetRefreshRateN();
+	swapChainDesc.BufferDesc.RefreshRate.Denominator	= pGrapchics->GetRefreshRateD();
 
 	//	スキャンラインとスケーリング
-	swapChainDesc.BufferDesc.ScanlineOrdering	= DX_Graphics::GetScanLineOrder();
-	swapChainDesc.BufferDesc.Scaling			= DX_Graphics::GetScaling();
+	swapChainDesc.BufferDesc.ScanlineOrdering	= pGrapchics->GetScanLineOrder();
+	swapChainDesc.BufferDesc.Scaling			= pGrapchics->GetScaling();
 
 	// バック バッファの使用法
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -411,8 +414,6 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 //-----------------------------------------------------------------------------------------
 void DX_System::CreateRenderTargetView()
 {
-	PROFILE("DX_System::CreateRenderTargetView()");
-
 	ID3D11Texture2D* pBuffer = nullptr;
 	//	バックバッファを取得
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer))){
@@ -435,8 +436,6 @@ void DX_System::CreateRenderTargetView()
 //-----------------------------------------------------------------------------------------
 void DX_System::CreateDepthStencilBuffer()
 {
-	PROFILE("DX_System::CreateDepthStencilBuffer()");
-
 	ID3D11Texture2D* pBuffer = nullptr;
 	//	バックバッファを取得
 	if (!DX_Debug::GetInstance()->IsHresultCheck(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBuffer))) {
@@ -471,8 +470,6 @@ void DX_System::CreateDepthStencilBuffer()
 //-----------------------------------------------------------------------------------------
 void DX_System::CreateDepthStencilView()
 {
-	PROFILE("DX_System::CreateDepthStencilView()");
-
 	D3D11_TEXTURE2D_DESC desc = { NULL };
 	m_pDsb->GetDesc(&desc);
 	

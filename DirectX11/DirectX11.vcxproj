@@ -64,7 +64,6 @@
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
     <ClInclude Include="Source\ModelLoader\imoloader.h" />
     <ClInclude Include="Source\user_helper_class\ALManager.h" />
-    <ClInclude Include="Source\user_helper_class\AutoProfile.h" />
     <ClInclude Include="Source\user_helper_class\oggmanager.h" />
     <ClInclude Include="Source\user_helper_class\WAVManager.h" />
   </ItemGroup>
@@ -113,7 +112,6 @@
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />
     <ClCompile Include="Source\ModelLoader\IMOLoader.cpp" />
     <ClCompile Include="Source\user_helper_class\ALManager.cpp" />
-    <ClCompile Include="Source\user_helper_class\AutoProfile.cpp" />
     <ClCompile Include="Source\user_helper_class\OGGManager.cpp" />
     <ClCompile Include="Source\user_helper_class\WAVManager.cpp" />
   </ItemGroup>

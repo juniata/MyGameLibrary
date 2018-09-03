@@ -3,6 +3,7 @@
 #include	"Games\SceneTitle.h"
 #include	"Games\SceneMain.h"
 #include	<mmsystem.h>
+#include	<stdio.h>
 #pragma comment(lib,"winmm.lib")
 
 #define FILE_MENU_RENDER_SOLID 1
@@ -114,6 +115,9 @@ void DX_FrameWork::Run()
 	//	スワップチェインを取得
 	IDXGISwapChain* pSwapChain = DX_System::GetInstance()->GetSwapChain();
 
+	// グラフィックスを取得する
+	DX_Graphics*	pGraphics = DX_Graphics::GetInstance();
+
 	//	現在のシーンを取得
 	DX_SceneManager* pSceneManager = DX_SceneManager::GetInstance();
 	pSceneManager->SetStartScene(new SceneTitle());
@@ -132,7 +136,7 @@ void DX_FrameWork::Run()
 			pSceneManager->Update(m_hWnd, msg.message, msg.wParam);
 
 			// シーンの描画
-			pSceneManager->Render(pSwapChain);
+			pSceneManager->Render(pGraphics, pSwapChain);
 
 			// ゲームエンドか？
 			if (pSceneManager->IsGameEnd()) {

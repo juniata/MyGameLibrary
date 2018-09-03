@@ -53,7 +53,6 @@ DX_Debug* DX_Debug::GetInstance()
 //-----------------------------------------------------------------------------------------
 void DX_Debug::Initialize()
 {
-	PROFILE("DX_Debug::Initialize()");
 #if defined(DEBUG) || defined(_DEBUG)
 	//ƒnƒ“ƒhƒ‹‚ðŽæ“¾
 	m_consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE); 
