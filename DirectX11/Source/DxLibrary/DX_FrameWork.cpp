@@ -48,6 +48,20 @@ void CloseConsoleWindow()
 
 //-----------------------------------------------------------------------------------------
 //
+//	前方宣言
+//
+//-----------------------------------------------------------------------------------------
+LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam);
+
+//-----------------------------------------------------------------------------------------
+//
+//	static変数
+//
+//-----------------------------------------------------------------------------------------
+DX_FrameWork* DX_FrameWork::m_pInstance = nullptr;
+
+//-----------------------------------------------------------------------------------------
+//
 //	マクロ定義
 //
 //-----------------------------------------------------------------------------------------
@@ -63,7 +77,9 @@ void CloseConsoleWindow()
 DX_FrameWork::DX_FrameWork() :
 m_pAppName(nullptr),
 m_hInstance(NULL),
-m_hWnd(NULL)
+m_hWnd(NULL),
+m_bResize(false),
+m_lParam(0)
 {
 	ZeroMemory(&m_fps, sizeof(m_fps));
 	m_fps.startTime = timeGetTime();
@@ -77,6 +93,29 @@ m_hWnd(NULL)
 DX_FrameWork::~DX_FrameWork()
 {
 	UnregisterClass(m_pAppName, m_hInstance);
+}
+//-----------------------------------------------------------------------------------------
+//
+//  自身のインスタンスを取得する
+//
+//-----------------------------------------------------------------------------------------
+DX_FrameWork* DX_FrameWork::GetInstance()
+{
+	if (m_pInstance == nullptr) {
+		m_pInstance = new DX_FrameWork();
+	}
+
+	return m_pInstance;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  自身のインスタンスを解放する
+//
+//-----------------------------------------------------------------------------------------
+void DX_FrameWork::Release()
+{
+	DELETE_OBJ(m_pInstance);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -112,8 +151,9 @@ void DX_FrameWork::Run()
 
 	MSG msg = { NULL };
 	
+	DX_System* pSystem	= DX_System::GetInstance();
 	//	スワップチェインを取得
-	IDXGISwapChain* pSwapChain = DX_System::GetInstance()->GetSwapChain();
+	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
 
 	// グラフィックスを取得する
 	DX_Graphics*	pGraphics = DX_Graphics::GetInstance();
@@ -142,6 +182,13 @@ void DX_FrameWork::Run()
 			if (pSceneManager->IsGameEnd()) {
 				break;
 			}
+
+			// 描画後にリサイズを行う
+			if (m_bResize) {
+				pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam));
+				m_bResize = false;
+			}
+
 		}
 	}
 	
@@ -179,6 +226,17 @@ HINSTANCE DX_FrameWork::GetHinstance()const
 	return m_hInstance;
 }
 
+//------------------------------------------------------------------------------
+//
+//	バックバッファのリサイズを行う
+//
+//------------------------------------------------------------------------------
+void DX_FrameWork::DoResize(LPARAM lparam)
+{
+	m_bResize = true;
+	m_lParam = lparam;
+}
+
 //-----------------------------------------------------------------------------------------
 //
 //	ウィンドウを作成する
@@ -193,47 +251,54 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	m_hInstance = GetModuleHandle(NULL);
 
 	// windowクラスを設定
-	WNDCLASSEX l_wc;
-	l_wc.cbSize			= sizeof(WNDCLASSEX);
-	l_wc.style			= CS_HREDRAW | CS_VREDRAW;
-	l_wc.lpfnWndProc	= WndProc;
-	l_wc.cbClsExtra		= 0;
-	l_wc.cbWndExtra		= 0;
-	l_wc.hInstance		= m_hInstance;
-	//l_wc.hIcon			= LoadIcon(m_hInstance, (LPCSTR)IDI_ICON1);
-	l_wc.hIcon			= LoadIcon(m_hInstance, IDI_APPLICATION);
-	l_wc.hIconSm		= l_wc.hIcon;
-	l_wc.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	l_wc.hbrBackground	= (HBRUSH)GetStockObject(BACKUP_SPARSE_BLOCK);
-	l_wc.lpszMenuName	= NULL;
-	l_wc.lpszClassName	= m_pAppName;
-	
-	//	クラスを登録する
-	if (!RegisterClassEx(&l_wc)){
-		MessageBox(NULL, "RegisterClassEx() failed", "Error", MB_OK);
+	WNDCLASS wc;
+	wc.style			= CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc		= WndProc;
+	wc.cbClsExtra		= 0;
+	wc.cbWndExtra		= 0;
+	wc.hInstance		= m_hInstance;
+	//wc.hIcon			= LoadIcon(m_hInstance, (LPCSTR)IDI_ICON1);
+	wc.hIcon			= LoadIcon(m_hInstance, IDI_APPLICATION);
+	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground	= (HBRUSH)GetStockObject(BACKUP_SPARSE_BLOCK);
+	wc.lpszMenuName		= NULL;
+	wc.lpszClassName	= m_pAppName;
+
+	//	クラスを登録する5
+	if (!RegisterClass(&wc)){
+		MessageBox(NULL, "RegisterClass() failed", "Error", MB_OK);
 		return false;
 	}
 
-
-	//	ウィンドウのスタイルを設定
-	int l_style = WS_OVERLAPPEDWINDOW;
-
+		//	ウィンドウのスタイルを設定
+	int style = WS_OVERLAPPEDWINDOW;
 	// 画面の中心に描画されるようにする
 	RECT rect;
-	rect.top = 0;
-	rect.left = 0;
-	rect.right = width;
-	rect.bottom = height;
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
-	rect.right += rect.left;
+	SetRect(&rect, x, y, width, height);
+	AdjustWindowRect(&rect, style, TRUE);
+	rect.right -= rect.left;
 	rect.bottom -= rect.top;
 
+	//// スクリーンサイズを取得する
+	//tagRECT   rect;
+	//SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+
+	//const unsigned int centerPosX = static_cast<unsigned int>(rect.right) / 2;
+	//const unsigned int centerPosY = static_cast<unsigned int>(rect.bottom) / 2;
+
+	//const unsigned int halfWidth = DX_System::GetWindowWidth() / 2;
+	//const unsigned int halfHeight = DX_System::GetWindowHeight() / 2;
+
+	//const unsigned int x = centerPosX - halfWidth;
+	//const unsigned int y = centerPosY - halfHeight;
+	//const unsigned int width = centerPosX + halfWidth;
+	//const unsigned int height = centerPosY + halfHeight;
+
 	//	windowを作成する
-	m_hWnd = CreateWindowEx(
-		WS_EX_APPWINDOW, 
+	m_hWnd = CreateWindow(
 		m_pAppName, 
 		m_pAppName,
-		l_style,
+		style,
 		x,
 		y, 
 		rect.right,
@@ -248,7 +313,10 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 		PostQuitMessage(0);
 		return false;
 	}
+	
 
+	RECT test;
+	GetClientRect(m_hWnd,&test);
 	::ShowWindow(m_hWnd, SW_SHOW);
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
@@ -271,12 +339,32 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 
 //-----------------------------------------------------------------------------------------
 //
+//	FPSを更新する
+//
+//-----------------------------------------------------------------------------------------
+void DX_FrameWork::FPSUpdate()
+{
+	m_fps.count++;
+
+	if (timeGetTime() >= (m_fps.startTime + 1000)) {
+		m_fps.fps = m_fps.count;
+		m_fps.count = 0;
+
+		m_fps.startTime = timeGetTime();
+	}
+
+	m_fps.deltaTime = (1.0f / CAST_F(m_fps.fps));
+	DX_Debug::GetInstance()->Printf("FPS[%d] deltaTime[%f]\n", m_fps.fps, m_fps.deltaTime);
+}
+
+//-----------------------------------------------------------------------------------------
+//
 //	送られたメッセージを元に様々な処理を行う
 //
 //-----------------------------------------------------------------------------------------
-LRESULT CALLBACK DX_FrameWork::WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
+LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 {
-	DX_System* pSystem = DX_System::GetInstance();
+	DX_FrameWork* pFramework	= DX_FrameWork::GetInstance();
 
 	switch (msg){
 	case WM_DESTROY:
@@ -289,29 +377,23 @@ LRESULT CALLBACK DX_FrameWork::WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARA
 		break;
 		
 	case WM_SIZE:
-		if (nullptr == pSystem->GetDevice() || wparam == SIZE_MINIMIZED) {
-			break;
-		}
-
-		pSystem->GetDeviceContext()->OMSetRenderTargets(0, nullptr, nullptr);
-		pSystem->GetSwapChain()->ResizeBuffers(1, LOWORD(lparam), HIWORD(lparam), DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-		pSystem->InitBuckBuffer();
+		pFramework->DoResize(lparam);
 		break;
 
 	case WM_KEYDOWN:
 
-		switch (wparam){
-			//	F12を押した場合スクリーンモードを変更
-		case VK_F12:
-		/*	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
-			if (nullptr != pSwapChain) {
-				BOOL fullScreen = false;
-				pSwapChain->GetFullscreenState(&fullScreen, NULL);
-				pSwapChain->SetFullscreenState(!fullScreen, NULL);
-			}*/
+		//switch (wparam){
+		//	//	F12を押した場合スクリーンモードを変更
+		//case VK_F12:
+		//	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
+		//	if (nullptr != pSwapChain) {
+		//		BOOL fullScreen = false;
+		//		pSwapChain->GetFullscreenState(&fullScreen, NULL);
+		//		pSwapChain->SetFullscreenState(!fullScreen, NULL);
+		//	}
 
-			break;
-		}
+		//	break;
+		//}
 		break;
 
 	case WM_COMMAND:
@@ -334,25 +416,6 @@ LRESULT CALLBACK DX_FrameWork::WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARA
 	return DefWindowProc(hWnd, msg, wparam, lparam);
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	FPSを更新する
-//
-//-----------------------------------------------------------------------------------------
-void DX_FrameWork::FPSUpdate()
-{
-	m_fps.count++;
-
-	if (timeGetTime() >= (m_fps.startTime + 1000)){
-		m_fps.fps = m_fps.count;
-		m_fps.count = 0;
-
-		m_fps.startTime = timeGetTime();
-	}
-
-	m_fps.deltaTime = (1.0f / CAST_F(m_fps.fps));
-	DX_Debug::GetInstance()->Printf("FPS[%d] deltaTime[%f]\n", m_fps.fps, m_fps.deltaTime);
-}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -365,23 +428,25 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 	DEBUG_OPNE_CONSOLE
 
 	//	フレームワークを生成
-	DX_FrameWork dxFramework;
+	DX_FrameWork* pFramework = DX_FrameWork::GetInstance();
 
 	//	フレームワークの初期化
-	if (!dxFramework.Initialize()){ return FALSE; }
+	if (!pFramework->Initialize()) { return FALSE; }
 
 	//	DirectXの初期化
-	if (!DX_System::GetInstance()->InitD3D(dxFramework.GetHwnd())){ return FALSE; }
+	if (!DX_System::GetInstance()->InitD3D(pFramework->GetHwnd())) { return FALSE; }
 
 	//	シーンを走らせる
-	dxFramework.Run();
-	
+	pFramework->Run();
+
 	//	DX_Libraryを解放する
 	DX_System::Release();
+
+	// フレームワークの開放を行う
+	DX_FrameWork::Release();
 
 	//	デバッグ時のみコンソール画面を閉じる
 	DEBUG_CLOSE_CONSOLE
 
 	return TRUE;
-
 }

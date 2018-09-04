@@ -56,7 +56,7 @@ public:
 	//------------------------------------------------------------------------------
 	virtual bool Render() = 0;
 protected:
-	DX_View* m_pView;
+	DX_View*	m_pView;
 };
 
 

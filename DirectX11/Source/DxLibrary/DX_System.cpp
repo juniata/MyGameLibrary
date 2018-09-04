@@ -280,12 +280,13 @@ HWND	DX_System::GetWindowHandle()
 	return m_windowHandle;
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//  バックバッファの初期化を行う
+//
+//-----------------------------------------------------------------------------------------
 void DX_System::InitBuckBuffer()
 {
-	SAFE_RELEASE(m_pRtv);
-	SAFE_RELEASE(m_pDsv);
-	SAFE_RELEASE(m_pDsb);
-
 	//	RenderTargetViewを作成する
 	CreateRenderTargetView();
 
@@ -294,6 +295,36 @@ void DX_System::InitBuckBuffer()
 
 	//	DepthStencilViewを作成する
 	CreateDepthStencilView();
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  リサイズ処理
+//
+//-----------------------------------------------------------------------------------------
+void DX_System::BufferResize(const WORD width, const WORD height)
+{
+	m_windowHeight	= static_cast<unsigned int>(width);
+	m_windowWidth	= static_cast<unsigned int>(height);
+	ID3D11RTV* const pNullRTV[] = { nullptr };
+	ID3D11DSV* const oNullDSV = nullptr;
+	m_pDeviceContext->OMSetRenderTargets(1, pNullRTV, oNullDSV);
+
+	SAFE_RELEASE(m_pRtv);
+	SAFE_RELEASE(m_pDsv);
+	SAFE_RELEASE(m_pDsb);
+
+	m_pSwapChain->ResizeBuffers(2, static_cast<UINT>(width), static_cast<UINT>(height), DX_Graphics::GetInstance()->GetFortmat(), 0);
+	InitBuckBuffer();
+
+	ID3D11RTV* const pRrv[] = { m_pRtv };
+	ID3D11DSV* const pDsv = m_pDsv;
+	m_pDeviceContext->OMSetRenderTargets(1, pRrv, pDsv);
+
+	DX_View* pView = DX_View::GetInstance();
+	pView->SetViewPort();
+	pView->SetProjection(VIEW_DEFAULT_ASPECT, VIEW_DEFAULT_ZNEAR, VIEW_DEFAULT_ZFAR);
+	pView->Active();
 }
 //-----------------------------------------------------------------------------------------
 //

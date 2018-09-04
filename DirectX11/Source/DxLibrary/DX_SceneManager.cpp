@@ -26,6 +26,9 @@ DX_SceneManager::DX_SceneManager() :
 //-----------------------------------------------------------------------------------------
 DX_SceneManager::~DX_SceneManager()
 {
+	// vieeの開放を行う.
+	DX_View::Release();
+
 	// TODO:メモリリークのため削除するが、本来はしない。(されてはいけない)
 	DELETE_OBJ(m_pCurScene);
 	DELETE_OBJ(m_pNextScene);
