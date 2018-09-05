@@ -304,8 +304,8 @@ void DX_System::InitBuckBuffer()
 //-----------------------------------------------------------------------------------------
 void DX_System::BufferResize(const WORD width, const WORD height)
 {
-	m_windowHeight	= static_cast<unsigned int>(width);
-	m_windowWidth	= static_cast<unsigned int>(height);
+	m_windowWidth = static_cast<unsigned int>(width);
+	m_windowHeight	= static_cast<unsigned int>(height);
 	ID3D11RTV* const pNullRTV[] = { nullptr };
 	ID3D11DSV* const oNullDSV = nullptr;
 	m_pDeviceContext->OMSetRenderTargets(1, pNullRTV, oNullDSV);

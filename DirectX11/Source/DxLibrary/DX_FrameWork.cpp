@@ -136,7 +136,6 @@ bool DX_FrameWork::Initialize()
 	return true;
 }
 
-
 //-----------------------------------------------------------------------------------------
 //
 //  シーンを走らせる(更新＆描画)
@@ -169,6 +168,11 @@ void DX_FrameWork::Run()
 			DispatchMessage(&msg);
 		}
 		else{
+			// 更新前にリサイズを行う
+			if (m_bResize) {
+				pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam));
+			}
+
 			//	FPSを更新
 			FPSUpdate();
 		
@@ -183,12 +187,8 @@ void DX_FrameWork::Run()
 				break;
 			}
 
-			// 描画後にリサイズを行う
-			if (m_bResize) {
-				pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam));
-				m_bResize = false;
-			}
-
+			// リサイズフラグを戻す
+			m_bResize = false;
 		}
 	}
 	
@@ -237,6 +237,15 @@ void DX_FrameWork::DoResize(LPARAM lparam)
 	m_lParam = lparam;
 }
 
+//------------------------------------------------------------------------------
+//
+//	リサイズを行ったかどうか
+//
+//------------------------------------------------------------------------------
+bool DX_FrameWork::IsResize() const
+{
+	return m_bResize;
+}
 //-----------------------------------------------------------------------------------------
 //
 //	ウィンドウを作成する
@@ -279,30 +288,29 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	rect.right -= rect.left;
 	rect.bottom -= rect.top;
 
-	//// スクリーンサイズを取得する
-	//tagRECT   rect;
-	//SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
+	// ウィンドウの画面サイズを取得する
+	RECT windowsSize;
+	SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
 
-	//const unsigned int centerPosX = static_cast<unsigned int>(rect.right) / 2;
-	//const unsigned int centerPosY = static_cast<unsigned int>(rect.bottom) / 2;
+	//　中心の描画されるようにするため、描画開始点を算出する
+	const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
+	const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
 
-	//const unsigned int halfWidth = DX_System::GetWindowWidth() / 2;
-	//const unsigned int halfHeight = DX_System::GetWindowHeight() / 2;
+	const unsigned int halfWidth = width / 2;
+	const unsigned int halfHeight = height / 2;
 
-	//const unsigned int x = centerPosX - halfWidth;
-	//const unsigned int y = centerPosY - halfHeight;
-	//const unsigned int width = centerPosX + halfWidth;
-	//const unsigned int height = centerPosY + halfHeight;
+	const unsigned int leftPos = centerPosX - halfWidth;
+	const unsigned int topPos = centerPosY - halfHeight;
 
 	//	windowを作成する
 	m_hWnd = CreateWindow(
 		m_pAppName, 
 		m_pAppName,
 		style,
-		x,
-		y, 
-		rect.right,
-		rect.bottom,
+		leftPos,
+		topPos,
+		width,
+		height,
 		NULL, 
 		NULL, 
 		m_hInstance,
@@ -315,11 +323,7 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	}
 	
 
-	RECT test;
-	GetClientRect(m_hWnd,&test);
-	::ShowWindow(m_hWnd, SW_SHOW);
-	SetForegroundWindow(m_hWnd);
-	SetFocus(m_hWnd);
+	
 
 #if defined(DEBUG) || defined(_DEBUG)
 	//	メニューを作成
@@ -333,6 +337,11 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, "描画方法");
 	SetMenu(m_hWnd, hMenu);
 #endif
+	RECT test;
+	GetClientRect(m_hWnd, &test);
+	ShowWindow(m_hWnd, SW_SHOW);
+	SetForegroundWindow(m_hWnd);
+	SetFocus(m_hWnd);
 
 	return true;
 }
@@ -375,7 +384,7 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 	case WM_CLOSE:
 		DestroyWindow(hWnd); // WM_DESTROYを発行する
 		break;
-		
+
 	case WM_SIZE:
 		pFramework->DoResize(lparam);
 		break;
