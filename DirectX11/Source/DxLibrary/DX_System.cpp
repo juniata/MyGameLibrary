@@ -314,7 +314,9 @@ void DX_System::BufferResize(const WORD width, const WORD height)
 	SAFE_RELEASE(m_pDsv);
 	SAFE_RELEASE(m_pDsb);
 
-	m_pSwapChain->ResizeBuffers(2, static_cast<UINT>(width), static_cast<UINT>(height), DX_Graphics::GetInstance()->GetFortmat(), 0);
+	DXGI_SWAP_CHAIN_DESC desc;
+	m_pSwapChain->GetDesc(&desc);
+	m_pSwapChain->ResizeBuffers(desc.BufferCount, static_cast<UINT>(width), static_cast<UINT>(height), DX_Graphics::GetInstance()->GetFortmat(), 0);
 	InitBuckBuffer();
 
 	ID3D11RTV* const pRrv[] = { m_pRtv };
@@ -338,7 +340,7 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = { NULL };
 
 	//	バックバッファ数
-	swapChainDesc.BufferCount = 1;
+	swapChainDesc.BufferCount = 2;
 
 	//	バックバッファの幅と高さ
 	swapChainDesc.BufferDesc.Width	= m_windowWidth;
