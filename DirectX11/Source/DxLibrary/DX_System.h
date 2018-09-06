@@ -153,7 +153,7 @@ public:
 	 //  @brief		ÉäÉTÉCÉYèàóù
 	 //
 	 //------------------------------------------------------------------------------
-	 void BufferResize(const WORD width, const WORD height);
+	 bool BufferResize(const WORD width, const WORD height);
 private:
 	static DX_System*		m_pInstnace;
 	ID3D11Device*			m_pDevice;

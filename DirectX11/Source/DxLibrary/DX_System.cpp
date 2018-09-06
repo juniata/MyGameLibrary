@@ -302,8 +302,12 @@ void DX_System::InitBuckBuffer()
 //  ÉäÉTÉCÉYèàóù
 //
 //-----------------------------------------------------------------------------------------
-void DX_System::BufferResize(const WORD width, const WORD height)
+bool DX_System::BufferResize(const WORD width, const WORD height)
 {
+	bool ret = false;
+
+	DX_Debug* pDebug = DX_Debug::GetInstance();
+
 	m_windowWidth = static_cast<unsigned int>(width);
 	m_windowHeight	= static_cast<unsigned int>(height);
 	ID3D11RTV* const pNullRTV[] = { nullptr };
@@ -315,9 +319,17 @@ void DX_System::BufferResize(const WORD width, const WORD height)
 	SAFE_RELEASE(m_pDsb);
 
 	DXGI_SWAP_CHAIN_DESC desc;
-	m_pSwapChain->GetDesc(&desc);
-	m_pSwapChain->ResizeBuffers(desc.BufferCount, static_cast<UINT>(width), static_cast<UINT>(height), DX_Graphics::GetInstance()->GetFortmat(), 0);
-	InitBuckBuffer();
+	ret = pDebug->IsHresultCheck(m_pSwapChain->GetDesc(&desc));
+	ret = pDebug->IsHresultCheck(m_pSwapChain->ResizeBuffers(desc.BufferCount, static_cast<UINT>(width), static_cast<UINT>(height), DX_Graphics::GetInstance()->GetFortmat(), 0));
+	
+	try {
+		InitBuckBuffer();
+
+	}
+	catch (char* pErrMsg) {
+		MessageBox(NULL, pErrMsg, "error", MB_OK);
+		ret = false;
+	}
 
 	ID3D11RTV* const pRrv[] = { m_pRtv };
 	ID3D11DSV* const pDsv = m_pDsv;
@@ -327,6 +339,8 @@ void DX_System::BufferResize(const WORD width, const WORD height)
 	pView->SetViewPort();
 	pView->SetProjection(VIEW_DEFAULT_ASPECT, VIEW_DEFAULT_ZNEAR, VIEW_DEFAULT_ZFAR);
 	pView->Active();
+
+	return ret;
 }
 //-----------------------------------------------------------------------------------------
 //
