@@ -1,13 +1,6 @@
 #ifndef __DX_SYSTEM_H_
 #define __DX_SYSTEM_H_
 	
-//	作成するウィンドウのサイズを設定
-enum class CREATE_WINDOW_SIZE : int{
-	SCREEN_480p,	//	720		480
-	SCREEN_720p,	//	1280	720
-	SCREEN_1080p,	//	1920	1080
-};
-
 //****************************************************************************************************
 //
 //	System
@@ -48,10 +41,11 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		ウィンドウのサイズを設定
-	//	@param[in]	windowSize	CREATE_WINDOW_SIZE定数
+	//	@param[in]	width ウィンドウ幅
+	//	@param[in]	height ウィンドウ高さ
 	//
 	//------------------------------------------------------------------------------
-	void SetWindowsSize(CREATE_WINDOW_SIZE windowSize);
+	void SetWindowsSize(const unsigned int width, const unsigned int height);
 
 	//------------------------------------------------------------------------------
 	//

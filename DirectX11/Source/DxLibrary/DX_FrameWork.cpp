@@ -9,10 +9,6 @@
 #define FILE_MENU_RENDER_SOLID 1
 #define FILE_MENU_RENDER_WIRE_FRAME 2
 
-#define FILE_MENU_WINDOW_SIZE_480P  201
-#define FILE_MENU_WINDOW_SIZE_720P  202
-#define FILE_MENU_WINDOW_SIZE_1080P 203
-
 // メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -130,7 +126,7 @@ void DX_FrameWork::Release()
 bool DX_FrameWork::Initialize()
 {
 	//	スクリーンサイズを設定
-	DX_System::GetInstance()->SetWindowsSize(CREATE_WINDOW_SIZE::SCREEN_720p);
+	DX_System::GetInstance()->SetWindowsSize(1280, 720);
 
 	//	ウィンドウを作成
 	if (!CreateAppWindow("DirectX11", 0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight())){
@@ -174,9 +170,9 @@ void DX_FrameWork::Run()
 		else{
 			// 更新前にリサイズを行う
 			if (m_bResize) {
-			//	if (false == pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam))) {
-			//		break;
-			//	}
+				if (false == pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam))) {
+					break;
+				}
 			}
 
 			//	FPSを更新
@@ -285,7 +281,7 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 		return false;
 	}
 
-		//	ウィンドウのスタイルを設定
+	//	ウィンドウのスタイルを設定
 	int style = WS_OVERLAPPEDWINDOW;
 	// 画面の中心に描画されるようにする
 	RECT rect;
@@ -315,8 +311,8 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 		style,
 		leftPos,
 		topPos,
-		width,
-		height,
+		rect.right,
+		rect.bottom,
 		NULL, 
 		NULL, 
 		m_hInstance,
@@ -339,25 +335,12 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_WIRE_FRAME, "ワイヤーフレーム");
 	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
 	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderFileMenu, "描画方法");
-
-#endif
-	HMENU changeWindowSizeFileMenu = CreateMenu();
-	AppendMenu(changeWindowSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(changeWindowSizeFileMenu, MF_STRING, FILE_MENU_WINDOW_SIZE_480P, "480p");
-	AppendMenu(changeWindowSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(changeWindowSizeFileMenu, MF_STRING, FILE_MENU_WINDOW_SIZE_720P, "720p");
-	AppendMenu(changeWindowSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(changeWindowSizeFileMenu, MF_STRING, FILE_MENU_WINDOW_SIZE_1080P, "1080p");
-	AppendMenu(changeWindowSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)changeWindowSizeFileMenu, "ウィンドウサイズ");
-
 	SetMenu(m_hWnd, hMenu);
+#endif
+
 	ShowWindow(m_hWnd, SW_SHOW);
 	SetForegroundWindow(m_hWnd);
 	SetFocus(m_hWnd);
-
-	RECT test;
-	GetClientRect(m_hWnd, &test);
 
 	return true;
 }
@@ -402,23 +385,24 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 		break;
 
 	case WM_SIZE:
-	//	pFramework->DoResize(lparam);
+		pFramework->DoResize(lparam);
 		break;
 
 	case WM_KEYDOWN:
 
-		//switch (wparam){
-		//	//	F12を押した場合スクリーンモードを変更
-		//case VK_F12:
-		//	IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
-		//	if (nullptr != pSwapChain) {
-		//		BOOL fullScreen = false;
-		//		pSwapChain->GetFullscreenState(&fullScreen, NULL);
-		//		pSwapChain->SetFullscreenState(!fullScreen, NULL);
-		//	}
-
-		//	break;
-		//}
+		switch (wparam){
+			//	F12を押した場合スクリーンモードを変更
+		case VK_F12:
+/*
+			IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
+			if (nullptr != pSwapChain) {
+				BOOL fullScreen = false;
+				pSwapChain->GetFullscreenState(&fullScreen, NULL);
+				pSwapChain->SetFullscreenState(!fullScreen, NULL);
+			}
+*/
+			break;
+		}
 		break;
 
 	case WM_COMMAND:
@@ -431,60 +415,6 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 			DX_RenderState::GetInstance()->SwitchWireframeRS();
 			break;
 #endif
-		case FILE_MENU_WINDOW_SIZE_480P:
-		{
-
-			RECT windowsSize;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
-
-			//　中心の描画されるようにするため、描画開始点を算出する
-			const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
-			const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
-
-			const unsigned int halfWidth = 720 / 2;
-			const unsigned int halfHeight = 480 / 2;
-
-			const unsigned int leftPos = centerPosX - halfWidth;
-			const unsigned int topPos = centerPosY - halfHeight;
-			SetWindowPos(hWnd, HWND_TOPMOST, leftPos, topPos, 720, 480, SWP_SHOWWINDOW);
-		}
-			break;
-		case FILE_MENU_WINDOW_SIZE_720P:
-		{
-
-			RECT windowsSize;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
-
-			//　中心の描画されるようにするため、描画開始点を算出する
-			const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
-			const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
-
-			const unsigned int halfWidth = 1280 / 2;
-			const unsigned int halfHeight = 720 / 2;
-
-			const unsigned int leftPos = centerPosX - halfWidth;
-			const unsigned int topPos = centerPosY - halfHeight;
-			SetWindowPos(hWnd, HWND_TOPMOST, leftPos, topPos, 1280, 720, SWP_SHOWWINDOW);
-		}
-			break;
-		case FILE_MENU_WINDOW_SIZE_1080P:
-		{
-
-			RECT windowsSize;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
-
-			//　中心の描画されるようにするため、描画開始点を算出する
-			const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
-			const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
-
-			const unsigned int halfWidth = 1920 / 2;
-			const unsigned int halfHeight = 1080 / 2;
-
-			const unsigned int leftPos = centerPosX - halfWidth;
-			const unsigned int topPos = centerPosY - halfHeight;
-			SetWindowPos(hWnd, HWND_TOPMOST, leftPos, topPos, 1920, 1080, SWP_SHOWWINDOW);
-		}
-			break;
 		case NULL:
 			break;
 		default:

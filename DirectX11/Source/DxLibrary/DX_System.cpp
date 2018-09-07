@@ -145,28 +145,10 @@ void DX_System::Release()
 //  ウィンドウのサイズを設定する
 //
 //-----------------------------------------------------------------------------------------
-void DX_System::SetWindowsSize(CREATE_WINDOW_SIZE windowSize)
+void DX_System::SetWindowsSize(const unsigned int width, const unsigned int height)
 {
-	switch (windowSize){
-	case CREATE_WINDOW_SIZE::SCREEN_480p:
-		m_windowWidth	= 720;
-		m_windowHeight	= 480;
-		break;
-
-	case CREATE_WINDOW_SIZE::SCREEN_720p:
-		m_windowWidth	= 1280;
-		m_windowHeight	= 720;
-		break;
-
-	case CREATE_WINDOW_SIZE::SCREEN_1080p:
-		m_windowWidth	= 1920;
-		m_windowHeight	= 1080;
-		break;
-
-	default:
-		break;
-	}
-
+	m_windowWidth	= width;
+	m_windowHeight	= height;
 }
 
 //-----------------------------------------------------------------------------------------
