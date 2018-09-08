@@ -37,14 +37,14 @@
     <Filter Include="ソース ファイル\Games\SceneMain">
       <UniqueIdentifier>{a1b12158-ced0-4f53-b866-556b44574f11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Games\SceneMain\Barrage">
-      <UniqueIdentifier>{d7ba4b92-cebb-42a7-a089-4585dedcc676}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Games\SceneMain\Player">
       <UniqueIdentifier>{568408eb-e0cd-4f97-8bf3-0246ea92e477}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Games\SceneMain\Enemy">
       <UniqueIdentifier>{a360b6af-aea0-4319-82cf-4070615dc6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\SceneMain\Bullet">
+      <UniqueIdentifier>{d3e872da-71bc-4264-a392-26381be99fc5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -171,23 +171,14 @@
     <ClInclude Include="Source\Games\SceneTitle\SceneTitle.h">
       <Filter>ソース ファイル\Games\SceneTitle</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\BarrageBeam.h">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\BarrageLaser.h">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\BarrageManager.h">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\BaseBarrage.h">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Games\SceneMain\SceneMain.h">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
     </ClInclude>
     <ClInclude Include="Source\Games\SceneMain\Player.h">
       <Filter>ソース ファイル\Games\SceneMain\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\Enemy.h">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -311,23 +302,14 @@
     <ClCompile Include="Source\Games\SceneTitle\SceneTitle.cpp">
       <Filter>ソース ファイル\Games\SceneTitle</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\BarrageBeam.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\BarrageLaser.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\BarrageManager.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\BaseBarrage.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Barrage</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
     </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\Player.cpp">
       <Filter>ソース ファイル\Games\SceneMain\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain\Enemy.cpp">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

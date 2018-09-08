@@ -53,10 +53,7 @@
     <ClInclude Include="Source\DxLibrary\DX_VertexShader.h" />
     <ClInclude Include="Source\DxLibrary\DX_View.h" />
     <ClInclude Include="Source\DxLibrary\DX_XInput.h" />
-    <ClInclude Include="Source\Games\SceneMain\BarrageBeam.h" />
-    <ClInclude Include="Source\Games\SceneMain\BarrageLaser.h" />
-    <ClInclude Include="Source\Games\SceneMain\BarrageManager.h" />
-    <ClInclude Include="Source\Games\SceneMain\BaseBarrage.h" />
+    <ClInclude Include="Source\Games\SceneMain\Enemy.h" />
     <ClInclude Include="Source\Games\SceneMain\Player.h" />
     <ClInclude Include="Source\Games\SceneMain\SceneMain.h" />
     <ClInclude Include="Source\Games\SceneMenu\SceneMenu.h" />
@@ -101,10 +98,7 @@
     <ClCompile Include="Source\DxLibrary\DX_VertexShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
-    <ClCompile Include="Source\Games\SceneMain\BarrageBeam.cpp" />
-    <ClCompile Include="Source\Games\SceneMain\BarrageLaser.cpp" />
-    <ClCompile Include="Source\Games\SceneMain\BarrageManager.cpp" />
-    <ClCompile Include="Source\Games\SceneMain\BaseBarrage.cpp" />
+    <ClCompile Include="Source\Games\SceneMain\Enemy.cpp" />
     <ClCompile Include="Source\Games\SceneMain\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp" />
     <ClCompile Include="Source\Games\SceneMenu\SceneMenu.cpp" />

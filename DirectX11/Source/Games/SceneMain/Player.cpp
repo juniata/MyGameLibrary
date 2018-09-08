@@ -1,7 +1,4 @@
 #include	"DxLibrary\DX_Library.h"
-#include	"BarrageLaser.h"
-#include	"BarrageBeam.h"
-#include	"BarrageManager.h"
 #include	"Player.h"
 using namespace DirectX;
 
