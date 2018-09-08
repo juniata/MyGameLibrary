@@ -1,6 +1,6 @@
 #include	"DxLibrary\DX_Library.h"
 #include	"SceneMenu.h"
-#include	"SceneMain.h"
+#include	"../SceneMain\SceneMain.h"
 #include	<stdio.h>
 
 using namespace DirectX;

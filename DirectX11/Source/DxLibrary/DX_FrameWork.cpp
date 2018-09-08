@@ -1,7 +1,6 @@
 #include	"DX_Library.h"
-//#include	"../../Resource/icon/resource.h"
-#include	"Games\SceneTitle.h"
-#include	"Games\SceneMain.h"
+#include	"Games\SceneTitle\SceneTitle.h"
+#include	"Games\SceneMain\SceneMain.h"
 #include	<mmsystem.h>
 #include	<stdio.h>
 #pragma comment(lib,"winmm.lib")
