@@ -287,7 +287,6 @@ void DX_System::InitBuckBuffer()
 bool DX_System::BufferResize(const WORD width, const WORD height)
 {
 	bool ret = false;
-
 	DX_Debug* pDebug = DX_Debug::GetInstance();
 
 	m_windowWidth = static_cast<unsigned int>(width);

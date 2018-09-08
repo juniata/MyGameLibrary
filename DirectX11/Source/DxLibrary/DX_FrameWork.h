@@ -9,6 +9,11 @@
 class DX_FrameWork
 {
 public:
+	enum class CHANGE_WINDOW_STATE : int {
+		NONE,
+		WINDOW_MODE,
+		FULL_SCREEN_MODE,
+	};
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		自身のインスタンスを取得する
@@ -66,7 +71,7 @@ public:
 	//	@brief		バックバッファのリサイズを行う
 	//
 	//------------------------------------------------------------------------------
-	void DoResize(LPARAM lparam);
+	void DoResize(const unsigned int width, const unsigned int height, CHANGE_WINDOW_STATE state = CHANGE_WINDOW_STATE::NONE);
 
 	//------------------------------------------------------------------------------
 	//
@@ -74,6 +79,13 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	bool IsResize() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//	@brief		ウィンドウ変更ステートを取得
+	//
+	//------------------------------------------------------------------------------
+	CHANGE_WINDOW_STATE GetChangeWindowState();
 private:
 	static DX_FrameWork* m_pInstance;
 
@@ -81,7 +93,9 @@ private:
 	HINSTANCE	m_hInstance;
 	HWND		m_hWnd;
 	bool		m_bResize;
-	LPARAM		m_lParam;
+	CHANGE_WINDOW_STATE		m_changeWindowState;
+	unsigned int m_height;
+	unsigned int m_widht;
 
 	struct tagFPS {
 		int		fps;

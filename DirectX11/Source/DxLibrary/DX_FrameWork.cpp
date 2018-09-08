@@ -9,6 +9,10 @@
 #define FILE_MENU_RENDER_SOLID 1
 #define FILE_MENU_RENDER_WIRE_FRAME 2
 
+#define FILE_MENU_RENDER_WINDOW_MODE 3
+#define FILE_MENU_RENDER_FULL_SCREEN 4
+
+
 // メモリリークチェック
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -79,7 +83,9 @@ m_pAppName(nullptr),
 m_hInstance(NULL),
 m_hWnd(NULL),
 m_bResize(false),
-m_lParam(0)
+m_widht(0),
+m_height(0),
+m_changeWindowState(DX_FrameWork::CHANGE_WINDOW_STATE::NONE)
 {
 	ZeroMemory(&m_fps, sizeof(m_fps));
 	m_fps.startTime = timeGetTime();
@@ -168,13 +174,6 @@ void DX_FrameWork::Run()
 			DispatchMessage(&msg);
 		}
 		else{
-			// 更新前にリサイズを行う
-			if (m_bResize) {
-				if (false == pSystem->BufferResize(LOWORD(m_lParam), HIWORD(m_lParam))) {
-					break;
-				}
-			}
-
 			//	FPSを更新
 			FPSUpdate();
 		
@@ -189,8 +188,55 @@ void DX_FrameWork::Run()
 				break;
 			}
 
-			// リサイズフラグを戻す
-			m_bResize = false;
+			if (m_bResize) {
+				switch (m_changeWindowState) {
+				case CHANGE_WINDOW_STATE::NONE:break;
+				case CHANGE_WINDOW_STATE::WINDOW_MODE:
+				{
+					RECT rect;
+					SetRect(&rect, 0, 0, m_widht, m_height);
+					AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
+					rect.right -= rect.left;
+					rect.bottom -= rect.top;
+
+					// ウィンドウの画面サイズを取得する
+					RECT windowsSize;
+					SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
+
+					//　中心の描画されるようにするため、描画開始点を算出する
+					const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
+					const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
+
+					const unsigned int halfWidth = rect.right / 2;
+					const unsigned int halfHeight = rect.bottom / 2;
+
+					const unsigned int leftPos = centerPosX - halfWidth;
+					const unsigned int topPos = centerPosY - halfHeight;
+					SetWindowPos(m_hWnd, HWND_TOP, leftPos, topPos, rect.right, rect.bottom, SWP_SHOWWINDOW);
+				}
+				break;
+				case CHANGE_WINDOW_STATE::FULL_SCREEN_MODE:
+					{
+						// ウィンドウの画面サイズを取得する
+						RECT windowsSize;
+						SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
+						RECT rect;
+						SetRect(&rect, 0, 0, windowsSize.right, windowsSize.bottom);
+						AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, TRUE);
+						rect.right -= rect.left;
+						rect.bottom -= rect.top;
+						SetWindowPos(m_hWnd, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom, SWP_SHOWWINDOW);
+						m_widht = windowsSize.right;
+						m_height = windowsSize.bottom;
+					}
+				break;
+				}
+
+				if (false == pSystem->BufferResize(m_widht, m_height)) {
+					break;
+				}
+				m_bResize = false;
+			}
 		}
 	}
 	
@@ -233,10 +279,12 @@ HINSTANCE DX_FrameWork::GetHinstance()const
 //	バックバッファのリサイズを行う
 //
 //------------------------------------------------------------------------------
-void DX_FrameWork::DoResize(LPARAM lparam)
+void DX_FrameWork::DoResize(const unsigned int width, const unsigned int height, CHANGE_WINDOW_STATE state)
 {
+	m_changeWindowState = state;
 	m_bResize = true;
-	m_lParam = lparam;
+	m_widht = width;
+	m_height = height;
 }
 
 //------------------------------------------------------------------------------
@@ -248,6 +296,17 @@ bool DX_FrameWork::IsResize() const
 {
 	return m_bResize;
 }
+
+//------------------------------------------------------------------------------
+//
+//	ウィンドウ変更ステートを取得する
+//
+//------------------------------------------------------------------------------
+DX_FrameWork::CHANGE_WINDOW_STATE DX_FrameWork::GetChangeWindowState()
+{
+	return m_changeWindowState;
+}
+
 //-----------------------------------------------------------------------------------------
 //
 //	ウィンドウを作成する
@@ -282,7 +341,7 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	}
 
 	//	ウィンドウのスタイルを設定
-	int style = WS_OVERLAPPEDWINDOW;
+	int style = WS_OVERLAPPEDWINDOW | WS_POPUP;
 	// 画面の中心に描画されるようにする
 	RECT rect;
 	SetRect(&rect, x, y, width, height);
@@ -325,9 +384,9 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	}
 	
 
+	HMENU hMenu = CreateMenu();
 	//	メニューを作成
 #if defined(DEBUG) || defined(_DEBUG)
-	HMENU hMenu = CreateMenu();
 	HMENU renderFileMenu = CreateMenu();
 	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
 	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_SOLID, "ソリッド");
@@ -337,6 +396,15 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const int x, const int y, con
 	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderFileMenu, "描画方法");
 	SetMenu(m_hWnd, hMenu);
 #endif
+	HMENU renderSizeFileMenu = CreateMenu();
+	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_WINDOW_MODE, "ウィンドウモード");
+	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_FULL_SCREEN, "フルスクリーンモード");
+	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderSizeFileMenu, "ウィンドウサイズ");
+
+	SetMenu(m_hWnd, hMenu);
 
 	ShowWindow(m_hWnd, SW_SHOW);
 	SetForegroundWindow(m_hWnd);
@@ -379,32 +447,27 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 		//	メッセージループを抜けます
 		PostQuitMessage(0);
 		break;
-
+	case WM_NCLBUTTONDBLCLK: // 非クライアント領域をダブルクリックしたとき
+	// TODO: 挙動がよくわからんのでコメントアウトしてFALSEを返してコマンドの無効化を行う。
+	//{
+	//	// ウィンドウの画面サイズを取得する
+	//	RECT windowsSize;
+	//	SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
+	//	pFramework->DoResize(windowsSize.right, windowsSize.bottom, DX_FrameWork::CHANGE_WINDOW_STATE::WINDOW_MODE);
+	//}
+	// break;
+			return FALSE;
 	case WM_CLOSE:
 		DestroyWindow(hWnd); // WM_DESTROYを発行する
 		break;
-
-	case WM_SIZE:
-		pFramework->DoResize(lparam);
-		break;
-
-	case WM_KEYDOWN:
-
-		switch (wparam){
-			//	F12を押した場合スクリーンモードを変更
-		case VK_F12:
-/*
-			IDXGISwapChain* pSwapChain = pSystem->GetSwapChain();
-			if (nullptr != pSwapChain) {
-				BOOL fullScreen = false;
-				pSwapChain->GetFullscreenState(&fullScreen, NULL);
-				pSwapChain->SetFullscreenState(!fullScreen, NULL);
-			}
-*/
-			break;
+	
+	case WM_SIZING:
+		{
+			RECT rect;
+			GetClientRect(hWnd, &rect);
+			pFramework->DoResize(rect.right, rect.bottom);
 		}
 		break;
-
 	case WM_COMMAND:
 		switch (wparam) {
 #if defined(DEBUG) || defined(_DEBUG)
@@ -415,12 +478,35 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 			DX_RenderState::GetInstance()->SwitchWireframeRS();
 			break;
 #endif
-		case NULL:
+		case FILE_MENU_RENDER_WINDOW_MODE:
+			pFramework->DoResize(1280, 720, DX_FrameWork::CHANGE_WINDOW_STATE::WINDOW_MODE);
+			break;
+		case FILE_MENU_RENDER_FULL_SCREEN:
+			pFramework->DoResize(0, 0, DX_FrameWork::CHANGE_WINDOW_STATE::FULL_SCREEN_MODE);
 			break;
 		default:
 			break;
 		}
 		break;
+	case WM_KEYDOWN:
+		switch (wparam) {
+		case VK_F11:
+			switch (pFramework->GetChangeWindowState()) {
+			case DX_FrameWork::CHANGE_WINDOW_STATE::NONE:
+			case DX_FrameWork::CHANGE_WINDOW_STATE::WINDOW_MODE:
+				pFramework->DoResize(0, 0, DX_FrameWork::CHANGE_WINDOW_STATE::FULL_SCREEN_MODE);
+				break;
+			case DX_FrameWork::CHANGE_WINDOW_STATE::FULL_SCREEN_MODE:
+				pFramework->DoResize(1280, 720, DX_FrameWork::CHANGE_WINDOW_STATE::WINDOW_MODE);
+			}
+			break;
+		case VK_ESCAPE:
+			//	メッセージループを抜けます
+			PostQuitMessage(0);
+			break;
+		}
+		break;
+	break;
 	}
 	return DefWindowProc(hWnd, msg, wparam, lparam);
 }
