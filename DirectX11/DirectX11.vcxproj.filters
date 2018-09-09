@@ -180,6 +180,12 @@
     <ClInclude Include="Source\Games\SceneMain\Enemy.h">
       <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\Bullet.h">
+      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\BarrageWay.h">
+      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -310,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\Enemy.cpp">
       <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain\BarrageWay.cpp">
+      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

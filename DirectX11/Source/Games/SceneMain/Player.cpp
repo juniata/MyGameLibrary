@@ -1,5 +1,8 @@
 #include	"DxLibrary\DX_Library.h"
+#include	"Bullet.h"
+#include	"BarrageWay.h"
 #include	"Player.h"
+
 using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
@@ -9,7 +12,8 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 Player::Player() :
 	m_pObj(new DX_2DObject()),
-	m_size(XMFLOAT2(SIZE, SIZE))
+	m_size(XMFLOAT2(SIZE, SIZE)),
+	m_pBarrageWay(new BarrageWay("SceneMain\\Bullet.png", 100, XMFLOAT2(32.0f, 32.0f)))
 {
 	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
 	float basePosY = (DX_System::GetWindowHeight() - m_size.y);
@@ -27,6 +31,7 @@ Player::Player() :
 Player::~Player()
 {
 	DELETE_OBJ(m_pObj);
+	DELETE_OBJ(m_pBarrageWay);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -89,6 +94,16 @@ void Player::Move()
 	}
 	m_pos.x += move.x;
 	m_pos.y += move.y;
+
+	DX_System* pSystem = DX_System::GetInstance();
+	const unsigned int width	= pSystem->GetWindowWidth();
+	const unsigned int height	= pSystem->GetWindowHeight();
+
+	// ògêßå¿
+	if (m_pos.x < 0.0f) { m_pos.x = 0.0f; }
+	if (m_pos.y < 0.0f) { m_pos.y = 0.0f; }
+	if (m_pos.x > width - m_size.x) { m_pos.x = width - m_size.x; }
+	if (m_pos.y > height - m_size.y) { m_pos.y = height - m_size.y; }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -98,6 +113,10 @@ void Player::Move()
 //-----------------------------------------------------------------------------------------
 void Player::Attack()
 {
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z)) {
+		m_pBarrageWay->Set(m_pos, 10.0f, 3);
+	}
+	m_pBarrageWay->Update();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -109,7 +128,11 @@ bool Player::Update()
 {
 	bool result = true;
 
+	// à⁄ìÆ
 	Move();
+
+	// çUåÇ
+	Attack();
 
 	return result;
 }
@@ -124,6 +147,7 @@ bool Player::Render()
 	bool result = false;
 
 	result = m_pObj->Render(m_pos, m_size);
+	result = m_pBarrageWay->Render();
 
 	return result;
 }
