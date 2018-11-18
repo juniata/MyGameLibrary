@@ -1,7 +1,7 @@
 #ifndef __BULLET_H_
 #define __BULLET_H_
 
-struct Bullet
+struct tagBullet
 {
 	DX_2DObject*	pObj;
 	DirectX::XMFLOAT2 pos;

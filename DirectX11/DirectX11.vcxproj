@@ -56,8 +56,11 @@
     <ClInclude Include="Source\Games\SceneMain\BarrageWay.h" />
     <ClInclude Include="Source\Games\SceneMain\Bullet.h" />
     <ClInclude Include="Source\Games\SceneMain\Enemy.h" />
+    <ClInclude Include="Source\Games\SceneMain\EnemyDiamond.h" />
+    <ClInclude Include="Source\Games\SceneMain\EnemyManager.h" />
     <ClInclude Include="Source\Games\SceneMain\Player.h" />
     <ClInclude Include="Source\Games\SceneMain\SceneMain.h" />
+    <ClInclude Include="Source\Games\SceneMain\Stage.h" />
     <ClInclude Include="Source\Games\SceneMenu\SceneMenu.h" />
     <ClInclude Include="Source\Games\SceneTitle\SceneTitle.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
@@ -101,6 +104,8 @@
     <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
     <ClCompile Include="Source\Games\SceneMain\BarrageWay.cpp" />
+    <ClCompile Include="Source\Games\SceneMain\EnemyDiamond.cpp" />
+    <ClCompile Include="Source\Games\SceneMain\EnemyManager.cpp" />
     <ClCompile Include="Source\Games\SceneMain\Enemy.cpp" />
     <ClCompile Include="Source\Games\SceneMain\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp" />

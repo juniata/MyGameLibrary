@@ -25,7 +25,7 @@ public:
 	//  @brief		À•W‚ÆˆÚ“®—Ê‚È‚Ç‚ğİ’è
 	//
 	//------------------------------------------------------------------------------
-	void Set(const DirectX::XMFLOAT2& playerPos, const float moveSpeed, const int shotInterval = 1);
+	void Set(const DirectX::XMFLOAT2& playerPos, const float moveSpeed, const UINT shotInterval = 1);
 
 	//------------------------------------------------------------------------------
 	//
@@ -53,7 +53,7 @@ public:
 	//  @brief		’e–‹‚ğ•ú‚Â•ûŒü‚Ì”‚ğİ’è‚·‚é
 	//
 	//------------------------------------------------------------------------------
-	void SetWayCount(const int count);
+	void SetWayCount(const UINT count);
 
 	//------------------------------------------------------------------------------
 	//
@@ -65,9 +65,10 @@ private:
 	DX_Instance2DObject* m_pInstance2D;
 	tagInstanceBullet* m_pBullets;
 	DirectX::XMFLOAT2 m_size;
-	int m_shotInterval;
-	int m_way;
+	UINT m_shotInterval;
+	UINT m_way;
 	UINT m_bulletNum;
+	UINT m_spaceCount;
 	bool m_bUseRefrect;
 
 	//------------------------------------------------------------------------------

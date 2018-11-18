@@ -186,6 +186,15 @@
     <ClInclude Include="Source\Games\SceneMain\BarrageWay.h">
       <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\EnemyManager.h">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\EnemyDiamond.h">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\Stage.h">
+      <Filter>ソース ファイル\Games\SceneMain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -319,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\BarrageWay.cpp">
       <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain\EnemyManager.cpp">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain\EnemyDiamond.cpp">
+      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

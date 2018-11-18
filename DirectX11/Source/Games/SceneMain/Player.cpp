@@ -13,12 +13,13 @@ using namespace DirectX;
 Player::Player() :
 	m_pObj(new DX_2DObject()),
 	m_size(XMFLOAT2(SIZE, SIZE)),
-	m_pBarrageWay(new BarrageWay("SceneMain\\Bullet.png", 100, XMFLOAT2(32.0f, 32.0f)))
+	m_pBarrageWay(new BarrageWay("SceneMain\\Bullet.png", 1000, XMFLOAT2(32.0f, 32.0f)))
 {
 	float basePosX = (DX_System::GetWindowWidth() - m_size.x) * 0.5f;
 	float basePosY = (DX_System::GetWindowHeight() - m_size.y);
 	m_pos = DirectX::XMFLOAT2(basePosX, basePosY);
 
+	m_pBarrageWay->SetWayCount(180);
 	// ステータスを設定する
 	m_status.life = INIT_LIFE;
 }
@@ -150,4 +151,14 @@ bool Player::Render()
 	result = m_pBarrageWay->Render();
 
 	return result;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  座標を取得する
+//
+//-----------------------------------------------------------------------------------------
+DirectX::XMFLOAT2 Player::GetPos() const
+{
+	return m_pos;
 }

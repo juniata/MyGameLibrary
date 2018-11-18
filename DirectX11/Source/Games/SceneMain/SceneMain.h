@@ -2,7 +2,7 @@
 #define __SCENE_MAIN_H_
 
 class Player;
-
+class EnemyManager;
 //****************************************************************************************************
 //
 //	SceneMain
@@ -52,5 +52,6 @@ public:
 
 private:
 	Player* player;
+	EnemyManager* m_pEnemyManager;
 };
 #endif // !__SCENE_MAIN_H_

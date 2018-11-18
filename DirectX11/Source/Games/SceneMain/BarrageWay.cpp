@@ -16,7 +16,8 @@ BarrageWay::BarrageWay(const char* pFilepath, const UINT bulletNum, const Direct
 	m_size(size),
 	m_shotInterval(0),
 	m_way(1),
-	m_bUseRefrect(false)
+	m_bUseRefrect(false),
+	m_spaceCount(bulletNum)
 {
 	XMFLOAT3* pList = m_pInstance2D->GetPosList();
 	for (size_t i = 0; i < m_bulletNum; ++i)
@@ -43,8 +44,12 @@ BarrageWay::~BarrageWay()
 //  ’e–‹‚ÌÀ•W‚ÆˆÚ“®—Ê‚ğİ’è
 //
 //------------------------------------------------------------------------------
-void BarrageWay::Set(const DirectX::XMFLOAT2& playerPos, const float moveSpeed, const int shotInterval)
+void BarrageWay::Set(const DirectX::XMFLOAT2& playerPos, const float moveSpeed, const UINT shotInterval)
 {
+	// w’è‚µ‚Ä‚¢‚é””­Ë‚·‚é‚±‚Æ‚ª‚Å‚«‚é‚Ù‚Ç‹ó‚«‚ª‚È‚¢ê‡‚Íreturn
+	if (m_spaceCount < m_way) {
+		return;
+	}
 
 	if (m_shotInterval < shotInterval) {
 		++m_shotInterval;
@@ -52,27 +57,56 @@ void BarrageWay::Set(const DirectX::XMFLOAT2& playerPos, const float moveSpeed, 
 	}
 	m_shotInterval = 0;
 
+	//float angle[360];
+	//const float addRad1 = (180.0f / CAST_F(m_way + 1)) * (XM_PI / 180.0f);
+
+	//for (int i = 0; i < 360; ++i)
+	//{
+	//	angle[i] = addRad1 * CAST_F(i + 1);
+	//}
+	//for (UINT count = 0; count < m_way; ++count)
+	//{
+	//	for (UINT i = 0; i < m_bulletNum; ++i)
+	//	{
+	//		if (m_pInstance2D->IsEnable(i)) {
+	//			continue;
+	//		}
+	//		m_pBullets[i].move.x = (-1.0f * cosf(angle[count])) * moveSpeed;
+	//		m_pBullets[i].move.y = -sinf(angle[count]) * moveSpeed;
+	//		m_pBullets[i].pos->x = playerPos.x;
+	//		m_pBullets[i].pos->y = playerPos.y;
+	//		m_pInstance2D->Enable(i);
+	//		break;
+	//	}
+	//}
+
 	float angle[360];
-	const float addRad1 = (180.0f / CAST_F(m_way + 1)) * (XM_PI / 180.0f);
+	const float addRad1 = (XM_PI / 180.0f);
 
 	for (int i = 0; i < 360; ++i)
 	{
-		angle[i] = addRad1 * CAST_F(i + 1);
+		angle[i] = addRad1 * CAST_F(i);
 	}
-	for (int count = 0; count < m_way; ++count)
+
+
+	float per = 180.0f / (m_way + 1);
+	float total = per;
+	for (UINT count = 0; count < m_way; ++count)
 	{
 		for (UINT i = 0; i < m_bulletNum; ++i)
 		{
 			if (m_pInstance2D->IsEnable(i)) {
 				continue;
 			}
-			m_pBullets[i].move.x = (-1.0f * cosf(angle[count])) * moveSpeed;
-			m_pBullets[i].move.y = -sinf(angle[count]) * moveSpeed;
+			int idx = CAST_I(total);
+			m_pBullets[i].move.x = (-1.0f * cosf(angle[idx])) * moveSpeed;
+			m_pBullets[i].move.y = -sinf(angle[idx]) * moveSpeed;
 			m_pBullets[i].pos->x = playerPos.x;
 			m_pBullets[i].pos->y = playerPos.y;
 			m_pInstance2D->Enable(i);
 			break;
 		}
+		total += per;
 	}
 }
 
@@ -88,9 +122,11 @@ void BarrageWay::Update()
 	const unsigned int height = pSystem->GetWindowHeight();
 	const unsigned int width = pSystem->GetWindowWidth();
 
+	UINT spaceCount = 0;
 	for (UINT i = 0; i < m_bulletNum; ++i)
 	{
 		if (m_pInstance2D->IsDisable(i)) {
+			++spaceCount;
 			continue;
 		}
 		m_pBullets[i].pos->y += m_pBullets[i].move.y;
@@ -100,8 +136,10 @@ void BarrageWay::Update()
 			m_pBullets[i].pos->x < -m_size.y || m_pBullets[i].pos->x > width
 			) {
 			m_pInstance2D->Disable(i);
+			++spaceCount;
 		}
 	}
+	m_spaceCount = spaceCount;
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +167,7 @@ int BarrageWay::GetWayCount() const
 //  ’e–‹‚ğ•ú‚Â•ûŒü‚Ì”‚ğİ’è‚·‚é
 //
 //------------------------------------------------------------------------------
-void BarrageWay::SetWayCount(const int count)
+void BarrageWay::SetWayCount(const UINT count)
 {
 	m_way = count;
 }
