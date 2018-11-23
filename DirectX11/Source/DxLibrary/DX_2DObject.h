@@ -1,13 +1,6 @@
 #ifndef __DX_2DOBJECT_H_
 #define __DX_2DOBJECT_H_
 
-//--------------------------------------------------
-//	2D用頂点情報
-//--------------------------------------------------
-struct tagVertex2D{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 uv;
-};
 
 //****************************************************************************************************
 //
@@ -67,7 +60,7 @@ public:
 	//	@param[in]	renderPos	描画する範囲
 	//
 	//------------------------------------------------------------------------------
-	bool Render(const tagRect& renderPos);
+	bool Render(const DX::tagRect& renderPos);
 	
 	//------------------------------------------------------------------------------
 	//
@@ -76,7 +69,7 @@ public:
 	//	@param[in]	texturePos	描画する画像の範囲
 	//
 	//------------------------------------------------------------------------------
-	bool Render(const tagRect& renderPos,const tagRect& texturePos);
+	bool Render(const DX::tagRect& renderPos,const DX::tagRect& texturePos);
 
 	//------------------------------------------------------------------------------
 	//
@@ -119,7 +112,6 @@ private:
 	unsigned int m_width;
 
 	bool m_bClone;
-
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		テクスチャを読み込む
@@ -137,7 +129,7 @@ private:
 	//	@param[in]	texturePos	描画する画像の範囲
 	//
 	//------------------------------------------------------------------------------
-	void CreateVertex(ID3D11DeviceContext* pContext, const tagRect& renderPos, const tagRect& texturePos);
+	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos);
 
 };
 

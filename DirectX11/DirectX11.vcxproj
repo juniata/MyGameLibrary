@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DxLibrary\DX_Define.h" />
     <ClInclude Include="Source\DxLibrary\DX_2DObject.h" />
     <ClInclude Include="Source\DxLibrary\DX_Audio.h" />
     <ClInclude Include="Source\DxLibrary\DX_Buffer.h" />
@@ -133,11 +134,6 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Source\ShaderFile\Default\VS_Instance2D.hlsl">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\ShaderFile\Default\GS_Object.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

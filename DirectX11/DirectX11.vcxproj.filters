@@ -195,6 +195,9 @@
     <ClInclude Include="Source\Games\SceneMain\Stage.h">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DxLibrary\DX_Define.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -352,6 +355,5 @@
     <None Include="Source\ShaderFile\Default\VS_Instance2D.hlsl">
       <Filter>ソース ファイル\Shader</Filter>
     </None>
-    <None Include="Source\ShaderFile\Default\GS_Object.hlsl" />
   </ItemGroup>
 </Project>

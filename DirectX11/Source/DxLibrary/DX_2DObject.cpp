@@ -40,13 +40,13 @@ bool DX_2DObject::Initialize(const char* pFilepath)
 	bool result = false;
 
 	//	頂点バッファを作成
-	tagVertex2D l_pVertex[] = {
+	DX::tagVertex2D vertices[] = {
 		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
 		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
 		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
 		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
 	};
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(tagVertex2D) * 4, l_pVertex);
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices);
 	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
 
 	// テクスチャを読み込む
@@ -114,7 +114,7 @@ bool DX_2DObject::Render()
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const tagRect& renderPos)
+bool DX_2DObject::Render(const DX::tagRect& renderPos)
 {
 	bool result = false;
 
@@ -122,7 +122,7 @@ bool DX_2DObject::Render(const tagRect& renderPos)
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(pContext, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	CreateVertex(pContext, renderPos, DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -156,7 +156,7 @@ bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(pContext, tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	CreateVertex(pContext, DX::tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -182,7 +182,7 @@ bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
+bool DX_2DObject::Render(const DX::tagRect& renderPos, const DX::tagRect& texturePos)
 {
 	bool result = false;
 
@@ -190,7 +190,7 @@ bool DX_2DObject::Render(const tagRect& renderPos, const tagRect& texturePos)
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(pContext, renderPos, tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	CreateVertex(pContext, renderPos, DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -286,10 +286,10 @@ bool DX_2DObject::IsOriginal() const
 //  頂点情報を作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const tagRect& renderPos, const tagRect& texturePos)
+void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos)
 {
 	//	頂点情報
-	tagVertex2D pVertex[4];
+	DX::tagVertex2D pVertex[4];
 
 	//	1 ~ 0の値に変換
 	const float l_centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);

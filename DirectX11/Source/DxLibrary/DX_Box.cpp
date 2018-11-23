@@ -136,7 +136,7 @@ void DX_Box::Render()
 	pVertexShader->Begin(pDeviceContext);
 	pPixelShader->Begin(pDeviceContext);
 
-	unsigned int stride = sizeof(tagObjectVertext);
+	unsigned int stride = sizeof(DX::tagObjectVertext);
 	unsigned int offset = 0;
 
 	//	VertexBuffer‚ð‘—‚é
@@ -216,7 +216,7 @@ void DX_Box::CreateBuffer()
 {
 	const int VERTEX_NUM = 8;
 
-	tagObjectVertext pVertices[VERTEX_NUM];
+	DX::tagObjectVertext pVertices[VERTEX_NUM];
 
 	const float LEFT_POS = -1.0f;
 	const float RIGHT_POS = 1.0f;

@@ -17,14 +17,14 @@ DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, 
 	const float l_centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
 
 
-	tagVertex2D pVertex[] = {
+	DX::tagVertex2D pVertex[] = {
 		/* ¶‰º */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
 		/* ¶ã */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
 		/* ‰E‰º */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
 		/* ‰Eã */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
 	};
 
-	tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
+	DX::tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
 
 	//	¶‚ÌÀ•W
 	pVertex[1].pos.x = pVertex[0].pos.x = l_centerX * renderPos.x - 1.0f;
@@ -137,7 +137,7 @@ bool DX_Instance2DObject::Render()
 		pVertexShader->Begin(pDeviceContext);
 		pPixelShader->Begin(pDeviceContext);
 
-		unsigned int strides[] = { sizeof(tagVertex2D) ,sizeof(m_pPosList[0]) };
+		unsigned int strides[] = { sizeof(DX::tagVertex2D) ,sizeof(m_pPosList[0]) };
 		unsigned int offsets[] = { 0,0 };
 
 		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pPosList[0]) * m_instanceNum, m_pPosList);

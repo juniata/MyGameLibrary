@@ -169,7 +169,7 @@ bool DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* 
 {
 	bool result = false;
 
-	unsigned int l_stride = sizeof(tagVertex2D);
+	unsigned int l_stride = sizeof(DX::tagVertex2D);
 	unsigned int l_offset = 0;
 
 	//	VertexBuffer‚ð‘—‚é
