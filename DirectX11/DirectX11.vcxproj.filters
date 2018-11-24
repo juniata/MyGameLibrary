@@ -37,15 +37,6 @@
     <Filter Include="ソース ファイル\Games\SceneMain">
       <UniqueIdentifier>{a1b12158-ced0-4f53-b866-556b44574f11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Games\SceneMain\Player">
-      <UniqueIdentifier>{568408eb-e0cd-4f97-8bf3-0246ea92e477}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Games\SceneMain\Enemy">
-      <UniqueIdentifier>{a360b6af-aea0-4319-82cf-4070615dc6f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Games\SceneMain\Bullet">
-      <UniqueIdentifier>{d3e872da-71bc-4264-a392-26381be99fc5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DxLibrary\DX_Library.h">
@@ -172,27 +163,6 @@
       <Filter>ソース ファイル\Games\SceneTitle</Filter>
     </ClInclude>
     <ClInclude Include="Source\Games\SceneMain\SceneMain.h">
-      <Filter>ソース ファイル\Games\SceneMain</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\Player.h">
-      <Filter>ソース ファイル\Games\SceneMain\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\Enemy.h">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\Bullet.h">
-      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\BarrageWay.h">
-      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\EnemyManager.h">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\EnemyDiamond.h">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Games\SceneMain\Stage.h">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
     </ClInclude>
     <ClInclude Include="Source\DxLibrary\DX_Define.h">
@@ -322,21 +292,6 @@
     </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\Player.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\Enemy.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\BarrageWay.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\EnemyManager.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Games\SceneMain\EnemyDiamond.cpp">
-      <Filter>ソース ファイル\Games\SceneMain\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
