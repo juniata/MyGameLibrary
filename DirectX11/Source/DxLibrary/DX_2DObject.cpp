@@ -182,6 +182,41 @@ bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
+bool DX_2DObject::Render(const float left, const float top, const float right, const float bottom)
+{
+
+	bool result = false;
+
+	//	デバイスコンテキストを取得
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
+
+	//	頂点情報を作成
+	CreateVertex(pContext, DX::tagRect(left, top, right, bottom), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+
+	//	シェーダーを取得
+	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+
+	//	シェーダーを利用
+	pVertexShader->Begin(pContext);
+	pPixelShader->Begin(pContext);
+
+	//	描画
+	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+
+	//	シェーダーを終了
+	pVertexShader->End(pContext);
+	pPixelShader->End(pContext);
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//  指定した範囲に描画
+//
+//-----------------------------------------------------------------------------------------
 bool DX_2DObject::Render(const DX::tagRect& renderPos, const DX::tagRect& texturePos)
 {
 	bool result = false;

@@ -2,6 +2,7 @@
 #include	"SceneTitle.h"
 #include	"../SceneMenu/SceneMenu.h"
 using namespace DirectX;
+
 //-----------------------------------------------------------------------------------------
 //
 //	コンストラクタ
