@@ -1,5 +1,4 @@
 #include	"DX_Library.h"
-using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -11,8 +10,8 @@ bool			DX_Input::m_bPrevKeys[INPUT_KEY_MAX]			= { false };
 int				DX_Input::m_bMouseButtons[MOUSE_BUTTON_MAX]		= { 0 };
 int				DX_Input::m_bPrevMouseButtons[MOUSE_BUTTON_MAX] = { 0 };
 int				DX_Input::m_mouseWheelRotateCount				= 0;
-DirectX::XMINT2	DX_Input::m_mousePos							= XMINT2(0, 0);
-DirectX::XMINT2	DX_Input::m_mouseClientPos						= XMINT2(0, 0);
+DirectX::XMINT2	DX_Input::m_mousePos							= DirectX::XMINT2(0, 0);
+DirectX::XMINT2	DX_Input::m_mouseClientPos						= DirectX::XMINT2(0, 0);
 
 //-----------------------------------------------------------------------------------------
 //

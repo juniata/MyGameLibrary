@@ -1,6 +1,5 @@
 #include	"DX_Library.h"
 #include<stdio.h>
-using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -210,7 +209,7 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
 
 	//	updateSubResource
 	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &vec4, 0, 0);
@@ -249,7 +248,7 @@ void DX_ShaderManager::SetVector(
 void DX_ShaderManager::SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3, const unsigned int vecCount, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType)
 {
 	//	ローカル変数
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(pDevice, sizeof(XMFLOAT4) * vecCount);
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(pDevice, sizeof(DirectX::XMFLOAT4) * vecCount);
 	ID3D11ShaderResourceView* l_pSrv = nullptr;
 
 	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
@@ -272,7 +271,7 @@ void DX_ShaderManager::SetVectorResource(const unsigned int registerNum, const D
 	pDeviceContext->Map(l_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &l_subResource);
 
 	//	データを書き込む
-	CopyMemory(l_subResource.pData, pVec3, sizeof(XMFLOAT4) * vecCount);
+	CopyMemory(l_subResource.pData, pVec3, sizeof(DirectX::XMFLOAT4) * vecCount);
 
 	//	unmap
 	pDeviceContext->Unmap(l_pBuffer, 0);
@@ -290,17 +289,17 @@ void DX_ShaderManager::SetVectorResource(const unsigned int registerNum, const D
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::SetVector(
 	const unsigned int				regiserNum,
-	const XMFLOAT2&					vec2,
+	const DirectX::XMFLOAT2&					vec2,
 	ID3D11Device*					pDevice,
 	ID3D11DeviceContext*			pDeviceContext,
 	DX_SHADER_TYPE		shaderType
 	)
 {
 	//	ローカル変数
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(XMFLOAT4));
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &XMFLOAT4(vec2.x,vec2.y,0.0f,0.0f), 0, 0);
+	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &DirectX::XMFLOAT4(vec2.x,vec2.y,0.0f,0.0f), 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
 	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
@@ -314,7 +313,7 @@ void DX_ShaderManager::SetVector(
 //	行列をシェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
+void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
 {
 	//	updateSubResource
 	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &mat, 0, 0);
@@ -329,7 +328,7 @@ void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regis
 //	行列を複数シェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const XMFLOAT4X4* pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType)
+void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4* pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType)
 {
 	//	updateSubResource
 	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, pMat, 0, 0);
@@ -344,7 +343,7 @@ void DX_ShaderManager::SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regis
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::SetMatrixResoruce(
 	const unsigned int			regiserNum,
-	const XMFLOAT4X4*				pMat,
+	const DirectX::XMFLOAT4X4*				pMat,
 	const unsigned int			matCount,
 	ID3D11DeviceContext*		pDeviceContext,
 	DX_SHADER_TYPE	shaderType
@@ -352,7 +351,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 {
 	//	ローカル変数
 	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(l_pDevice,sizeof(XMFLOAT4X4)* matCount);
+	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(l_pDevice,sizeof(DirectX::XMFLOAT4X4)* matCount);
 	ID3D11ShaderResourceView* l_pSrv = nullptr;
 
 	D3D11_MAPPED_SUBRESOURCE	l_subResource = { NULL };
@@ -375,7 +374,7 @@ void DX_ShaderManager::SetMatrixResoruce(
 	pDeviceContext->Map(l_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &l_subResource);
 
 	//	データを書き込む
-	CopyMemory(l_subResource.pData, pMat, sizeof(XMFLOAT4X4) * matCount);
+	CopyMemory(l_subResource.pData, pMat, sizeof(DirectX::XMFLOAT4X4) * matCount);
 
 	//	unmap
 	pDeviceContext->Unmap(l_pBuffer, 0);

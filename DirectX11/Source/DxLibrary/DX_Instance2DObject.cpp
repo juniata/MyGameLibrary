@@ -1,46 +1,20 @@
 #include	"DX_Library.h"
 #include	<stdio.h>
-using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
-//  引数付きコンストラクタ
+//  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_Instance2DObject::DX_Instance2DObject(const char* pFilepath, const UINT num, const XMFLOAT2& renderSize) : m_pPosList(new DirectX::XMFLOAT3[num]), m_instanceNum(num), m_enabled(false)
-{
-	LoadTexture(pFilepath);
-	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
-
-	//	1 ~ 0の値に変換
-	const float l_centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
-	const float l_centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
-
-
-	DX::tagVertex2D pVertex[] = {
-		/* 左下 */	XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0.0f, 1.0f),
-		/* 左上 */	XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0.0f, 0.0f),
-		/* 右下 */	XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1.0f, 1.0f),
-		/* 右上 */	XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1.0f, 0.0f)
-	};
-
-	DX::tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
-
-	//	左の座標
-	pVertex[1].pos.x = pVertex[0].pos.x = l_centerX * renderPos.x - 1.0f;
-
-	//	下の座標
-	pVertex[2].pos.y = pVertex[0].pos.y = 1.0f - l_centerY * renderPos.h;
-
-	//	上の座標
-	pVertex[3].pos.y = pVertex[1].pos.y = 1.0f - l_centerY * renderPos.y;
-
-	//	右の座標
-	pVertex[3].pos.x = pVertex[2].pos.x = l_centerX * renderPos.w - 1.0f;
-
-
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(pVertex[0]) * 4, pVertex);
-}
+DX_Instance2DObject::DX_Instance2DObject() :
+	m_pShaderResourceView(nullptr),
+	m_pVertexBuffer(nullptr),
+	m_width(0),
+	m_height(0),
+	m_pPosList(nullptr),
+	m_instanceNum(0),
+	m_enabled(true)
+{}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -56,11 +30,57 @@ DX_Instance2DObject::~DX_Instance2DObject()
 
 //-----------------------------------------------------------------------------------------
 //
+// メンバー変数を初期化し、インスタンス描画オブジェクトを作成する
+//
+//-----------------------------------------------------------------------------------------
+bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
+{
+	m_pPosList		= new DirectX::XMFLOAT3[num];
+	m_instanceNum	= num;
+
+	LoadTexture(pFilepath);
+	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
+
+	//	1 ~ 0の値に変換
+	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
+	const float centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+
+
+	DX::tagVertex2D vertices[] = {
+		/* 左下 */	DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+		/* 左上 */	DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+		/* 右下 */	DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
+	};
+
+	DX::tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
+
+	//	左の座標
+	vertices[1].pos.x = vertices[0].pos.x = centerX * renderPos.x - 1.0f;
+
+	//	下の座標
+	vertices[2].pos.y = vertices[0].pos.y = 1.0f - centerY * renderPos.h;
+
+	//	上の座標
+	vertices[3].pos.y = vertices[1].pos.y = 1.0f - centerY * renderPos.y;
+
+	//	右の座標
+	vertices[3].pos.x = vertices[2].pos.x = centerX * renderPos.w - 1.0f;
+
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices);
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
 //  テクスチャを読み込む
 //
 //-----------------------------------------------------------------------------------------
-void DX_Instance2DObject::LoadTexture(const char* pFilepath)
+bool DX_Instance2DObject::LoadTexture(const char* pFilepath)
 {
+	bool  result = false;
+
 	char texturePath[MAX_PATH] = { '\n' };
 	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
 
@@ -70,22 +90,27 @@ void DX_Instance2DObject::LoadTexture(const char* pFilepath)
 	//	テクスチャがロードできてるかチェック
 	if (m_pShaderResourceView) {
 		//	テクスチャを細かな情報を取得
-		ID3D11Resource* l_pResource = nullptr;
-		m_pShaderResourceView->GetResource(&l_pResource);
+		ID3D11Resource* pResource = nullptr;
+		m_pShaderResourceView->GetResource(&pResource);
 
-		ID3D11Texture2D* l_pTexture2D = nullptr;
-		l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
+		ID3D11Texture2D* pTexture2D = nullptr;
+		if (SUCCEEDED(pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pTexture2D))) {
 
-		D3D11_TEXTURE2D_DESC l_texDesc;
-		l_pTexture2D->GetDesc(&l_texDesc);
+			D3D11_TEXTURE2D_DESC texDesc;
+			pTexture2D->GetDesc(&texDesc);
 
-		//	テクスチャサイズを取得
-		m_height = l_texDesc.Height;
-		m_width = l_texDesc.Width;
+			//	テクスチャサイズを取得
+			m_height = texDesc.Height;
+			m_width = texDesc.Width;
 
-		SAFE_RELEASE(l_pResource);
-		SAFE_RELEASE(l_pTexture2D);
+			result = true;
+		}
+
+		SAFE_RELEASE(pResource);
+		SAFE_RELEASE(pTexture2D);
 	}
+
+	return result;
 }
 
 
@@ -146,7 +171,7 @@ bool DX_Instance2DObject::Render()
 
 
 		// 正規化したウィンドウサイズを送る
-		pShaderManager->SetVector(0, XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 		//	VertexBufferを送る
 		pDeviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);

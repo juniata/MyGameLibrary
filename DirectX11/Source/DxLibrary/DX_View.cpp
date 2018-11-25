@@ -1,5 +1,4 @@
 #include	"DX_Library.h"
-using namespace DirectX;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -39,7 +38,7 @@ m_pConstantBuffer(nullptr)
 	//	視錐台の面を作成
 	CreateFrustum();
 
-	m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(XMFLOAT4X4) * 3);
+	m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(DirectX::XMFLOAT4X4) * 3);
 }
 
 
@@ -88,20 +87,20 @@ void DX_View::Active()
 	if (m_bChanged){
 
 		//	ビュー行列設定
-		XMVECTOR pos	= XMLoadFloat3(&m_pos);
-		XMVECTOR target = XMLoadFloat3(&m_target);
-		XMVECTOR up		= XMLoadFloat3(&m_upDirection);
+		DirectX::XMVECTOR pos		= XMLoadFloat3(&m_pos);
+		DirectX::XMVECTOR target	= XMLoadFloat3(&m_target);
+		DirectX::XMVECTOR up		= XMLoadFloat3(&m_upDirection);
 
-		XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
 		XMStoreFloat4x4(&m_matView, view);
 
 		//	投影行列変換
-		XMMATRIX proj = XMMatrixPerspectiveFovLH(m_viewInfo.fovY, m_viewInfo.aspect, m_viewInfo.znear, m_viewInfo.zfar);
+		DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(m_viewInfo.fovY, m_viewInfo.aspect, m_viewInfo.znear, m_viewInfo.zfar);
 		XMStoreFloat4x4(&m_matProj, proj);
 
 		
 		//	viewProj行列を作成
-		XMMATRIX viwProj = view * proj;
+		DirectX::XMMATRIX viwProj = view * proj;
 		XMStoreFloat4x4(&m_matViewProj, viwProj);
 
 		//	RSにビューポートを設定
@@ -189,7 +188,7 @@ void DX_View::SetProjection(
 //-----------------------------------------------------------------------------------------
 void DX_View::SetMatrixForTheView()
 {
-	XMFLOAT4X4 l_mat[] = {
+	DirectX::XMFLOAT4X4 l_mat[] = {
 		m_matView,
 		m_matProj,
 		m_matViewProj
@@ -214,7 +213,7 @@ D3D11_VIEWPORT* DX_View::GetViewPort()
 //	座標を設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_View::SetPos(const XMFLOAT3& pos)
+void DX_View::SetPos(const DirectX::XMFLOAT3& pos)
 {
 	m_pos		= pos;
 	m_bChanged	= true;
@@ -226,7 +225,7 @@ void DX_View::SetPos(const XMFLOAT3& pos)
 //	座標を設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_View::SetTarget(const XMFLOAT3& target)
+void DX_View::SetTarget(const DirectX::XMFLOAT3& target)
 {
 	m_target	= target;
 	m_bChanged	= true;
@@ -239,7 +238,7 @@ void DX_View::SetTarget(const XMFLOAT3& target)
 //	座標を取得
 //
 //-----------------------------------------------------------------------------------------
-XMFLOAT3 DX_View::GetPos()const
+DirectX::XMFLOAT3 DX_View::GetPos()const
 {
 	return m_pos;
 }
@@ -249,7 +248,7 @@ XMFLOAT3 DX_View::GetPos()const
 //	ターゲットを取得
 //
 //-----------------------------------------------------------------------------------------
-XMFLOAT3 DX_View::GetTarget()const
+DirectX::XMFLOAT3 DX_View::GetTarget()const
 {
 	return m_target;
 }
@@ -307,10 +306,10 @@ void DX_View::CreateFrustum(const int updateFrameNum)
 	
 
 	//	全面正規化
-	XMVECTOR pos;
+	DirectX::XMVECTOR pos;
 	for (int i = 0; i < 6; ++i){
 		pos = XMLoadFloat4(&m_plane[i]);
-		XMStoreFloat4(&m_plane[i], XMVector4Normalize(pos));
+		XMStoreFloat4(&m_plane[i], DirectX::XMVector4Normalize(pos));
 	}
 }
 //-----------------------------------------------------------------------------------------
@@ -318,16 +317,16 @@ void DX_View::CreateFrustum(const int updateFrameNum)
 //	pointが視錐台に中にいるかをチェック
 //
 //-----------------------------------------------------------------------------------------
-bool DX_View::IsCheckPointInFrustum(const XMFLOAT3& argPos)
+bool DX_View::IsCheckPointInFrustum(const DirectX::XMFLOAT3& argPos)
 {
 	
-	XMVECTOR pos;
-	XMVECTOR vec;
-	XMVECTOR result;
+	DirectX::XMVECTOR pos;
+	DirectX::XMVECTOR vec;
+	DirectX::XMVECTOR result;
 	for (int i = 0; i < 6; ++i){
 		pos = XMLoadFloat4(&m_plane[i]);
 		vec = XMLoadFloat3(&argPos);
-		result = XMPlaneDotCoord(pos, vec);
+		result = DirectX::XMPlaneDotCoord(pos, vec);
 		
 	/*	if (PlaneDotCoord(m_plane[i], pos) < 0.0f){
 			return false;
@@ -341,7 +340,7 @@ bool DX_View::IsCheckPointInFrustum(const XMFLOAT3& argPos)
 //	ボックスが視錐台にいるかをチェック
 //
 //-----------------------------------------------------------------------------------------
-bool DX_View::IsCheckCubeInFrustum(const XMFLOAT3& center, const float radius)
+bool DX_View::IsCheckCubeInFrustum(const DirectX::XMFLOAT3& center, const float radius)
 {
 	for (int i = 0; i < 6; ++i){
 
@@ -421,7 +420,7 @@ bool DX_View::IsCheckCubeInFrustum(const XMFLOAT3& center, const float radius)
 //	球体が視錐台にいるかををチェック
 //
 //-----------------------------------------------------------------------------------------
-bool DX_View::IsCheckSphereInFrustum(const XMFLOAT3& center, const float radius)
+bool DX_View::IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const float radius)
 {
 	//for (int i = 0; i < 6; ++i){
 	//	if (PlaneDotCoord(m_plane[i], center) < -radius){
@@ -439,7 +438,7 @@ bool DX_View::IsCheckSphereInFrustum(const XMFLOAT3& center, const float radius)
 //-----------------------------------------------------------------------------------------
 void	DX_View::FreeCamera(const float moveSpeed)
 {
-	XMFLOAT3 l_move(0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3 l_move(0.0f, 0.0f, 0.0f);
 
 	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_UP))	{ l_move.z += 1.0f; }
 	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_DOWN))	{ l_move.z -= 1.0f; }

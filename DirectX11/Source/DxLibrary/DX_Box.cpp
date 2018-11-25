@@ -1,5 +1,5 @@
 #include	"DX_Library.h"
-using namespace DirectX;
+
 //-----------------------------------------------------------------------------------------
 //
 //	変数の初期化とバッファの作成
@@ -106,9 +106,9 @@ void DX_Box::Update()
 	if (m_bChanged)
 	{
 		//	回転行列 * 拡大行列 * 平行行列
-		XMMATRIX scale = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-		XMMATRIX angle = XMMatrixRotationRollPitchYaw(m_angle.x, m_angle.y, m_angle.z);
-		XMMATRIX translation = XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+		DirectX::XMMATRIX angle = DirectX::XMMatrixRotationRollPitchYaw(m_angle.x, m_angle.y, m_angle.z);
+		DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
 		XMStoreFloat4x4(&m_worldMat, angle * scale * translation);
 		m_bChanged = false;
@@ -278,7 +278,7 @@ void DX_Box::CreateBuffer()
 
 	// 白色
 	for (int i = 0; i < VERTEX_NUM; ++i) {
-		pVertices[i].color = XMFLOAT4(0.6f, 0.6f, 0.6f, 0.6f);
+		pVertices[i].color = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 0.6f);
 	}
 	
 	// 面法線を計算
