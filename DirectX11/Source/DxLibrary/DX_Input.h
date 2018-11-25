@@ -19,6 +19,8 @@ enum class DX_MOUSE_BUTTON_KIND : int{
 class DX_Input
 {
 public:
+	static bool Initialize(HWND hWnd, HINSTANCE hInstance);
+	static void Release();
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		キーへのアクション時の反応を得る
@@ -155,8 +157,11 @@ public:
 	static void Update(const HWND hWnd, const unsigned int message, const WPARAM	wParam);
 
 private:
+	static LPDIRECTINPUT8 m_pDirectInput;
+	static LPDIRECTINPUTDEVICE8 m_pDirectInputDevice;
+
 	//	キーボードの受け付け数
-	static const int INPUT_KEY_MAX = 254;
+	static const int INPUT_KEY_MAX = 256;
 
 	//	ボタンの数だけキーを押したかどうか
 	static bool m_bKeys[INPUT_KEY_MAX];

@@ -8,13 +8,15 @@
 
 */
 
+#define DIRECTINPUT_VERSION  0x0800
+
 #include	<Windows.h>
 #include	<d3d11.h>
 #include	<DirectXMath.h>
 #include	<d3dcompiler.h>
 #include	<XAudio2.h>
 #include	<XInput.h>
-
+#include	<dinput.h>
 
 #include	"DX_Define.h"
 #include	"DX_Scene.h"

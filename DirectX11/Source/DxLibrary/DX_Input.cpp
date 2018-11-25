@@ -18,11 +18,6 @@ DirectX::XMINT2	DX_Input::m_mouseClientPos						= DirectX::XMINT2(0, 0);
 //  マクロ定義
 //
 //-----------------------------------------------------------------------------------------
-#define GET_KEY_STATE_PRESS0 -127
-#define GET_KEY_STATE_PRESS1 -128
-
-#define GET_KEY_STATE_NOT_PRESS0 0
-#define GET_KEY_STATE_NOT_PRESS1 1
 
 #define MOUSE_L_BUTTON_NUM 0 
 #define MOUSE_M_BUTTON_NUM 1
@@ -32,6 +27,48 @@ DirectX::XMINT2	DX_Input::m_mouseClientPos						= DirectX::XMINT2(0, 0);
 #define MOUSE_BUTTON_TRUE  0x03
 #define MOUSE_BUTTON_CLICK 0x01
 #define MOUSE_BUTTON_DOUBLE_CLICK 0x02
+LPDIRECTINPUT8 DX_Input::m_pDirectInput = nullptr;
+LPDIRECTINPUTDEVICE8 DX_Input::m_pDirectInputDevice = nullptr;
+
+bool DX_Input::Initialize(HWND hWnd, HINSTANCE hInstance)
+{
+	HRESULT hReuslt = S_FALSE;
+
+	if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDirectInput, NULL))) {
+		return false;
+	}
+
+	if (FAILED(m_pDirectInput->CreateDevice(GUID_SysKeyboard, &m_pDirectInputDevice, NULL))) {
+		return false;
+	}
+
+	
+
+	if (FAILED(hReuslt = m_pDirectInputDevice->SetDataFormat(&c_dfDIKeyboard))) {
+		return false;
+	}
+
+	if (FAILED(m_pDirectInputDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))) {
+		return false;
+	}
+
+	m_pDirectInputDevice->Acquire();
+
+	return true;
+}
+
+void DX_Input::Release()
+{
+	if (m_pDirectInput)
+	{
+		if (m_pDirectInputDevice)
+		{
+			m_pDirectInputDevice->Unacquire();
+			SAFE_RELEASE(m_pDirectInputDevice);
+		}
+		SAFE_RELEASE(m_pDirectInput);
+	}
+}
 //-----------------------------------------------------------------------------------------
 //
 //  押してない時以外の反応を得る
@@ -250,22 +287,23 @@ void DX_Input::Update(const HWND hWnd, const unsigned int message,const WPARAM w
 //-----------------------------------------------------------------------------------------
 void DX_Input::KeyUpdate()
 {
-	int l_getKeyState = 0;
+	char buffer[INPUT_KEY_MAX];
+	
+	if (SUCCEEDED(m_pDirectInputDevice->GetDeviceState(sizeof(buffer), (LPVOID)&buffer)))
+	{
+		for (int i = 0; i < INPUT_KEY_MAX; ++i)
+		{
+			//	現在の状態をコピー
+			m_bPrevKeys[i] = m_bKeys[i];
 
-	//	全キーの更新を行う
-	for (int i = 0; i < INPUT_KEY_MAX; ++i){
+			//	キーを押したならtrue、押してないならfalse
+			m_bKeys[i] = buffer[i] & 0x80;
+		}
 
-		//	現在の状態をコピー
-		m_bPrevKeys[i] = m_bKeys[i];
-
-		//	キーの状態を取得
-		l_getKeyState = GetKeyState(i);
-
-		//	キーを押したならtrue、押してないならfalse
-		m_bKeys[i] =
-			(	(l_getKeyState == GET_KEY_STATE_PRESS0) ||
-				(l_getKeyState == GET_KEY_STATE_PRESS1)) ? true : false;
-
+	}
+	else {
+		// デバイスのアクセス権が取得できるまで取得し続ける。
+		while (m_pDirectInputDevice->Acquire() == DIERR_INPUTLOST);
 	}
 }
 

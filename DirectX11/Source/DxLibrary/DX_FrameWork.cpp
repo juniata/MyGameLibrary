@@ -530,8 +530,14 @@ INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr
 	//	DirectX‚Ì‰Šú‰»
 	if (!DX_System::GetInstance()->InitD3D(pFramework->GetHwnd())) { return FALSE; }
 
+	// DirectInput‚Ì‰Šú‰»
+	if (!DX_Input::Initialize(pFramework->GetHwnd(), pFramework->GetHinstance())) { DX_Input::Release(); return FALSE; }
+	
 	//	ƒV[ƒ“‚ð‘–‚ç‚¹‚é
 	pFramework->Run();
+
+	// DirectInput‚ð‰ð•ú‚·‚é
+	DX_Input::Release();
 
 	//	DX_Library‚ð‰ð•ú‚·‚é
 	DX_System::Release();

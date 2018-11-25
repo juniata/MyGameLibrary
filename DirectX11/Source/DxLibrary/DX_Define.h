@@ -10,6 +10,7 @@
 //	キャストマクロ
 #define CAST_C(x) static_cast<char>(x)
 #define CAST_I(x) static_cast<int>(x)
+#define CAST_UI(x) static_cast<unsigned int>(x)
 #define CAST_F(x) static_cast<float>(x)
 #define CAST_D(x) static_cast<double>(x)
 #define CAST_L(x) static_cast<long>(x)
