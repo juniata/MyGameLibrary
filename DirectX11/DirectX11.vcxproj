@@ -38,6 +38,7 @@
     <ClInclude Include="Source\DxLibrary\DX_InstanceSkinMesh.h" />
     <ClInclude Include="Source\DxLibrary\DX_Library.h" />
     <ClInclude Include="Source\DxLibrary\DX_Lighting.h" />
+    <ClInclude Include="Source\DxLibrary\DX_MaptipObject.h" />
     <ClInclude Include="Source\DxLibrary\DX_Mesh.h" />
     <ClInclude Include="Source\DxLibrary\DX_Particle.h" />
     <ClInclude Include="Source\DxLibrary\DX_PixelShader.h" />
@@ -54,7 +55,10 @@
     <ClInclude Include="Source\DxLibrary\DX_VertexShader.h" />
     <ClInclude Include="Source\DxLibrary\DX_View.h" />
     <ClInclude Include="Source\DxLibrary\DX_XInput.h" />
+    <ClInclude Include="Source\Games\MapChip\MapChip.h" />
+    <ClInclude Include="Source\Games\Player\Player.h" />
     <ClInclude Include="Source\Games\SceneMain\SceneMain.h" />
+    <ClInclude Include="Source\Games\SceneMain\Stage.h" />
     <ClInclude Include="Source\Games\SceneMenu\SceneMenu.h" />
     <ClInclude Include="Source\Games\SceneTitle\SceneTitle.h" />
     <ClInclude Include="Source\ModelLoader\IEMLoader.h" />
@@ -81,6 +85,7 @@
     <ClCompile Include="Source\DxLibrary\DX_InstanceMesh.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_instanceSkinMesh.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Lighting.cpp" />
+    <ClCompile Include="Source\DxLibrary\DX_MaptipObject.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Mesh.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_Particle.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_PixelShader.cpp" />
@@ -97,7 +102,10 @@
     <ClCompile Include="Source\DxLibrary\DX_VertexShader.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_View.cpp" />
     <ClCompile Include="Source\DxLibrary\DX_XInput.cpp" />
+    <ClCompile Include="Source\Games\MapChip\MapChip.cpp" />
+    <ClCompile Include="Source\Games\Player\Player.cpp" />
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp" />
+    <ClCompile Include="Source\Games\SceneMain\Stage.cpp" />
     <ClCompile Include="Source\Games\SceneMenu\SceneMenu.cpp" />
     <ClCompile Include="Source\Games\SceneTitle\SceneTitle.cpp" />
     <ClCompile Include="Source\ModelLoader\IEMLoader.cpp" />

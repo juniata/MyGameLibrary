@@ -37,6 +37,12 @@
     <Filter Include="ソース ファイル\Games\SceneMain">
       <UniqueIdentifier>{a1b12158-ced0-4f53-b866-556b44574f11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Games\MapChip">
+      <UniqueIdentifier>{dcede949-c882-4b64-b6bb-5351726fcb49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Games\Player">
+      <UniqueIdentifier>{71eed2c2-aa7e-4f63-b54d-5b4d5521cdce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DxLibrary\DX_Library.h">
@@ -168,6 +174,18 @@
     <ClInclude Include="Source\DxLibrary\DX_Define.h">
       <Filter>ソース ファイル\DX11\h</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\SceneMain\Stage.h">
+      <Filter>ソース ファイル\Games\SceneMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DxLibrary\DX_MaptipObject.h">
+      <Filter>ソース ファイル\DX11\h</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\MapChip\MapChip.h">
+      <Filter>ソース ファイル\Games\MapChip</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Games\Player\Player.h">
+      <Filter>ソース ファイル\Games\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">
@@ -292,6 +310,18 @@
     </ClCompile>
     <ClCompile Include="Source\Games\SceneMain\SceneMain.cpp">
       <Filter>ソース ファイル\Games\SceneMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\SceneMain\Stage.cpp">
+      <Filter>ソース ファイル\Games\SceneMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DxLibrary\DX_MaptipObject.cpp">
+      <Filter>ソース ファイル\DX11\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\MapChip\MapChip.cpp">
+      <Filter>ソース ファイル\Games\MapChip</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Games\Player\Player.cpp">
+      <Filter>ソース ファイル\Games\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
