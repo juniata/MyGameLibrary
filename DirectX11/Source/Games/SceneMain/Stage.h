@@ -20,8 +20,9 @@ private:
 	MapChip* m_pMapChip;
 	MapChip* m_pSkyMapChip;
 
-	static const int CHIP_X_NUM = 120;
-	static const int CHIP_Y_NUM = 23;
-	int m_mapChips[CHIP_Y_NUM][CHIP_X_NUM];
+	// いったんは全画面分作成する(TODO:のちにスクロール読み込みに対応させる)
+	int m_chipNumX;
+	int m_chipNumY;
+	int** m_mapChips;
 };
 #endif // !__STAGE_H_

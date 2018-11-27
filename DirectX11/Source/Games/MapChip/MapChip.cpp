@@ -3,7 +3,7 @@
 
 MapChip::MapChip() : 
 	m_pObjectList(nullptr),
-	m_pPosList(nullptr),
+	m_pInstance2DList(nullptr),
 	m_instanceNum(0)
 {}
 
@@ -13,13 +13,12 @@ MapChip::~MapChip()
 	// m_pPosListはDX_Instnace2DObjectのデストラクタで開放されるから、こっちで開放しなくても構わない。
 }
 
-void MapChip::SetPos(const unsigned index, const unsigned int y, const unsigned int x)
+void MapChip::SetPos(const unsigned index, const float y, const float x)
 {
 	if (m_instanceNum > index)
 	{
-		DirectX::XMFLOAT3* temp = &m_pPosList[index];
-		temp->x = CAST_F(x) * 32.0f;
-		temp->y = CAST_F(y) * 32.0f;
+		m_pInstance2DList[index].x = x;
+		m_pInstance2DList[index].y = y;
 	}
 	else {
 		// TODO: releaseでも出力されてしまう。色つけて出力できるようにしたい。
@@ -30,7 +29,7 @@ DirectX::XMFLOAT2 MapChip::GetPos(const unsigned index)const
 {
 	if (m_instanceNum > index)
 	{
-		return DirectX::XMFLOAT2(m_pPosList[index].x, m_pPosList[index].y);
+		return DirectX::XMFLOAT2(m_pInstance2DList[index].x, m_pInstance2DList[index].y);
 	}
 	else {
 		// TODO: releaseでも出力されてしまう。色つけて出力できるようにしたい。
@@ -45,7 +44,7 @@ bool MapChip::Initialize(const char* pFilepath, const unsigned int instanceNum)
 	m_instanceNum = instanceNum;
 
 	if (m_pObjectList->Initialize(pFilepath, instanceNum, DirectX::XMFLOAT2(32.0f, 32.0f))) {
-		m_pPosList = m_pObjectList->GetPosList();
+		m_pInstance2DList = m_pObjectList->GetInstanceList();
 		return true;
 	}
 
@@ -56,7 +55,7 @@ void MapChip::Disable(const unsigned index)
 {
 	if (m_instanceNum > index)
 	{
-		m_pObjectList->Disable(index);
+		m_pInstance2DList[index].Disable();
 	}
 	else {
 		// TODO: releaseでも出力されてしまう。色つけて出力できるようにしたい。
@@ -67,7 +66,7 @@ void MapChip::Enable(const unsigned index)
 {
 	if (m_instanceNum > index)
 	{
-		m_pObjectList->Enable(index);
+		m_pInstance2DList[index].Enable();
 	}
 	else {
 		// TODO: releaseでも出力されてしまう。色つけて出力できるようにしたい。
