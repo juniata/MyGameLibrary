@@ -11,11 +11,10 @@ DX_Instance2DObject::DX_Instance2DObject() :
 	m_pVertexBuffer(nullptr),
 	m_width(0),
 	m_height(0),
-	m_pPosList(nullptr),
+	m_pInstance2DList(nullptr),
 	m_instanceNum(0),
 	m_enabled(true)
 {}
-
 //-----------------------------------------------------------------------------------------
 //
 //  デストラクタ
@@ -24,7 +23,7 @@ DX_Instance2DObject::DX_Instance2DObject() :
 DX_Instance2DObject::~DX_Instance2DObject()
 {
 	DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
-	DELETE_OBJ_ARRAY(m_pPosList);
+	DELETE_OBJ_ARRAY(m_pInstance2DList);
 	SAFE_RELEASE(m_pVertexBuffer);
 }
 
@@ -35,11 +34,16 @@ DX_Instance2DObject::~DX_Instance2DObject()
 //-----------------------------------------------------------------------------------------
 bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
 {
-	m_pPosList		= new DirectX::XMFLOAT3[num];
-	m_instanceNum	= num;
+	m_pInstance2DList = new DX::tagInstance2D[num];
+	for (UINT i = 0; i < num; ++i)
+	{
+		m_pInstance2DList[i].x = 0.0f;
+		m_pInstance2DList[i].y = 0.0f;
+		m_pInstance2DList[i].z = 0.0f;
+	}
+	m_instanceNum = num;
 
 	LoadTexture(pFilepath);
-	ZeroMemory(m_pPosList, sizeof(m_pPosList[0]) * num);
 
 	//	1 ~ 0の値に変換
 	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
@@ -116,23 +120,12 @@ bool DX_Instance2DObject::LoadTexture(const char* pFilepath)
 
 //-----------------------------------------------------------------------------------------
 //
-//  座標一覧を取得する
+//  インスタンスリストを取得する
 //
 //-----------------------------------------------------------------------------------------
-DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList()
+DX::tagInstance2D* DX_Instance2DObject::GetInstanceList()
 {
-	return m_pPosList;
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した箇所からの座標一覧を取得する
-//
-//-----------------------------------------------------------------------------------------
-DirectX::XMFLOAT3* DX_Instance2DObject::GetPosList(const unsigned int index)
-{
-	return &m_pPosList[index];
+	return m_pInstance2DList;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -162,10 +155,10 @@ bool DX_Instance2DObject::Render()
 		pVertexShader->Begin(pDeviceContext);
 		pPixelShader->Begin(pDeviceContext);
 
-		unsigned int strides[] = { sizeof(DX::tagVertex2D) ,sizeof(m_pPosList[0]) };
+		unsigned int strides[] = { sizeof(DX::tagVertex2D) ,sizeof(m_pInstance2DList[0]) };
 		unsigned int offsets[] = { 0,0 };
 
-		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pPosList[0]) * m_instanceNum, m_pPosList);
+		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pInstance2DList[0]) * m_instanceNum, m_pInstance2DList);
 		ID3D11Buffer* buffers[] = { m_pVertexBuffer, pInstanceBuffer };
 		DEBUG_VALUE_CHECK(pInstanceBuffer, "インスタンスバッファの作成に失敗しました。");
 
@@ -203,32 +196,9 @@ bool DX_Instance2DObject::Render()
 //  指定した番号のオブジェクトを無効化します(描画されなくなる)
 //
 //-----------------------------------------------------------------------------------------
-void DX_Instance2DObject::Disable(const size_t index)
-{
-	// 描画されなくなるようz値を1より大きくする(これ以外やり方がわからん。。。)
-	m_pPosList[index].z = 1.1f;
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した番号のオブジェクトを無効化します(描画されなくなる)
-//
-//-----------------------------------------------------------------------------------------
 void DX_Instance2DObject::Disable()
 {
 	m_enabled = false;
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した番号のオブジェクトの有効化する（描画されるようになる）
-//
-//-----------------------------------------------------------------------------------------
-void DX_Instance2DObject::Enable(const size_t index)
-{
-	m_pPosList[index].z = 0.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -239,26 +209,6 @@ void DX_Instance2DObject::Enable(const size_t index)
 void DX_Instance2DObject::Enable()
 {
 	m_enabled = true;
-}
-
-//------------------------------------------------------------------------------
-//
-//  @brief		指定したインスタンスが無効かどうか
-//
-//------------------------------------------------------------------------------
-bool DX_Instance2DObject::IsDisable(const size_t index) const
-{
-	return (m_pPosList[index].z >= 1.0f);
-}
-
-//------------------------------------------------------------------------------
-//
-//  @brief		指定したインスタンスが有効かどうか
-//
-//------------------------------------------------------------------------------
-bool DX_Instance2DObject::IsEnable(const size_t index) const
-{
-	return (m_pPosList[index].z < 1.0f);
 }
 
 //------------------------------------------------------------------------------
