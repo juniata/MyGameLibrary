@@ -1,51 +1,8 @@
-﻿  DX_2DObject.cpp
-  DX_Audio.cpp
-  DX_Box.cpp
-  DX_Buffer.cpp
-  DX_Button.cpp
-  DX_ComputeShader.cpp
-  DX_Debug.cpp
-  DX_Font.cpp
-  DX_FrameWork.cpp
-  DX_GameObject.cpp
-  DX_GeometryShader.cpp
-  DX_Graphics.cpp
-  DX_Input.cpp
-  DX_Instance2DObject.cpp
-  DX_InstanceMesh.cpp
-  DX_instanceSkinMesh.cpp
-  DX_Lighting.cpp
-  DX_MaptipObject.cpp
-  DX_Mesh.cpp
-  DX_Particle.cpp
-  コンパイル中...
-  DX_PixelShader.cpp
-  DX_RenderState.cpp
-  DX_Resource.cpp
-  DX_ResourceManager.cpp
-  DX_Scene.cpp
-  DX_SceneManager.cpp
-  DX_Shader.cpp
-  DX_ShaderManager.cpp
-  DX_SkinMesh.cpp
-  DX_System.cpp
-  DX_Texture.cpp
-  DX_VertexShader.cpp
-  DX_View.cpp
-  DX_XInput.cpp
-  MapChip.cpp
-  Player.cpp
+﻿  Player.cpp
   SceneMain.cpp
-  Stage.cpp
-  SceneMenu.cpp
-  SceneTitle.cpp
-  コンパイル中...
-  IEMLoader.cpp
-  IMOLoader.cpp
-  ALManager.cpp
-  OGGManager.cpp
-  WAVManager.cpp
   コード生成しています。
-  All 372 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  24 of 376 functions ( 6.4%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    6 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   DirectX11.vcxproj -> C:\Users\junik\Documents\github\__friends_dg\DirectX11\Windwos 10.0.17763.0\v141\bin\x64\Release\DX_Game.exe

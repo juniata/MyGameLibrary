@@ -86,6 +86,8 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	CHANGE_WINDOW_STATE GetChangeWindowState();
+
+	float GetDeltaTime()const { return m_fps.deltaTime; }
 private:
 	static DX_FrameWork* m_pInstance;
 
@@ -103,6 +105,7 @@ private:
 		float	deltaTime;
 		unsigned long startTime;
 	}m_fps;
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		ウィンドウを作成する

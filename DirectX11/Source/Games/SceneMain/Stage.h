@@ -16,13 +16,19 @@ public:
 
 	bool Render();
 	DirectX::XMFLOAT2 GetInitPlayerPos() const;
+	
+	bool IsHit(const DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2* pDiff);
 private:
 	MapChip* m_pMapChip;
-	MapChip* m_pSkyMapChip;
 
+	struct tagBlock {
+		//DX::tagInstance2D* pInstance2D;
+		CHIP_TYPE type;
+	};
+
+	tagBlock** m_pMpaChips;
 	// いったんは全画面分作成する(TODO:のちにスクロール読み込みに対応させる)
 	int m_chipNumX;
 	int m_chipNumY;
-	int** m_mapChips;
 };
 #endif // !__STAGE_H_

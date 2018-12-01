@@ -8,6 +8,7 @@ struct VS_INPUT
 	float4 pos			: POSITION;
 	float2 tex			: TEXCOORD;
 	float3 instancePos	: INSTANCE_POS;
+	float2 instanceUV	: INSTANCE_UV;
 };
 
 //-------------------------------------------------------------
@@ -31,8 +32,8 @@ VS_OUT VS_Main(VS_INPUT In)
 	Out.pos.y = In.pos.y - (In.instancePos.y * perScreen.y);
 	Out.pos.z = In.instancePos.z;
 	Out.pos.w = 1.0f;
-
-	Out.tex = In.tex;
+	
+	Out.tex = In.tex + In.instanceUV;
 
 	return Out;
 }

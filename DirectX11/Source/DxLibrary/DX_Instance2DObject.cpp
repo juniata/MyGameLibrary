@@ -9,11 +9,17 @@
 DX_Instance2DObject::DX_Instance2DObject() :
 	m_pShaderResourceView(nullptr),
 	m_pVertexBuffer(nullptr),
+	m_pPosBuffer(nullptr),
+	m_pUVBuffer(nullptr),
+	m_pVertices(nullptr),
+	m_pUvs(nullptr),
 	m_width(0),
 	m_height(0),
-	m_pInstance2DList(nullptr),
 	m_instanceNum(0),
-	m_enabled(true)
+	m_enabled(true),
+	m_changedUV(false),
+	m_changedPos(false),
+	m_chipSize(DirectX::XMFLOAT2(1.0f,1.0f))
 {}
 //-----------------------------------------------------------------------------------------
 //
@@ -23,8 +29,13 @@ DX_Instance2DObject::DX_Instance2DObject() :
 DX_Instance2DObject::~DX_Instance2DObject()
 {
 	DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
-	DELETE_OBJ_ARRAY(m_pInstance2DList);
+	DELETE_OBJ_ARRAY(m_pVertices);
+	DELETE_OBJ_ARRAY(m_pUvs);
+
+
 	SAFE_RELEASE(m_pVertexBuffer);
+	SAFE_RELEASE(m_pUVBuffer);
+	SAFE_RELEASE(m_pPosBuffer);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -32,14 +43,75 @@ DX_Instance2DObject::~DX_Instance2DObject()
 // メンバー変数を初期化し、インスタンス描画オブジェクトを作成する
 //
 //-----------------------------------------------------------------------------------------
-bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
+bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize, const DirectX::XMFLOAT2& mapChipSize)
 {
-	m_pInstance2DList = new DX::tagInstance2D[num];
+	m_pVertices = new DirectX::XMFLOAT3[num];
+	m_pUvs = new DirectX::XMFLOAT2[num];
 	for (UINT i = 0; i < num; ++i)
 	{
-		m_pInstance2DList[i].x = 0.0f;
-		m_pInstance2DList[i].y = 0.0f;
-		m_pInstance2DList[i].z = 0.0f;
+		m_pVertices[i].x = 0.0f;
+		m_pVertices[i].y = 0.0f;
+		m_pVertices[i].z = 0.0f;
+		m_pUvs[i].x = 0.0f;
+		m_pUvs[i].y = 0.0f;
+	}
+	m_instanceNum = num;
+
+	LoadTexture(pFilepath);
+
+	m_chipSize.x = mapChipSize.x / CAST_F(m_width);
+	m_chipSize.y = mapChipSize.y / CAST_F(m_height);
+
+	//	1 ~ 0の値に変換
+	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
+	const float centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+
+
+	DX::tagVertex2D vertices[] = {
+		/* 左下 */	DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, m_chipSize.y),
+		/* 左上 */	DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+		/* 右下 */	DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(m_chipSize.x, m_chipSize.y),
+		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(m_chipSize.x, 0.0f)
+	};
+
+	DX::tagRect renderPos(0.0f, 0.0f, renderSize.x, renderSize.y);
+
+	//	左の座標
+	vertices[1].pos.x = vertices[0].pos.x = centerX * renderPos.x - 1.0f;
+
+	//	下の座標
+	vertices[2].pos.y = vertices[0].pos.y = 1.0f - centerY * renderPos.h;
+
+	//	上の座標
+	vertices[3].pos.y = vertices[1].pos.y = 1.0f - centerY * renderPos.y;
+
+	//	右の座標
+	vertices[3].pos.x = vertices[2].pos.x = centerX * renderPos.w - 1.0f;
+
+	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
+
+	// 頂点バッファを作成
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(vertices), vertices);
+
+	// 頂点バッファ(座標を作成)
+	m_pPosBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pVertices[0]) * m_instanceNum, m_pVertices);
+
+	// 頂点バッファ(UVを作成)
+	m_pUVBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pUvs[0]) * m_instanceNum, m_pUvs);
+
+	return true;
+}
+bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
+{
+	m_pVertices = new DirectX::XMFLOAT3[num];
+	m_pUvs = new DirectX::XMFLOAT2[num];
+	for (UINT i = 0; i < num; ++i)
+	{
+		m_pVertices[i].x = 0.0f;
+		m_pVertices[i].y = 0.0f;
+		m_pVertices[i].z = 0.0f;
+		m_pUvs[i].x = 0.0f;
+		m_pUvs[i].y = 0.0f;
 	}
 	m_instanceNum = num;
 
@@ -71,7 +143,16 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 	//	右の座標
 	vertices[3].pos.x = vertices[2].pos.x = centerX * renderPos.w - 1.0f;
 
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices);
+	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
+
+	// 頂点バッファを作成
+	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(vertices), vertices);
+
+	// 頂点バッファ(座標を作成)
+	m_pPosBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pVertices[0]) * m_instanceNum, m_pVertices);
+
+	// 頂点バッファ(UVを作成)
+	m_pUVBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pUvs[0]) * m_instanceNum, m_pUvs);
 
 	return true;
 }
@@ -117,16 +198,25 @@ bool DX_Instance2DObject::LoadTexture(const char* pFilepath)
 	return result;
 }
 
-
-//-----------------------------------------------------------------------------------------
-//
-//  インスタンスリストを取得する
-//
-//-----------------------------------------------------------------------------------------
-DX::tagInstance2D* DX_Instance2DObject::GetInstanceList()
+void DX_Instance2DObject::BufferUpdate()
 {
-	return m_pInstance2DList;
+	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
+
+	// 頂点バッファ(座標を作成)
+	if (m_changedPos) {
+		SAFE_RELEASE(m_pPosBuffer);
+		m_pPosBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pVertices[0]) * m_instanceNum, m_pVertices);
+		m_changedPos = false;
+	}
+
+	// 頂点バッファ(UVを作成)
+	if (m_changedUV) {
+		SAFE_RELEASE(m_pUVBuffer);
+		m_pUVBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pUvs[0]) * m_instanceNum, m_pUvs);
+		m_changedUV = false;
+	}
 }
+
 
 //-----------------------------------------------------------------------------------------
 //
@@ -155,19 +245,21 @@ bool DX_Instance2DObject::Render()
 		pVertexShader->Begin(pDeviceContext);
 		pPixelShader->Begin(pDeviceContext);
 
-		unsigned int strides[] = { sizeof(DX::tagVertex2D) ,sizeof(m_pInstance2DList[0]) };
-		unsigned int offsets[] = { 0,0 };
+		unsigned int strides[] = { sizeof(DX::tagVertex2D) ,sizeof(m_pVertices[0]), sizeof(m_pUvs[0]) };
+		unsigned int offsets[] = { 0, 0, 0 };
 
-		ID3D11Buffer* pInstanceBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pInstance2DList[0]) * m_instanceNum, m_pInstance2DList);
-		ID3D11Buffer* buffers[] = { m_pVertexBuffer, pInstanceBuffer };
-		DEBUG_VALUE_CHECK(pInstanceBuffer, "インスタンスバッファの作成に失敗しました。");
+		// バッファを更新する
+		BufferUpdate();
+
+		ID3D11Buffer* buffers[] = { m_pVertexBuffer, m_pPosBuffer, m_pUVBuffer };
+		DEBUG_VALUE_CHECK(m_pPosBuffer, "インスタンスバッファの作成に失敗しました。");
 
 
 		// 正規化したウィンドウサイズを送る
 		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 		//	VertexBufferを送る
-		pDeviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+		pDeviceContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
 
 		//	InputLayoutの設定を送る
 		pDeviceContext->IASetInputLayout(pShaderManager->GetDefaultInputLayoutInstance2D());
@@ -184,8 +276,6 @@ bool DX_Instance2DObject::Render()
 		//	シェーダー利用を終了
 		pVertexShader->End(pDeviceContext);
 		pPixelShader->End(pDeviceContext);
-
-		SAFE_RELEASE(pInstanceBuffer);
 	}
 
 	return result;

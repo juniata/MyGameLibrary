@@ -181,7 +181,7 @@ bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFL
 //  指定した範囲に描画
 //
 //-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const float left, const float top, const float right, const float bottom)
+bool DX_2DObject::Render(const float left, const float top, const float right, const float bottom, bool isMirror)
 {
 
 	bool result = false;
@@ -190,7 +190,7 @@ bool DX_2DObject::Render(const float left, const float top, const float right, c
 	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	頂点情報を作成
-	CreateVertex(pContext, DX::tagRect(left, top, right, bottom), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	CreateVertex(pContext, DX::tagRect(left, top, right, bottom), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)), isMirror);
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -320,7 +320,7 @@ bool DX_2DObject::IsOriginal() const
 //  頂点情報を作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos)
+void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos, bool isMirror)
 {
 	//	頂点情報
 	DX::tagVertex2D pVertex[4];
@@ -351,7 +351,6 @@ void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect&
 	pVertex[1].pos.z = 0.0f;
 	pVertex[2].pos.z = 0.0f;
 	pVertex[3].pos.z = 0.0f;
-
 
 	//	左の座標
 	pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.x;

@@ -89,7 +89,7 @@ public:
 	//	@param[in]	bottom	‰º
 	//
 	//------------------------------------------------------------------------------
-	bool Render(const float left, const float top, const float right, const float bottom);
+	bool Render(const float left, const float top, const float right, const float bottom, bool isMirror = false);
 
 	//------------------------------------------------------------------------------
 	//
@@ -140,7 +140,7 @@ private:
 	//	@param[in]	texturePos	•`‰æ‚·‚é‰æ‘œ‚Ì”ÍˆÍ
 	//
 	//------------------------------------------------------------------------------
-	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos);
+	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos, bool isMirror = false);
 
 };
 

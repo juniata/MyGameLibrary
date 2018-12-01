@@ -186,6 +186,9 @@
     <ClInclude Include="Source\Games\Player\Player.h">
       <Filter>ソース ファイル\Games\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Games\GameDefine.h">
+      <Filter>ソース ファイル\Games</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DxLibrary\DX_Texture.cpp">

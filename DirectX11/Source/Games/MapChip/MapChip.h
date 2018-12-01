@@ -11,14 +11,9 @@ public:
 
 	bool Render();
 
-	void SetPos(const unsigned index, const float y, const float x);
-	DirectX::XMFLOAT2 GetPos(const unsigned index)const;
-	void Disable(const unsigned index);
-	void Enable(const unsigned index);
-
+	DX_Instance2DObject* GetInstance2DObject();
 private:
 	DX_Instance2DObject* m_pObjectList;
-	DX::tagInstance2D*	m_pInstance2DList;
 	unsigned int m_instanceNum;
 };
 #endif // !__MAP_CHIP_H_

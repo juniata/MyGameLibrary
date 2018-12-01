@@ -52,7 +52,7 @@ bool SceneMain::Update()
 
 	m_pView->FreeCamera(2.0f);
 
-	result = player->Update();
+	result = player->Update(stage);
 
 	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_ESCAPE)) {
 		DX_SceneManager::GetInstance()->GameEnd();
