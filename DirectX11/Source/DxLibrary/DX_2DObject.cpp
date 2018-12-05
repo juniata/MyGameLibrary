@@ -333,7 +333,7 @@ void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect&
 	const float l_centerUv_X = (1.0f / m_width);
 	const float l_centerUv_Y = (1.0f / m_height);
 
-
+	// UVのほうこうを逆にする
 	//	左の座標
 	pVertex[1].pos.x = pVertex[0].pos.x = l_centerX * renderPos.x - 1.0f;
 
@@ -352,17 +352,33 @@ void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect&
 	pVertex[2].pos.z = 0.0f;
 	pVertex[3].pos.z = 0.0f;
 
-	//	左の座標
-	pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.x;
+	if (isMirror) {
+		//	左の座標
+		pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.w;
 
-	//	上の座標
-	pVertex[3].uv.y = pVertex[1].uv.y = l_centerUv_Y * texturePos.y;
+		//	上の座標
+		pVertex[3].uv.y = pVertex[1].uv.y = l_centerUv_Y * texturePos.y;
 
-	//	右の座標
-	pVertex[3].uv.x = pVertex[2].uv.x = l_centerUv_X * texturePos.w;
+		//	右の座標
+		pVertex[3].uv.x = pVertex[2].uv.x = l_centerUv_X * texturePos.x;
 
-	//	下の座標
-	pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
+		//	下の座標
+		pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
+	}
+	else {
+		//	左の座標
+		pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.x;
+
+		//	上の座標
+		pVertex[3].uv.y = pVertex[1].uv.y = l_centerUv_Y * texturePos.y;
+
+		//	右の座標
+		pVertex[3].uv.x = pVertex[2].uv.x = l_centerUv_X * texturePos.w;
+
+		//	下の座標
+		pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
+	}
+
 
 	// バッファの上書き
 	pContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, pVertex, 0, 0);

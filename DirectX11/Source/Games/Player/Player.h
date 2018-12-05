@@ -12,6 +12,7 @@ public:
 	bool Render();
 
 private:
+	// 基盤となるアニメーションタイプ
 	enum class ANIMATION_TYPE : int {
 		WAIT,
 		WALK,
@@ -19,15 +20,18 @@ private:
 		JUMP,
 		MAX,
 	};
+	// 待機モーショ
 	enum class ANIMATION_WAIT_TYPE : int {
 		WAIT1,
 		MAX,
 	};
+	// 歩きモーション
 	enum class ANIMATION_WALK_TYPE : int {
 		WALK1,
 		WALK2,
 		MAX,
 	};
+	// 攻撃モーション
 	enum class ANIMATION_ATTACK_TYPE : int {
 		// 止まった状態で攻撃
 		WAIT_ATTACK1,
@@ -37,6 +41,8 @@ private:
 		WALK_ATTACK2,
 		MAX,
 	};
+
+	// ジャンプモーション
 	enum class ANIMATION_JUMP_TYPE : int {
 		// 止まった状態でジャンプ
 		WAIT_JUMP_1,
@@ -44,20 +50,15 @@ private:
 	};
 	enum class ACTION_TYPE : int {
 
-		// 止まり
-		WAIT,
+		// 止まってる時のアクション
+		WAIT,			// 待機
+		WAIT_ATTACK_1,	// 止まって攻撃
+		WAIT_JUMP_1,	// 止まってジャンプ
 
-		// 歩く
-		WALK_1,
-
-		// 止まって攻撃
-		ATTACK_WAIT_1,
-
-		// 歩きながら攻撃
-		ATTACK_WALK_1,
-
-		// 止まってジャンプ
-		JUMP_WAIT_1,
+		// 歩いてる時のアクション
+		WALK,			// 歩く
+		WALK_ATTACK_1,	// 歩きながら攻撃
+		WALK_JUMP,		// 歩きながらジャンプ
 	};
 	int m_animationType;
 	int m_animationActionType;
@@ -69,25 +70,29 @@ private:
 
 	DX_2DObject** m_pObjects;
 
-	static const int MASS = 150;
-	DirectX::XMFLOAT2 m_pos;	//	座標
-	DirectX::XMFLOAT2 m_initialVelocity;	//	初速度 m/s
-	DirectX::XMFLOAT2 m_force;	// 合力
-	DirectX::XMFLOAT2 m_velocity;	// 速度 s
-	DirectX::XMFLOAT2 m_accelerator;	//	加速度 m/s^2
-	static const float GRAVITY;	// G =m/s^2
+	DirectX::XMFLOAT2 m_pos;
+	DirectX::XMFLOAT2 m_move;
 
+	struct tagJump{
+		float moveY;
+		bool isJump;
+		int interval;
+	};
+	tagJump m_jump;
+
+	void KeyUpdate();
 	void Wait();
-	void Walk();
 	void WaitAttack();
-	void WalkAttack();
 	void WaitJump();
+
+	void Walk();
+	void WalkAttack();
+	void WalkJump();
+
 	void Move();
 	void Collision(Stage* pStage);
 
 	ANIMATION_TYPE GetAnimationType();
-	void SetAnimationType(ANIMATION_TYPE type, ANIMATION_WAIT_TYPE type2);
-	void SetAnimationType(ANIMATION_TYPE type, ANIMATION_WALK_TYPE type2);
-	void SetAnimationType(ANIMATION_TYPE type, ANIMATION_ATTACK_TYPE type2);
-	void SetAnimationType(ANIMATION_TYPE type, ANIMATION_JUMP_TYPE type2);
+	template<class TYPE> void SetAnimationType(ANIMATION_TYPE type, TYPE type2);
+
 };

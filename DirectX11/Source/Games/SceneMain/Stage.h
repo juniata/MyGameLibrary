@@ -14,6 +14,7 @@ public:
 	~Stage();
 	bool Initialize();
 
+	void Update(const DirectX::XMFLOAT2& playerPos);
 	bool Render();
 	DirectX::XMFLOAT2 GetInitPlayerPos() const;
 	
@@ -30,5 +31,7 @@ private:
 	// いったんは全画面分作成する(TODO:のちにスクロール読み込みに対応させる)
 	int m_chipNumX;
 	int m_chipNumY;
+
+	void Scroll(const DirectX::XMFLOAT2& playerPos);
 };
 #endif // !__STAGE_H_

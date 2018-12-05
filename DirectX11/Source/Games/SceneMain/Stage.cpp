@@ -94,6 +94,27 @@ bool Stage::Initialize()
 	return true;
 }
 
+void Stage::Update(const DirectX::XMFLOAT2& playerPos)
+{
+	Scroll(playerPos);
+}
+
+void Stage::Scroll(const DirectX::XMFLOAT2& playerPos)
+{
+	const unsigned int widonwHeight = DX_System::GetWindowHeight();
+	const unsigned int widonwWidth	= DX_System::GetWindowWidth();
+	const float halfWidonwHeight	= CAST_F(widonwHeight) * 0.5f;
+	const float halfWindowWidth		= CAST_F(widonwWidth) * 0.5f;
+	
+	unsigned int index = 0;
+	for (int y = 0; y < m_chipNumY; ++y)
+	{
+		for (int x = 0; x < m_chipNumX; ++x)
+		{
+			index = CAST_UI(y * m_chipNumX + x);
+		}
+	}
+}
 bool Stage::Render()
 {
 	bool result = true;
@@ -146,6 +167,8 @@ bool Stage::IsHit(const DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2* pDiff)
 			
 			lenght = sqrtf(vec.x * vec.x + vec.y * vec.y);
 			if (lenght <= CHIP_SIZE_XY) {
+
+				// x‚Ü‚½‚Íy‚Ç‚¿‚ç‚ª‚ß‚èž‚ñ‚Å‚é‚©”»’f‚·‚é•K—v‚ª‚ ‚éB
 				pDiff->x = vec.x;
 				pDiff->y = 32.0f - vec.y;
 				if (fabsf(pDiff->y) < FLT_EPSILON) {

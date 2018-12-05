@@ -3,13 +3,10 @@
 #include	"Games/SceneMain/Stage.h"
 #include	"Games/MapChip/MapChip.h"
 #include	"Games/GameDefine.h"
-const float Player::GRAVITY = 9.8f * MASS;	// 2Dだと -だと 上に行くため下にする必要がある
 
 Player::Player() :
 	m_pos(DirectX::XMFLOAT2(0.0f,0.0f)),
-	m_force(DirectX::XMFLOAT2(0.0f, 0.0f)),
-	m_velocity(DirectX::XMFLOAT2(0.0f,0.0f)),
-	m_initialVelocity(DirectX::XMFLOAT2(0.0f, 0.0f)),
+	m_move(DirectX::XMFLOAT2(0.0f, 0.0f)),
 	m_animationType(0),
 	m_animationActionType(0),
 	m_animationWalkInterval(0),
@@ -18,6 +15,10 @@ Player::Player() :
 	m_pObjects(new DX_2DObject*[CAST_I(ANIMATION_TYPE::MAX)]),
 	m_isAnimationMirror(false)
 {
+	m_jump.interval = 0;
+	m_jump.isJump	= false;
+	m_jump.moveY	= 0.0f;
+
 	m_pObjects[CAST_I(ANIMATION_TYPE::WAIT)]	= new DX_2DObject[CAST_I(ANIMATION_WAIT_TYPE::MAX)];
 	m_pObjects[CAST_I(ANIMATION_TYPE::WALK)]	= new DX_2DObject[CAST_I(ANIMATION_WALK_TYPE::MAX)];
 	m_pObjects[CAST_I(ANIMATION_TYPE::ATTACK)]	= new DX_2DObject[CAST_I(ANIMATION_ATTACK_TYPE::MAX)];
@@ -56,92 +57,78 @@ bool Player::Initialize(const DirectX::XMFLOAT2& initPos)
 bool Player::Update(Stage* pStage)
 {
 	ACTION_TYPE pastActionType = m_actionType;
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_D) || DX_Input::IsKeyDown(DX_INPUT_KEY::DX_A))
-	{
-		if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z)) {
-			m_actionType = ACTION_TYPE::ATTACK_WALK_1;
-		}
-		else {
-			m_actionType = ACTION_TYPE::WALK_1;
-		}
-	}
-	else if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z)) {
-		m_actionType = ACTION_TYPE::ATTACK_WAIT_1;
-	}
-	else if (DX_Input::IsKeyHit(DX_INPUT_KEY::DX_C)){
-		m_actionType = ACTION_TYPE::JUMP_WAIT_1;
-	}
-	else {
-		m_actionType = ACTION_TYPE::WAIT;
-	}
 
+	KeyUpdate();
+	
 	if (pastActionType != m_actionType) {
 		m_animationAttackInterval = 0;
 		m_animationWalkInterval = 0;
 	}
 
 	switch (m_actionType) {
-		// 止まる
-	case ACTION_TYPE::WAIT:
-		Wait();
-		break;
+		// 止っているときの行動
+	case ACTION_TYPE::WAIT:				Wait();			break;	// 待機
+	case ACTION_TYPE::WAIT_JUMP_1:		WaitJump();		break;	// その場でジャンプ
+	case ACTION_TYPE::WAIT_ATTACK_1:	WaitAttack();	break;	// その場で攻撃
 
-		// 歩く
-	case ACTION_TYPE::WALK_1:
-		Walk();
-		break;
-		// 止まって攻撃
-	case ACTION_TYPE::ATTACK_WAIT_1:
-		WaitAttack();
-		break;
-		// 歩きながら攻撃
-	case ACTION_TYPE::ATTACK_WALK_1:
-		WalkAttack();
-		break;
-	case ACTION_TYPE::JUMP_WAIT_1:
-		WaitJump();
-		break;
+		// 歩いてる時の行動
+	case ACTION_TYPE::WALK:				Walk();			break;	//	歩く
+	case ACTION_TYPE::WALK_ATTACK_1:	WalkAttack();	break;	//	歩きながら攻撃
+	case ACTION_TYPE::WALK_JUMP:		WalkJump();		break;	//	歩きながらジャンプ
 	}
+	
+	Collision(pStage);
 
 	Move();
-
-	Collision(pStage);
 
 	return true;
 }
 void Player::Move()
 {
-	float t = DX_FrameWork::GetInstance()->GetDeltaTime();
-
-	DirectX::XMFLOAT2 pastPos = m_pos;
-
-	// 合力 = 質量(m) * 加速度a(m/s~2)
-	// 加速度 = 合力 / 質量
-	m_accelerator.x += (m_force.x / MASS);
-	m_accelerator.y += (m_force.y / MASS);
-
-	// 重力を加算(当たり判定を実施あと使う
-	m_accelerator.y += GRAVITY;
-
-	// TODO: 初速度を定数でやると動きっパなる。 求めたほうがいいかも
-	//DirectX::XMFLOAT2 initialVelocity(100.0f, 0.0f);
-	DirectX::XMFLOAT2 initialVelocity(0.0f, 0.0f);
-
-	// 最終速度 = 初速度 + 加速度 * 時間
-	// m/s = m/s + m/s(t)^2 * s(t)
-	m_velocity.x = m_initialVelocity.x + m_accelerator.x * t;
-	m_velocity.y = m_initialVelocity.y + m_accelerator.y * t;
-
-	// 移動量 m = m/s ^ s
-	DirectX::XMFLOAT2 move(m_velocity.x * t, m_velocity.y * t);
-
 	// 座標算出
-	m_pos.x += move.x;
-	m_pos.y += move.y;
+	m_pos.x += m_move.x;
+	m_pos.y += m_move.y;
 
-	// 求めた速度が0なら、初速度を0に初期化する。
-	if (m_velocity.x == 0.0f) {
-		m_initialVelocity.x = 0.0f;
+	m_move.x = m_move.y = 0.0f;
+}
+void Player::KeyUpdate()
+{
+	// ジャンプ中ではない場合
+	if (m_jump.isJump == false)
+	{
+		// ADなら移動
+		if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT) || DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT))
+		{
+			m_actionType = ACTION_TYPE::WALK;
+			
+			// Xなら移動攻撃
+			if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_X)) {
+				m_actionType = ACTION_TYPE::WALK_ATTACK_1;
+			}
+			else if(DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z)){
+				// Zなら移動ジャンプ
+				m_actionType = ACTION_TYPE::WALK_JUMP;
+				m_jump.isJump = true;
+			}
+		}
+		// Xならその場で攻撃
+		else if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_X)) {
+			m_actionType = ACTION_TYPE::WAIT_ATTACK_1;
+		}
+		// Zならその場でジャンプ
+		else if (DX_Input::IsKeyHit(DX_INPUT_KEY::DX_Z)) {
+			m_actionType = ACTION_TYPE::WAIT_JUMP_1;
+			m_jump.isJump = true;
+		}
+		else {
+			m_actionType = ACTION_TYPE::WAIT;
+		}
+	}
+	// ジャンプ中の場合
+	else {
+		// AD押したなら左右移動でできるようにする
+		// ジャンプ歩き関数を作成する必要がある
+		// する?
 	}
 }
 void Player::Wait()
@@ -152,25 +139,19 @@ void Player::Collision(Stage* pStage)
 {
 	DirectX::XMFLOAT2 diff(0.0f,0.0f);
 	if (pStage->IsHit(m_pos, &diff)) {
-	//	m_pos.x -= diff.x;
+		// 座標を調整する
+		m_pos.x -= diff.x;
 		m_pos.y -= diff.y;
-		m_accelerator.y = 0.0f;
 	}
 }
 void Player::Walk()
 {
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_D)) {
-		m_force.x = 1000.0f;
-		if (m_initialVelocity.x == .0f) {
-		//	m_initialVelocity.x = 200.0f;
-		}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT)) {
+		m_move.x = 5.0f;
 		m_isAnimationMirror = false;
 	}
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_A)) {
-		m_force.x = -1000.0f;
-		if (m_initialVelocity.x == .0f) {
-		//	m_initialVelocity.x = -200.0f;
-		}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT)) {
+		m_move.x = -5.0f;
 		m_isAnimationMirror = true;
 	}
 
@@ -197,13 +178,13 @@ void Player::WaitAttack()
 }
 void Player::WalkAttack()
 {
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_D)) {
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT)) {
 		m_isAnimationMirror = false;
-		m_force.x = 1000.0f;
+		m_move.x = 5.0f;
 	}
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_A)) {
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT)) {
 		m_isAnimationMirror = true;
-		m_force.x = -1000.0f;
+		m_move.x = -5.0f;
 	}
 	if (++m_animationAttackInterval > 5) {
 		m_animationAttackInterval = 0;
@@ -219,50 +200,84 @@ void Player::WaitJump()
 	// 一度押したらひたすら放物線を描くように地面に着地する。
 	// TOD* updateで最初に初期化してるから、そこをどうにかする必要がある
 	if (GetAnimationType() == ANIMATION_TYPE::JUMP) {
-
+		m_jump.moveY -= 0.2f;
+		++m_jump.interval;
 	}
 	else {
+		m_jump.interval = 0;
+		m_jump.moveY = -5.0f;
 		SetAnimationType(ANIMATION_TYPE::JUMP, ANIMATION_JUMP_TYPE::WAIT_JUMP_1);
 	}
+
+	// ジャンプ時間を設定
+	const int JUMP_TIME = 10;
+
+	if (m_jump.interval > JUMP_TIME) {
+		m_jump.moveY = 0.0f;
+		m_jump.isJump = false;
+
+		//TODO:重力がないから。。。。
+	}
+
+	m_move.y = m_jump.moveY;
+}
+
+void Player::WalkJump()
+{
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT)) {
+		m_move.x = 5.0f;
+		m_isAnimationMirror = false;
+	}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT)) {
+		m_move.x = -5.0f;
+		m_isAnimationMirror = true;
+	}
+
+	// 一度押したらひたすら放物線を描くように地面に着地する。
+	// TOD* updateで最初に初期化してるから、そこをどうにかする必要がある
+	if (GetAnimationType() == ANIMATION_TYPE::JUMP) {
+		m_jump.moveY -= 0.2f;
+		++m_jump.interval;
+	}
+	else {
+		m_jump.interval = 0;
+		m_jump.moveY = -5.0f;
+		// TODO:歩きジャンプ作ったらそっちを設定する
+		SetAnimationType(ANIMATION_TYPE::JUMP, ANIMATION_JUMP_TYPE::WAIT_JUMP_1);
+	}
+
+	// ジャンプ時間を設定
+	const int JUMP_TIME = 10;
+
+	if (m_jump.interval > JUMP_TIME) {
+		m_jump.moveY = 0.0f;
+		m_jump.isJump = false;
+
+		//TODO:重力がないから。。。。
+	}
+	m_move.y = m_jump.moveY;
 }
 
 bool Player::Render()
 {
-	if (m_isAnimationMirror) {
-		// TODO:ミラーリング機能ができればコメントアウトを外す
-		//m_pObjects[m_animationType][m_animationActionType].Render(m_pos.x, m_pos.y, m_pos.x - 32.0f, m_pos.y + 32.0f , true);
-		m_pObjects[m_animationType][m_animationActionType].Render(m_pos.x, m_pos.y, m_pos.x + RENDER_SIZE_X, m_pos.y + RENDER_SIZE_Y);
-	}
-	else {
-		m_pObjects[m_animationType][m_animationActionType].Render(m_pos.x, m_pos.y, m_pos.x + RENDER_SIZE_X, m_pos.y + RENDER_SIZE_Y);
-	}
+	m_pObjects[m_animationType][m_animationActionType].Render(m_pos.x, m_pos.y, m_pos.x + RENDER_SIZE_X, m_pos.y + RENDER_SIZE_Y, m_isAnimationMirror);
 
 	return true;
 }
-void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_WAIT_TYPE type2)
-{
-	m_animationType = CAST_I(type);
-	m_animationActionType = CAST_I(type2);
-}
-void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_WALK_TYPE type2)
-{
-	m_animationType = CAST_I(type);
-	m_animationActionType = CAST_I(type2);
-}
-void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_ATTACK_TYPE type2)
-{
-	m_animationType = CAST_I(type);
-	m_animationActionType = CAST_I(type2);
-}
-void Player::SetAnimationType(ANIMATION_TYPE type, ANIMATION_JUMP_TYPE type2)
-{
-	m_animationType = CAST_I(type);
-	m_animationActionType = CAST_I(type2);
-}
-
 
 
 Player::ANIMATION_TYPE Player::GetAnimationType()
 {
 	return (Player::ANIMATION_TYPE)m_animationType;
 }
+
+template<class TYPE> void Player::SetAnimationType(ANIMATION_TYPE type, TYPE type2)
+{
+	m_animationType			= CAST_I(type);
+	m_animationActionType	= CAST_I(type2);
+}
+template void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_WAIT_TYPE);
+template void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_WALK_TYPE);
+template void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_ATTACK_TYPE);
+template void Player::SetAnimationType(Player::ANIMATION_TYPE type, Player::ANIMATION_JUMP_TYPE);
+
