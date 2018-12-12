@@ -18,7 +18,7 @@ public:
 	bool Render();
 	DirectX::XMFLOAT2 GetInitPlayerPos() const;
 	
-	bool IsHit(const DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2* pDiff);
+	bool IsHit(const DirectX::XMFLOAT2& pos, const DirectX::XMFLOAT2& vec, DirectX::XMFLOAT2* pDiff);
 private:
 	MapChip* m_pMapChip;
 
@@ -32,6 +32,7 @@ private:
 	int m_chipNumX;
 	int m_chipNumY;
 
+	void SearchIndex(const DirectX::XMFLOAT2& pos, int* xIndex, int* yIndex);
 	void Scroll(const DirectX::XMFLOAT2& playerPos);
 };
 #endif // !__STAGE_H_

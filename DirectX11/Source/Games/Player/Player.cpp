@@ -21,7 +21,7 @@ Player::Player() :
 	m_isAnimationMirror(false)
 {
 	m_jump.interval = 0;
-	m_jump.isJump	= false;
+	m_jump.isJumping = false;
 	m_jump.moveY	= 0.0f;
 
 	m_pObjects[CAST_I(ANIMATION_TYPE::WAIT)]	= new DX_2DObject[CAST_I(ANIMATION_WAIT_TYPE::MAX)];
@@ -68,7 +68,6 @@ bool Player::Initialize(const DirectX::XMFLOAT2& initPos)
 	SetAnimationType(ANIMATION_TYPE::WAIT, ANIMATION_WAIT_TYPE::WAIT1);
 	m_pos = initPos;
 
-	DX_2DObject* aaa = m_pObjects[0];
 	return true;
 }
 
@@ -100,7 +99,8 @@ bool Player::Update(Stage* pStage)
 	case ACTION_TYPE::WALK_ATTACK_1:	WalkAttack();	break;	//	歩きながら攻撃
 	case ACTION_TYPE::WALK_JUMP:		WalkJump();		break;	//	歩きながらジャンプ
 	}
-	
+	// 重力
+	m_move.y += 2.1f;
 	Collision(pStage);
 
 	Move();
@@ -134,7 +134,8 @@ void Player::Move()
 	m_pos.x += m_move.x;
 	m_pos.y += m_move.y;
 
-	m_move.x = m_move.y = 0.0f;
+	m_move.x = 0.0f;
+	m_move.y = 0.0f;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -145,10 +146,14 @@ void Player::Move()
 void Player::Collision(Stage* pStage)
 {
 	DirectX::XMFLOAT2 diff(0.0f, 0.0f);
-	if (pStage->IsHit(m_pos, &diff)) {
+	DirectX::XMFLOAT2 vec;
+	DirectX::XMStoreFloat2(&vec, DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&m_move)));
+
+	if (pStage->IsHit(m_pos, vec, &diff)) {
 		// 座標を調整する
 		m_pos.x -= diff.x;
 		m_pos.y -= diff.y;
+		m_jump.isJumping = false;
 	}
 }
 
@@ -160,7 +165,7 @@ void Player::Collision(Stage* pStage)
 void Player::KeyUpdate()
 {
 	// ジャンプ中ではない場合
-	if (m_jump.isJump == false)
+	if (m_jump.isJumping == false)
 	{
 		// ADなら移動
 		if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT) || DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT))
@@ -174,7 +179,6 @@ void Player::KeyUpdate()
 			else if(DX_Input::IsKeyDown(DX_INPUT_KEY::DX_Z)){
 				// Zなら移動ジャンプ
 				m_actionType = ACTION_TYPE::WALK_JUMP;
-				m_jump.isJump = true;
 			}
 		}
 		// Xならその場で攻撃
@@ -184,7 +188,6 @@ void Player::KeyUpdate()
 		// Zならその場でジャンプ
 		else if (DX_Input::IsKeyHit(DX_INPUT_KEY::DX_Z)) {
 			m_actionType = ACTION_TYPE::WAIT_JUMP_1;
-			m_jump.isJump = true;
 		}
 		else {
 			m_actionType = ACTION_TYPE::WAIT;
@@ -192,9 +195,6 @@ void Player::KeyUpdate()
 	}
 	// ジャンプ中の場合
 	else {
-		// AD押したなら左右移動でできるようにする
-		// ジャンプ歩き関数を作成する必要がある
-		// する?
 	}
 }
 
@@ -232,29 +232,7 @@ void Player::WaitAttack()
 //-----------------------------------------------------------------------------------------
 void Player::WaitJump()
 {
-	// 一度押したらひたすら放物線を描くように地面に着地する。
-	// TOD* updateで最初に初期化してるから、そこをどうにかする必要がある
-	if (GetAnimationType() == ANIMATION_TYPE::JUMP) {
-		m_jump.moveY -= 0.2f;
-		++m_jump.interval;
-	}
-	else {
-		m_jump.interval = 0;
-		m_jump.moveY = -5.0f;
-		SetAnimationType(ANIMATION_TYPE::JUMP, ANIMATION_JUMP_TYPE::WAIT_JUMP_1);
-	}
-
-	// ジャンプ時間を設定
-	const int JUMP_TIME = 10;
-
-	if (m_jump.interval > JUMP_TIME) {
-		m_jump.moveY = 0.0f;
-		m_jump.isJump = false;
-
-		//TODO:重力がないから。。。。
-	}
-
-	m_move.y = m_jump.moveY;
+	CommonJump();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -326,31 +304,36 @@ void Player::WalkJump()
 		m_isAnimationMirror = true;
 	}
 
+	CommonJump();
+}
+void Player::CommonJump()
+{
 	// 一度押したらひたすら放物線を描くように地面に着地する。
-	// TOD* updateで最初に初期化してるから、そこをどうにかする必要がある
+// TOD* updateで最初に初期化してるから、そこをどうにかする必要がある
 	if (GetAnimationType() == ANIMATION_TYPE::JUMP) {
-		m_jump.moveY -= 0.2f;
-		++m_jump.interval;
+		
 	}
 	else {
-		m_jump.interval = 0;
-		m_jump.moveY = -5.0f;
-		// TODO:歩きジャンプ作ったらそっちを設定する
 		SetAnimationType(ANIMATION_TYPE::JUMP, ANIMATION_JUMP_TYPE::WAIT_JUMP_1);
 	}
 
+	if (m_jump.isJumping) {
+	//	m_jump.moveY -= 0.2f;
+		++m_jump.interval;
+	}
+	else {
+		m_jump.isJumping = true;
+		m_jump.interval = 0;
+		m_jump.moveY = -6.0f;
+	}
 	// ジャンプ時間を設定
 	const int JUMP_TIME = 10;
 
 	if (m_jump.interval > JUMP_TIME) {
 		m_jump.moveY = 0.0f;
-		m_jump.isJump = false;
-
-		//TODO:重力がないから。。。。
 	}
 	m_move.y = m_jump.moveY;
 }
-
 
 //-----------------------------------------------------------------------------------------
 //

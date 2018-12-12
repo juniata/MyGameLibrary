@@ -116,7 +116,7 @@ private:
 
 	struct tagJump{
 		float moveY;
-		bool isJump;
+		bool isJumping;
 		int interval;
 	};
 	tagJump m_jump;
@@ -184,6 +184,8 @@ private:
 	//
 	//------------------------------------------------------------------------------
 	void WalkJump();
+
+	void CommonJump();
 
 	//------------------------------------------------------------------------------
 	//

@@ -99,6 +99,31 @@ void Stage::Update(const DirectX::XMFLOAT2& playerPos)
 	Scroll(playerPos);
 }
 
+void Stage::SearchIndex(const DirectX::XMFLOAT2& pos, int* xIndex, int* yIndex)
+{
+	unsigned int windowWidth = DX_System::GetWindowWidth();
+	unsigned int windowHeight = DX_System::GetWindowHeight();
+
+	float posX = 0;
+	float posY = windowHeight - RENDER_SIZE_Y;	// 描画サイズ分ひかないと画面下から描画してしまう
+	unsigned int index = 0;
+	for (int y = 0; y < m_chipNumY; ++y)
+	{
+		if (posY <= pos.y && pos.y <= (posY + RENDER_SIZE_Y)) {
+			*yIndex = y;
+			break;
+		}
+		posY -= RENDER_SIZE_Y;
+	}
+	for (int x = 0; x < m_chipNumX; ++x)
+	{
+		if (posX <= pos.x && pos.x <= (posX + RENDER_SIZE_X)) {
+			*xIndex = x;
+			break;
+		}
+		posX += RENDER_SIZE_Y;
+	}
+}
 void Stage::Scroll(const DirectX::XMFLOAT2& playerPos)
 {
 	const unsigned int widonwHeight = DX_System::GetWindowHeight();
@@ -132,21 +157,22 @@ DirectX::XMFLOAT2 Stage::GetInitPlayerPos() const
 	return pos;
 }
 
-bool Stage::IsHit(const DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2* pDiff)
+bool Stage::IsHit(const DirectX::XMFLOAT2& pos, const DirectX::XMFLOAT2& vec, DirectX::XMFLOAT2* pDiff)
 {
 	bool isHit = false;
 
+	int indexX = 0;
+	int indexY = 0;
 	tagBlock* pBlock = nullptr;
 	DX_Instance2DObject* pInstance2DObject = m_pMapChip->GetInstance2DObject();
 
-	const float halfSizeX = RENDER_SIZE_X * 0.5f;
-	const float halfSizeY = RENDER_SIZE_Y * 0.5f;
-
-	DirectX::XMFLOAT2 centerPos(pos.x + halfSizeX, pos.y + halfSizeY);
-	DirectX::XMFLOAT2 centerPos2(0.0f, 0.0f);
-	DirectX::XMFLOAT2 vec(0.0f, 0.0f);
-	float lenght = 0.0f;
+	DirectX::XMFLOAT2 playerCenterPos(pos.x + CHIP_HALF_SIZE_XY, pos.y + CHIP_HALF_SIZE_XY);
+	DirectX::XMFLOAT2 chipPos(0.0f, 0.0f);
+	DirectX::XMFLOAT2 chipCenter(0.0f, 0.0f);
 	unsigned int index = 0;
+	
+	DirectX::XMFLOAT2 chipPosies[4];
+	
 	for (int y = 0; y < m_chipNumY; ++y)
 	{
 		for (int x = 0; x < m_chipNumX; ++x)
@@ -158,28 +184,39 @@ bool Stage::IsHit(const DirectX::XMFLOAT2& pos, DirectX::XMFLOAT2* pDiff)
 			}
 
 			index = y * m_chipNumX + x;
-			centerPos2 = pInstance2DObject->GetPos(index);
-			centerPos2.x += halfSizeX;
-			centerPos2.y += halfSizeY;
 
-			vec.x = centerPos2.x - centerPos.x;
-			vec.y = centerPos2.y - centerPos.y;
+			chipPos = pInstance2DObject->GetPos(index);
+
+			chipCenter.x = chipPos.x + CHIP_HALF_SIZE_XY;
+			chipCenter.y = chipPos.y + CHIP_HALF_SIZE_XY;
 			
-			lenght = sqrtf(vec.x * vec.x + vec.y * vec.y);
-			if (lenght <= CHIP_SIZE_XY) {
+			// 左上の頂点
+			chipPosies[0] = chipPos;
+		
+			// 右上の頂点
+			chipPosies[1] = chipPos;
+			chipPosies[1].x += CHIP_SIZE_XY;
 
-				// xまたはyどちらがめり込んでるか判断する必要がある。
-				pDiff->x = vec.x;
-				pDiff->y = 32.0f - vec.y;
-				if (fabsf(pDiff->y) < FLT_EPSILON) {
-					pDiff->y = 0.0f;
+			// 左下の頂点
+			chipPosies[2] = chipPos;
+			chipPosies[2].y += CHIP_SIZE_XY;
+
+			// 右下の頂点
+			chipPosies[3].x = chipPosies[1].x;
+			chipPosies[3].y = chipPosies[2].y;
+
+			for (int i = 0; i < 4; ++i)
+			{
+				if (pos.x <= chipPosies[i].x && chipPosies[i].x <= (pos.x + CHIP_SIZE_XY) &&
+					pos.y <= chipPosies[i].y && chipPosies[i].y <= (pos.y + CHIP_SIZE_XY)) {
+			
+					///pDiff->x = (CHIP_SIZE_XY - fabsf(chipCenter.x - playerCenterPos.x)) * vec.x;
+					pDiff->y = (CHIP_SIZE_XY - fabsf(chipCenter.y - playerCenterPos.y)) * vec.y;
+					isHit = true;
+					break;
 				}
-				if (fabsf(pDiff->x) < FLT_EPSILON) {
-					pDiff->x = 0.0f;
-				}
- 				// ジャンプして天井にあたったときのことも考慮しなければならない
-				// 差分が0近い(FLT_EPSILON)なら0にする
-				isHit = true;
+			}
+			if (isHit) {
 				break;
 			}
 		}
