@@ -1,6 +1,6 @@
 /DirectX11/DirectX11.VC.db
-/DirectX11/bin
-/DirectX11/obj
-/DirectX11/.vs
-/DirectX11/*.opendb
-/DirectX11/*.user
+/bin
+/obj
+/.vs
+*.opendb
+*.user
