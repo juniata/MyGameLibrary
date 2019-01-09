@@ -12,8 +12,8 @@ DX_Box::DX_Box() :
 	m_pos(0.0f, 0.0f, 0.0f),
 	m_scale(1.0f, 1.0f, 1.0f),
 	m_angle(0.0f, 0.0f, 0.0f),
-	m_bChanged(true),
-	m_bClone(false)
+	m_isChanged(true),
+	m_isCloned(false)
 {
 	CreateBuffer();
 	Update();
@@ -26,7 +26,7 @@ DX_Box::DX_Box() :
 //-----------------------------------------------------------------------------------------
 DX_Box::~DX_Box()
 {
-	if (IsOriginal()) {
+	if (m_isCloned) {
 		SAFE_RELEASE(m_pVertexBuffer);
 		SAFE_RELEASE(m_pIndexBuffer);
 		SAFE_RELEASE(m_pConstantBuffer);
@@ -41,7 +41,7 @@ DX_Box::~DX_Box()
 void DX_Box::SetPos(const DirectX::XMFLOAT3& pos)
 {
 	m_pos = pos;
-	m_bChanged = true;
+	m_isChanged = true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ void DX_Box::SetPos(const DirectX::XMFLOAT3& pos)
 void DX_Box::SetScale(const DirectX::XMFLOAT3& scale)
 {
 	m_scale = scale;
-	m_bChanged = true;
+	m_isChanged = true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void DX_Box::SetScale(const DirectX::XMFLOAT3& scale)
 void DX_Box::SetAngle(const DirectX::XMFLOAT3& angle)
 {
 	m_angle = angle;
-	m_bChanged = true;
+	m_isChanged = true;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ DirectX::XMFLOAT3 DX_Box::GetScale() const
 //-----------------------------------------------------------------------------------------
 void DX_Box::Update()
 {
-	if (m_bChanged)
+	if (m_isChanged)
 	{
 		//	‰ñ“]s—ñ * Šg‘ås—ñ * •½ss—ñ
 		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
@@ -111,7 +111,7 @@ void DX_Box::Update()
 		DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(m_pos.x, m_pos.y, m_pos.z);
 
 		XMStoreFloat4x4(&m_worldMat, angle * scale * translation);
-		m_bChanged = false;
+		m_isChanged = false;
 	}
 }
 
@@ -124,7 +124,6 @@ void DX_Box::Render()
 {
 	DX_System*	pSystem = DX_System::GetInstance();
 
-	ID3D11Device* pDevice = pSystem->GetDevice();
 	ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
 
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -170,8 +169,9 @@ void DX_Box::Render()
 //-----------------------------------------------------------------------------------------
 DX_Box* DX_Box::Clone()
 {
-	DX_Box* pBox = new DX_Box(*this);
-	pBox->m_bClone = true;
+	auto pBox = new DX_Box(*this);
+	pBox->m_isCloned = true;
+
 	return pBox;
 }
 
@@ -183,7 +183,7 @@ DX_Box* DX_Box::Clone()
 //------------------------------------------------------------------------------
 bool DX_Box::IsClone() const
 {
-	return m_bClone;
+	return m_isCloned;
 }
 
 //------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ bool DX_Box::IsClone() const
 //------------------------------------------------------------------------------
 bool DX_Box::IsOriginal() const
 {
-	return !m_bClone;
+	return !m_isCloned;
 }
 
 //------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ bool DX_Box::IsOriginal() const
 //------------------------------------------------------------------------------
 bool DX_Box::RayCast(const DirectX::XMFLOAT3 pos)
 {
-	bool ret = false;
+	auto ret = false;
 
 	return ret;
 }

@@ -45,6 +45,8 @@ DX_Instance2DObject::~DX_Instance2DObject()
 //-----------------------------------------------------------------------------------------
 bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize, const DirectX::XMFLOAT2& mapChipSize)
 {
+	DX_System* pSystem = DX_System::GetInstance();
+
 	m_pVertices = new DirectX::XMFLOAT3[num];
 	m_pUvs = new DirectX::XMFLOAT2[num];
 	for (UINT i = 0; i < num; ++i)
@@ -63,8 +65,8 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 	m_chipSize.y = mapChipSize.y / CAST_F(m_height);
 
 	//	1 ~ 0の値に変換
-	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
-	const float centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+	const float centerX = 1.0f / (CAST_F(pSystem->GetWindowWidth()) * 0.5f);
+	const float centerY = 1.0f / (CAST_F(pSystem->GetWindowHeight()) * 0.5f);
 
 
 	DX::tagVertex2D vertices[] = {
@@ -88,21 +90,32 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 	//	右の座標
 	vertices[3].pos.x = vertices[2].pos.x = centerX * renderPos.w - 1.0f;
 
-	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
+	ID3D11Device* pDevice = pSystem->GetDevice();
 
 	// 頂点バッファを作成
 	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(vertices), vertices);
+	if (DebugValueCheck(m_pVertexBuffer, "頂点バッファの作成に失敗しました。")) {
+		return false;
+	}
 
 	// 頂点バッファ(座標を作成)
 	m_pPosBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pVertices[0]) * m_instanceNum, m_pVertices);
+	if (DebugValueCheck(m_pPosBuffer, "座標配列バッファの作成に失敗しました。")) {
+		return false;
+	}
 
 	// 頂点バッファ(UVを作成)
 	m_pUVBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(m_pUvs[0]) * m_instanceNum, m_pUvs);
+	if (DebugValueCheck(m_pUVBuffer, "UVバッファの作成に失敗しました。")) {
+		return false;
+	}
 
 	return true;
 }
 bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
 {
+	DX_System* pSystem = DX_System::GetInstance();
+
 	m_pVertices = new DirectX::XMFLOAT3[num];
 	m_pUvs = new DirectX::XMFLOAT2[num];
 	for (UINT i = 0; i < num; ++i)
@@ -118,8 +131,8 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 	LoadTexture(pFilepath);
 
 	//	1 ~ 0の値に変換
-	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
-	const float centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+	const float centerX = 1.0f / (CAST_F(pSystem->GetWindowWidth()) * 0.5f);
+	const float centerY = 1.0f / (CAST_F(pSystem->GetWindowHeight()) * 0.5f);
 
 
 	DX::tagVertex2D vertices[] = {
@@ -225,11 +238,8 @@ void DX_Instance2DObject::BufferUpdate()
 //-----------------------------------------------------------------------------------------
 bool DX_Instance2DObject::Render()
 {
-	bool result = false;
+	auto isSucceed = true;
 
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "頂点バッファの作成に失敗しました。");
-	DEBUG_VALUE_CHECK(m_pShaderResourceView, "テクスチャのファイルパスが間違っています");
-	
 	if (m_enabled) 
 	{
 		DX_System* pSystem = DX_System::GetInstance();
@@ -252,8 +262,6 @@ bool DX_Instance2DObject::Render()
 		BufferUpdate();
 
 		ID3D11Buffer* buffers[] = { m_pVertexBuffer, m_pPosBuffer, m_pUVBuffer };
-		DEBUG_VALUE_CHECK(m_pPosBuffer, "インスタンスバッファの作成に失敗しました。");
-
 
 		// 正規化したウィンドウサイズを送る
 		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
@@ -268,7 +276,7 @@ bool DX_Instance2DObject::Render()
 		pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		// テクスチャ情報を送る
-		result = DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
+		isSucceed = DX_ResourceManager::SetShaderResources(pDeviceContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
 
 		// インスタンス描画を行う
 		pDeviceContext->DrawInstanced(4, m_instanceNum, 0, 0);
@@ -278,7 +286,7 @@ bool DX_Instance2DObject::Render()
 		pPixelShader->End(pDeviceContext);
 	}
 
-	return result;
+	return isSucceed;
 }
 
 //-----------------------------------------------------------------------------------------

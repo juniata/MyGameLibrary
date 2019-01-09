@@ -9,12 +9,6 @@
 //
 //-----------------------------------------------------------------------------------------
 DX_System* DX_System::m_pInstnace = nullptr;
-D3D_FEATURE_LEVEL		DX_System::m_featureLevel;
-D3D_DRIVER_TYPE			DX_System::m_driverType;
-HWND					DX_System::m_windowHandle = NULL;
-
-unsigned int DX_System::m_windowWidth	= 0;
-unsigned int DX_System::m_windowHeight	= 0;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -27,9 +21,13 @@ DX_System::DX_System() :
 	m_pSwapChain(nullptr),
 	m_pRtv(nullptr),
 	m_pDsv(nullptr),
-	m_pDsb(nullptr)
-{
-}
+	m_pDsb(nullptr),
+	m_windowWidth(0),
+	m_windowHeight(0),
+	m_featureLevel(D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1),
+	m_driverType(D3D_DRIVER_TYPE::D3D_DRIVER_TYPE_UNKNOWN),
+	m_windowHandle(NULL)
+{}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -395,18 +393,18 @@ void DX_System::CreateDeviceAndSwapChain(const HWND& hWnd)
 	};
 
 #if defined(DEBUG) || defined(_DEBUG)
-	UINT l_createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
+	UINT createDeviecFlags = D3D11_CREATE_DEVICE_DEBUG;
 #else
-	UINT l_createDeviceFlags = 0;
+	UINT createDeviecFlags = 0;
 #endif
 
 	HRESULT hr = S_FALSE;
-	for (UINT i = 0; i < _countof(driveTypes); ++i){
+	for (auto i = 0; i < _countof(driveTypes); ++i){
 		hr = D3D11CreateDeviceAndSwapChain(
-			nullptr,
+			NULL,
 			driveTypes[i],
 			0,
-			l_createDeviceFlags,
+			createDeviecFlags,
 			featureLevels,
 			ARRAYSIZE(featureLevels),
 			D3D11_SDK_VERSION,

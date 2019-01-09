@@ -356,7 +356,8 @@ bool DX_View::IsCheckCubeInFrustum(const DirectX::XMFLOAT3& center, const float 
 		//if (PlaneDotCoord(
 		//	m_plane[i],
 		//	Vector3(center.x + radius, center.y - radius, center.z - radius)) >= 0.0f)
-		//{
+		//{1>c:\users\junik\documents\github\__friends_dg\directx11\source\dxlibrary\dx_view.cpp(345): warning C4702: 制御が渡らないコードです。
+
 		//	continue;
 		//}
 
@@ -431,26 +432,3 @@ bool DX_View::IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const floa
 }
 
 
-//-----------------------------------------------------------------------------------------
-//
-//	矢印キーでカメラを移動
-//
-//-----------------------------------------------------------------------------------------
-void	DX_View::FreeCamera(const float moveSpeed)
-{
-	DirectX::XMFLOAT3 l_move(0.0f, 0.0f, 0.0f);
-
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_UP))	{ l_move.z += 1.0f; }
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_DOWN))	{ l_move.z -= 1.0f; }
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_LEFT))	{ l_move.x -= 1.0f; }
-	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_RIGHT)){ l_move.x += 1.0f; }
-
-	
-	//l_move *= moveSpeed;
-
-	//m_pos		+= l_move;
-	//m_target	+= l_move;
-
-	m_bChanged = true;
-
-}

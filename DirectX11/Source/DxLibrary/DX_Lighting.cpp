@@ -122,8 +122,6 @@ void DX_Lighting::SetViewPos(const DirectX::XMFLOAT3& pos)
 //-----------------------------------------------------------------------------------------
 bool DX_Lighting::SetLightVertexShader()
 {
-	bool result = false;
-
 	DX_System* pSystem = DX_System::GetInstance();
 	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
@@ -140,27 +138,31 @@ bool DX_Lighting::SetLightVertexShader()
 	vertexLighting.lightPos	= m_lightPos;
 
 	//	16byte alignment check
-	DEBUG_VALUE_CHECK((sizeof(vertexLighting) % 16 == 0) ? true : false, "16で割り切れません");
+	if (false == DebugValueCheck((sizeof(vertexLighting) % 16 == 0), "16で割り切れません")) {
+		return false;
+	}
 
 	//	定数バッファを作成
-	bufferDesc.ByteWidth		= sizeof(tagVertexLighting);
-	bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.ByteWidth = sizeof(tagVertexLighting);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	//DX_Buffer::CreateConstantBuffer();	// TODO:こいつを使う
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&bufferDesc, nullptr, &pBuffer);
+	pBuffer = DX_Buffer::CreateConstantBuffer(pSystem->GetDevice(), sizeof(vertexLighting));	// TODO:こいつを使う
+	if (false == DebugValueCheck(pBuffer, "定数バッファの作成に失敗しました。")) {
+		return false;
+	}
 
 	//	updateSubResource
 	pContext->UpdateSubresource(pBuffer, 0, nullptr, &vertexLighting, 0, 0);
 
 	//	PSに送る
-	result = DX_ResourceManager::SetConstantbuffers(pContext, 3, 1, &pBuffer, DX_SHADER_TYPE::VERTEX_SHADER);
+	bool isSucceed = DX_ResourceManager::SetConstantbuffers(pContext, 3, 1, &pBuffer, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	SAFE_RELEASE(pBuffer);
 
-	return result;
+	return isSucceed;
 }
 
 
@@ -171,8 +173,6 @@ bool DX_Lighting::SetLightVertexShader()
 //-----------------------------------------------------------------------------------------
 bool DX_Lighting::SetLightPixelShader()
 {
-	bool result = false;
-
 	DX_System* pSystem = DX_System::GetInstance();
 	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
@@ -187,25 +187,29 @@ bool DX_Lighting::SetLightPixelShader()
 	pixelLighting.lightDir	= m_lightDir;
 
 	//	16byte alignment check
-	DEBUG_VALUE_CHECK((sizeof(pixelLighting) % 16 == 0) ? true : false, "16で割り切れません");
+	if (false == DebugValueCheck((sizeof(pixelLighting) % 16 == 0), "16で割り切れません。")) {
+		return false;
+	}
 
 	//	定数バッファを作成
-	bufferDesc.ByteWidth		= sizeof(tagPixelLighting);
-	bufferDesc.Usage			= D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.ByteWidth = sizeof(tagPixelLighting);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	//DX_Buffer::CreateConstantBuffer();	// TODO:こいつを使う
-	DX_System::GetInstance()->GetDevice()->CreateBuffer(&bufferDesc, nullptr, &pBuffer);
+	pBuffer = DX_Buffer::CreateConstantBuffer(pSystem->GetDevice(), sizeof(pixelLighting));
+	if (false == DebugValueCheck(pBuffer, "定数バッファの作成に失敗しました。")) {
+		return false;
+	}
 
 	//	updateSubResource
 	pContext->UpdateSubresource(pBuffer, 0, nullptr, &pixelLighting, 0, 0);
 
 	//	PSに送る
-	result = DX_ResourceManager::SetConstantbuffers(pContext, 0, 1, &pBuffer, DX_SHADER_TYPE::PIXEL_SHADER);
+	bool isSucceed = DX_ResourceManager::SetConstantbuffers(pContext, 0, 1, &pBuffer, DX_SHADER_TYPE::PIXEL_SHADER);
 
 	SAFE_RELEASE(pBuffer);
 
-	return result;
+	return isSucceed;
 }

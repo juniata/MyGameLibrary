@@ -131,63 +131,7 @@ void DX_ShaderManager::SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT
 //  ワールド行列をシェーダーに送る
 //
 //-----------------------------------------------------------------------------------------
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const int value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT2& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT3& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMINT4& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const unsigned int value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT2& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT3& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
-{
-	//	updateSubResource
-	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
-
-	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, registerNum, 1, &pBuffer, shaderType);
-}
-void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const DirectX::XMUINT4& value, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
+void DX_ShaderManager::SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const int value, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType)
 {
 	//	updateSubResource
 	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &value, 0, 0);
@@ -234,15 +178,17 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
+	ID3D11Buffer*	pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
+
+	DirectX::XMFLOAT4 resource(vec3.x, vec3.y, vec3.z, 0.0f);
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &DirectX::XMFLOAT4(vec3.x,vec3.y,vec3.z,0.0f), 0, 0);
+	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &resource, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &pBuffer, shaderType);
 
-	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(pBuffer);
 }
 
 void DX_ShaderManager::SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3, const unsigned int vecCount, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType)
@@ -296,15 +242,17 @@ void DX_ShaderManager::SetVector(
 	)
 {
 	//	ローカル変数
-	ID3D11Buffer*	l_pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
+	ID3D11Buffer*	pBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4));
+
+	DirectX::XMFLOAT4 resource(vec2.x, vec2.y, 0.0f, 0.0f);
 
 	//	updateSubResource
-	pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &DirectX::XMFLOAT4(vec2.x,vec2.y,0.0f,0.0f), 0, 0);
+	pDeviceContext->UpdateSubresource(pBuffer, 0, nullptr, &resource, 0, 0);
 
 	//	シェーダーステージを指定し、定数バッファを送る
-	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &l_pBuffer, shaderType);
+	DX_ResourceManager::SetConstantbuffers(pDeviceContext, regiserNum, 1, &pBuffer, shaderType);
 
-	SAFE_RELEASE(l_pBuffer);
+	SAFE_RELEASE(pBuffer);
 }
 
 

@@ -30,21 +30,25 @@ int										DX_ResourceManager::m_srvRegisterNum = _NO_RESOURCE;
 bool DX_ResourceManager::SetConstantbuffers(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11Buffer* const* pBuffers, DX_SHADER_TYPE shaderType)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
-	DEBUG_VALUE_CHECK((registerNum < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています｡");
+	if (false == DebugValueCheck((registerNum < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています。")) {
+		return false;
+	}
 
 	//	指定したレジスタに設定するバッファの数が上限値を超えているかをチェックする
-	DEBUG_VALUE_CHECK(((D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - registerNum) > viewCount) ? true : false, "指定したレジスタ番号に設定できるバッファの数が上限を超えています");
+	if (false == DebugValueCheck(((D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT - registerNum) > viewCount) ? true : false, "指定したレジスタ番号に設定できるバッファの数が上限を超えています。")) {
+		return false;
+	}
 	
 	//	バッファが設定している場合
 	if (m_bufferRegisterNum != _NO_RESOURCE)
 	{
 		//	前回の情報を取得
-		tagResourceInfo* l_pBufferInfo = &m_bufferInfo[m_bufferRegisterNum];
+		tagResourceInfo* pBufferInfo = &m_bufferInfo[m_bufferRegisterNum];
 
 		//	今から設定するリソースのレジスタ番号が、前回設定したリソースのレジスタ番号と同じな場合、
 		//	前回設定したリソースの数だけ、NULLを設定する
-		if (registerNum == l_pBufferInfo->registerNum){
-			SelectSetShaderConstantBuffers(pDeviceContext, l_pBufferInfo->registerNum, l_pBufferInfo->viewCount, m_pNullBuffer, shaderType);
+		if (registerNum == pBufferInfo->registerNum){
+			SelectSetShaderConstantBuffers(pDeviceContext, pBufferInfo->registerNum, pBufferInfo->viewCount, m_pNullBuffer, shaderType);
 		}
 	}
 
@@ -55,9 +59,9 @@ bool DX_ResourceManager::SetConstantbuffers(ID3D11DeviceContext* pDeviceContext,
 	m_bufferRegisterNum = registerNum;
 
 	//	新しいデータを設定する
-	tagResourceInfo* l_pBufferInfo = &m_bufferInfo[registerNum];
-	l_pBufferInfo->registerNum = registerNum;
-	l_pBufferInfo->viewCount = viewCount;
+	tagResourceInfo* pBufferInfo = &m_bufferInfo[registerNum];
+	pBufferInfo->registerNum = registerNum;
+	pBufferInfo->viewCount = viewCount;
 
 	return true;
 }
@@ -70,21 +74,25 @@ bool DX_ResourceManager::SetConstantbuffers(ID3D11DeviceContext* pDeviceContext,
 bool DX_ResourceManager::SetShaderResources(ID3D11DeviceContext* pDeviceContext, const int registerNum, const int viewCount, ID3D11ShaderResourceView* const* pShaderResourceView, DX_SHADER_TYPE shaderType)
 {
 	//	レジスタ番号を上限値を超えてないかをチェック
-	DEBUG_VALUE_CHECK((registerNum < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています｡");
+	if (false == DebugValueCheck((registerNum < D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) ? true : false, "レジスタ番号が上限を超えています。")) {
+		return false;
+	}
 
 	//	指定したレジスタに設定するバッファの数が上限値を超えているかをチェックする
-	DEBUG_VALUE_CHECK(((D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - registerNum) > viewCount) ? true : false, "指定したレジスタ番号に設定できるバッファの数が上限を超えています");
+	if (false == DebugValueCheck(((D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT - registerNum) > viewCount) ? true : false, "指定したレジスタ番号に設定できるバッファの数が上限を超えています。")) {
+		return false;
+	}
 
 	//	リソースが設定している場合
 	if (m_srvRegisterNum != _NO_RESOURCE)
 	{
 		//	前回の情報を取得
-		tagResourceInfo* l_pResoucrInfo = &m_srvInfo[m_srvRegisterNum];
+		tagResourceInfo* pResoucrInfo = &m_srvInfo[m_srvRegisterNum];
 
 		//	今から設定するリソースのレジスタ番号が、前回設定したリソースのレジスタ番号と同じな場合、
 		//	前回設定したリソースの数だけ、NULLを設定する
-		if (registerNum == l_pResoucrInfo->registerNum){
-			SelectSetShaderResources(pDeviceContext, l_pResoucrInfo->registerNum, l_pResoucrInfo->viewCount, m_pNullShaderResourceView, shaderType);
+		if (registerNum == pResoucrInfo->registerNum){
+			SelectSetShaderResources(pDeviceContext, pResoucrInfo->registerNum, pResoucrInfo->viewCount, m_pNullShaderResourceView, shaderType);
 		}
 	}
 
@@ -95,9 +103,9 @@ bool DX_ResourceManager::SetShaderResources(ID3D11DeviceContext* pDeviceContext,
 	m_srvRegisterNum = registerNum;
 
 	//	新しいデータを設定する
-	tagResourceInfo* l_pResoucrInfo = &m_srvInfo[registerNum];
-	l_pResoucrInfo->registerNum = registerNum;
-	l_pResoucrInfo->viewCount	= viewCount;
+	tagResourceInfo* pResoucrInfo = &m_srvInfo[registerNum];
+	pResoucrInfo->registerNum = registerNum;
+	pResoucrInfo->viewCount	= viewCount;
 
 	return true;
 }

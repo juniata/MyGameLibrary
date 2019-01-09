@@ -53,50 +53,51 @@ DX_Graphics* DX_Graphics::GetInstance()
 void DX_Graphics::Initialize()
 {
 	//	変数定義
-	IDXGIFactory*		l_pFactory			= nullptr;
-	IDXGIAdapter*		l_pAdapter			= nullptr;
-	IDXGIOutput*		l_pOutput			= nullptr;
-	DXGI_MODE_DESC*		l_pDisplayModeList  = nullptr;
-	DXGI_ADAPTER_DESC	l_adpterDesc = { NULL };
-	unsigned int		l_numModes		= 0;
+	IDXGIFactory*		pFactory			= nullptr;
+	IDXGIAdapter*		pAdapter			= nullptr;
+	IDXGIOutput*		pOutput				= nullptr;
+	DXGI_MODE_DESC*		pDisplayModeList	= nullptr;
+	DXGI_ADAPTER_DESC	adapterDesc			= { NULL };
+	UINT				numModes			= 0;
 
+	DX_System* pSystem = DX_System::GetInstance();
 	DX_Debug* pDebug = DX_Debug::GetInstance();
 
 	//	factryを作成
-	if (!pDebug->IsHresultCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&l_pFactory))) {
+	if (!pDebug->IsHresultCheck(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory))) {
 		throw "CreateDXGIFactory() : failed";
 	}
 
 	// adaptersを作成
-	if (!pDebug->IsHresultCheck(l_pFactory->EnumAdapters(0, &l_pAdapter))) {
+	if (!pDebug->IsHresultCheck(pFactory->EnumAdapters(0, &pAdapter))) {
 		throw "IDXGIFactory::EnumAdapters() : failed";
 	}
 
 	//	enumOutputを作成
-	if (!pDebug->IsHresultCheck(l_pAdapter->EnumOutputs(0, &l_pOutput))) {
+	if (!pDebug->IsHresultCheck(pAdapter->EnumOutputs(0, &pOutput))) {
 		throw "IDXGIAdapter::EnumOutputs() : failed";
 	}
 
 	//	displayModeListの数を取得
-	if (!pDebug->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
+	if (!pDebug->IsHresultCheck(pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, pDisplayModeList))) {
 		throw "IDXGIOutput::GetDisplayModeList() : DXGI_MODE_DESC element failed";
 	}
 
 	//	listの数だけ生成
-	l_pDisplayModeList = new DXGI_MODE_DESC[l_numModes];
+	pDisplayModeList = new DXGI_MODE_DESC[numModes];
 
 	//	listの内容を取得
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &l_numModes, l_pDisplayModeList))) {
+	if (!DX_Debug::GetInstance()->IsHresultCheck(pOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, pDisplayModeList))) {
 		throw "IDXGIOutput::GetDisplayModeList() : numModels failed";
 	}
 
-	unsigned int width	= DX_System::GetWindowWidth();
-	unsigned int height = DX_System::GetWindowHeight();
+	unsigned int width	= pSystem->GetWindowWidth();
+	unsigned int height = pSystem->GetWindowHeight();
 
 	//	ウィンドウサイズに一致したGPU情報を取得
 	//	ウィンドウサイズに一致するリフレッシュシートを取得
-	for (unsigned int i = 0; i < l_numModes; ++i) {
-		DXGI_MODE_DESC displayMode = l_pDisplayModeList[i];
+	for (UINT i = 0; i < numModes; ++i) {
+		DXGI_MODE_DESC displayMode = pDisplayModeList[i];
 
 		//DX_Debug::GetInstance()->Printf("Width = %d", displayMode.Width);
 		//DX_Debug::GetInstance()->Printf(" height = %d", displayMode.Height);
@@ -123,24 +124,24 @@ void DX_Graphics::Initialize()
 	}
 
 	//	DXGI_ADAPTER_DESCを取得
-	if (!pDebug->IsHresultCheck(l_pAdapter->GetDesc(&l_adpterDesc))) {
+	if (!pDebug->IsHresultCheck(pAdapter->GetDesc(&adapterDesc))) {
 		throw "IDXGIAdapter::GetDesc(): failed";
 	}
 
 	//	byte→MegaByte
-	m_videoCardMemory = unsigned int(l_adpterDesc.DedicatedVideoMemory / 1024 / 1024);
+	m_videoCardMemory = CAST_UI(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
 	//	文字列を変換
 	size_t	l_stringLendth = 0;
-	if (::wcstombs_s(&l_stringLendth, m_videoCardDescription, sizeof(m_videoCardDescription), l_adpterDesc.Description, sizeof(m_videoCardDescription)) != 0) {
+	if (::wcstombs_s(&l_stringLendth, m_videoCardDescription, sizeof(m_videoCardDescription), adapterDesc.Description, sizeof(m_videoCardDescription)) != 0) {
 		throw "wcstombs_s() failed";
 	}
 
 	//	解放処理
-	DELETE_OBJ_ARRAY(l_pDisplayModeList);
-	SAFE_RELEASE(l_pFactory);
-	SAFE_RELEASE(l_pAdapter);
-	SAFE_RELEASE(l_pOutput);
+	DELETE_OBJ_ARRAY(pDisplayModeList);
+	SAFE_RELEASE(pFactory);
+	SAFE_RELEASE(pAdapter);
+	SAFE_RELEASE(pOutput);
 }
 
 //-----------------------------------------------------------------------------------------

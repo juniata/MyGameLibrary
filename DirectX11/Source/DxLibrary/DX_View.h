@@ -150,14 +150,6 @@ public:
 	//------------------------------------------------------------------------------
 	bool IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const float radius);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		矢印キーでカメラを移動
-	//	@param[in]	moveSpeed	カメラの移動速度
-	//
-	//------------------------------------------------------------------------------
-	void FreeCamera(const float moveSpeed = 1.0f);
-
 private:
 	static DX_View* m_pInstance;
 	D3D11_VIEWPORT m_viewPort;

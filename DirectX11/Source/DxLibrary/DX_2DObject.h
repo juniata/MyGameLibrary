@@ -22,7 +22,7 @@ public:
 	//  @brief		m_pShaderResourceViewを解放
 	//
 	//------------------------------------------------------------------------------
-	~DX_2DObject();
+	virtual ~DX_2DObject();
 
 	//------------------------------------------------------------------------------
 	//
@@ -32,6 +32,27 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	bool Initialize(const char* pFilepath);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
+	//	@param[in]	pFilepath	テクスチャのファイルパス
+	//	@param[in]	rectPos		描画するサイズ
+	//	@return		どちらかの作成に失敗でfalse
+	//
+	//------------------------------------------------------------------------------
+	bool Initialize(const char* pFilepath, const DX::tagRect& rectPos);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
+	//	@param[in]	pFilepath	テクスチャのファイルパス
+	//	@param[in]	rectPos		描画するサイズ
+	//	@param[in]	uv			描画するテクスチャ座標
+	//	@return		どちらかの作成に失敗でfalse
+	//
+	//------------------------------------------------------------------------------
+	bool Initialize(const char* pFilepath, const DX::tagRect& rectPos, const DX::tagRect& uv);
 
 	//------------------------------------------------------------------------------
 	//
@@ -49,47 +70,11 @@ public:
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		全画面に描画
+	//  @brief		描画する
+	//	@return		描画に成功したかどうか
 	//
 	//------------------------------------------------------------------------------
 	bool Render();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		指定した範囲に描画
-	//	@param[in]	renderPos	描画する範囲
-	//
-	//------------------------------------------------------------------------------
-	bool Render(const DX::tagRect& renderPos);
-	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		指定した範囲、指定した画像座標で描画
-	//	@param[in]	renderPos	描画する範囲
-	//	@param[in]	texturePos	描画する画像の範囲
-	//
-	//------------------------------------------------------------------------------
-	bool Render(const DX::tagRect& renderPos,const DX::tagRect& texturePos);
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		指定した範囲、指定した画像座標で描画
-	//	@param[in]	renderPos	描画する範囲
-	//	@param[in]	renderSize	描画する画像のサイズ
-	//
-	//------------------------------------------------------------------------------
-	bool Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize);
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		指定した範囲で描画する
-	//	@param[in]	left	左
-	//	@param[in]	top		上
-	//	@param[in]	right	右
-	//	@param[in]	bottom	下
-	//
-	//------------------------------------------------------------------------------
-	bool Render(const float left, const float top, const float right, const float bottom, bool isMirror = false);
 
 	//------------------------------------------------------------------------------
 	//
@@ -114,15 +99,101 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	bool IsOriginal() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		画面内に描画されているかどうか
+	//	@param[in]	描画されているならtrue
+	//
+	//------------------------------------------------------------------------------
+	bool IsInScreen() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		描画座標を設定する
+	//	@param[in]	rect	描画範囲
+	//
+	//------------------------------------------------------------------------------
+	void SetRectPos(const DX::tagRect& rect);
+	
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		描画座標を設定する
+	//	@param[in]	left	左
+	//	@param[in]	top		上
+	//	@param[in]	right	右
+	//	@param[in]	bottom	下
+	//
+	//------------------------------------------------------------------------------
+	void SetRectPos(const float left, const float top, const float right, const float bottom);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		UV座標を設定する
+	//	@param[in]	uv		UV座標
+	//
+	//------------------------------------------------------------------------------
+	void SetUV(const DX::tagRect& uv);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		UV座標を設定する
+	//	@param[in]	left	左
+	//	@param[in]	top		上
+	//	@param[in]	right	右
+	//	@param[in]	bottom	下
+	//
+	//------------------------------------------------------------------------------
+	void SetUV(const float left, const float top, const float right, const float bottom);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		描画座標を取得する
+	//	@return		描画座標
+	//
+	//------------------------------------------------------------------------------
+	DX::tagRect GetRectPos() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		UV座標を取得する
+	//	@return		UV座標
+	//
+	//------------------------------------------------------------------------------
+	DX::tagRect GetUV() const;
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		頂点情報を更新する
+	//	@param[in]	isLRMirror	左右反転描画するかどうか
+	//	@param[in]	isUDMirror	上下反転描画するかどうか
+	//
+	//------------------------------------------------------------------------------
+	void Update(const bool isLRMirror = false, const bool isUDMirror = false);
+
+protected:
+	DX::tagRect m_rectPos;
+	DX::tagRect m_uv;
+
 private:
-	ID3D11Buffer* m_pVertexBuffer;
-
-	ID3D11ShaderResourceView*		m_pShaderResourceView;
-
+	ID3D11Buffer*				m_pVertexBuffer;
+	ID3D11ShaderResourceView*	m_pShaderResourceView;
 	unsigned int m_height;
 	unsigned int m_width;
+	bool m_isCloned;
+	bool m_isChanged;
+	bool m_isLRMirror;
+	bool m_isUDMirror;
 
-	bool m_bClone;
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
+	//	@param[in]	pFilepath	テクスチャのファイルパス
+	//	@return		どちらかの作成に失敗でfalse
+	//
+	//------------------------------------------------------------------------------
+	bool CommonInitialize(const char* pFilepath);
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		テクスチャを読み込む
@@ -136,12 +207,13 @@ private:
 	//
 	//  @brief		頂点情報を作成する
 	//	@param[in]	pContext	コンテキスト
-	//	@param[in]	renderPos	画面に描画する範囲	
-	//	@param[in]	texturePos	描画する画像の範囲
+	//	@param[in]	rectPos		画面に描画する範囲	
+	//	@param[in]	uv			描画する画像の範囲
+	//	@param[in]	isLRMirror	左右反転するかどうか
+	//	@param[in]	isUDMirror	上下反転するかどうか
 	//
 	//------------------------------------------------------------------------------
-	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos, bool isMirror = false);
-
+	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror = false, const bool isUDMirror = false);
 };
 
 #endif // !__DX_2DOBJECT_H_

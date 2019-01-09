@@ -16,19 +16,18 @@ enum class SET_PRINT_COLOR : int {
 //
 //****************************************************************************************************
 #if defined(DEBUG) || defined(_DEBUG)
-template<class T> bool __DebugValueCheck(T value, const char* pErrMsg)
+template<class T> bool DebugValueCheck(T value, const char* pErrMsg)
 {
-	bool result = value ? true : false;
+	bool isSucceed = value ? true : false;
 	
-	if (result == false) {
+	if (isSucceed == false) {
 		MessageBox(DX_System::GetInstance()->GetWindowHandle(), pErrMsg,  "Error", MB_OK);
 	}
 
-	return result;
+	return isSucceed;
 }
-#define DEBUG_VALUE_CHECK(value, pErrMsg) if (false ==__DebugValueCheck(value, pErrMsg)) { return false; }
 #else
-#define DEBUG_VALUE_CHECK(bFlag,pMessage)
+#define DebugValueCheck(bFlag, pMessage) true
 #endif
 
 //****************************************************************************************************

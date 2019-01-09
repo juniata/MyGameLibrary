@@ -11,7 +11,10 @@ DX_2DObject::DX_2DObject() :
 	m_pShaderResourceView(nullptr),
 	m_height(0),
 	m_width(0),
-	m_bClone(false)
+	m_isCloned(false),
+	m_isChanged(false),
+	m_isLRMirror(false),
+	m_isUDMirror(false)
 {}
 
 
@@ -28,16 +31,13 @@ DX_2DObject::~DX_2DObject()
 	}
 }
 
-
 //-----------------------------------------------------------------------------------------
 //
 //	テクスチャ読み込みと頂点バッファの作成を行う。
 //
 //-----------------------------------------------------------------------------------------
-bool DX_2DObject::Initialize(const char* pFilepath)
+bool DX_2DObject::CommonInitialize(const char* pFilepath)
 {
-	bool result = false;
-
 	//	頂点バッファを作成
 	DX::tagVertex2D vertices[] = {
 		/* 左下 */	DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
@@ -46,16 +46,68 @@ bool DX_2DObject::Initialize(const char* pFilepath)
 		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
 	};
 	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices);
-	DEBUG_VALUE_CHECK(m_pVertexBuffer, "バッファの作成に失敗しています。");
+
+	if (false == DebugValueCheck(m_pVertexBuffer, "バッファの作成に失敗しています。")) {
+		return false;
+	}
 
 	// テクスチャを読み込む
 	char texturePath[MAX_PATH] = { '\n' };
-	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
-	result = LoadTexture(texturePath);
+	sprintf_s(texturePath, "%s%s", "Resource\\", pFilepath);
+	bool isSucceed = LoadTexture(texturePath);
 
-	return result;
+	return isSucceed;
 }
 
+//-----------------------------------------------------------------------------------------
+//
+//	テクスチャ読み込みと頂点バッファの作成を行う。
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::Initialize(const char* pFilepath)
+{
+	bool isSucceed = CommonInitialize(pFilepath);
+
+	DX_System* pSystem = DX_System::GetInstance();
+
+	SetRectPos(0.0f, 0.0f, CAST_F(pSystem->GetWindowWidth()), CAST_F(pSystem->GetWindowHeight()));
+	SetUV(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height));
+	Update();
+
+	return isSucceed;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	テクスチャ読み込みと頂点バッファの作成を行う。
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::Initialize(const char* pFilepath, const DX::tagRect& rectPos)
+{
+	bool isSucceed = CommonInitialize(pFilepath);
+
+	SetRectPos(rectPos);
+	SetUV(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height));
+	Update();
+
+	return isSucceed;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	テクスチャ読み込みと頂点バッファの作成を行う。
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::Initialize(const char* pFilepath, const DX::tagRect& rectPos, const DX::tagRect& uv)
+{
+	bool isSucceed = CommonInitialize(pFilepath);
+
+	SetRectPos(rectPos);
+	SetUV(uv);
+	Update();
+
+	return isSucceed;
+}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -84,147 +136,12 @@ unsigned int DX_2DObject::GetWidth()const
 //-----------------------------------------------------------------------------------------
 bool DX_2DObject::Render()
 {
-	bool result = false;
+	auto result = false;
 
+
+	DX_System* pSystem = DX_System::GetInstance();
 	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-	//	シェーダーを取得
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-
-	//	シェーダーを利用
-	pVertexShader->Begin(pContext);
-	pPixelShader->Begin(pContext);
-
-	//	描画
-	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
-
-	//	シェーダーを終了
-	pVertexShader->End(pContext);
-	pPixelShader->End(pContext);
-
-	return result;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した範囲に描画
-//
-//-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const DX::tagRect& renderPos)
-{
-	bool result = false;
-
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-	//	頂点情報を作成
-	CreateVertex(pContext, renderPos, DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
-
-	//	シェーダーを取得
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-
-	//	シェーダーを利用
-	pVertexShader->Begin(pContext);
-	pPixelShader->Begin(pContext);
-
-	//	描画
-	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
-
-	//	シェーダーを終了
-	pVertexShader->End(pContext);
-	pPixelShader->End(pContext);
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した範囲、指定した画像サイズを描画
-//
-//-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const DirectX::XMFLOAT2& renderPos, const DirectX::XMFLOAT2& renderSize)
-{
-	bool result = false;
-
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-	//	頂点情報を作成
-	CreateVertex(pContext, DX::tagRect(renderPos.x, renderPos.y, (renderSize.x + renderPos.x), (renderSize.y + renderPos.y)), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
-
-	//	シェーダーを取得
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-
-	//	シェーダーを利用
-	pVertexShader->Begin(pContext);
-	pPixelShader->Begin(pContext);
-
-	//	描画
-	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
-
-	//	シェーダーを終了
-	pVertexShader->End(pContext);
-	pPixelShader->End(pContext);
-
-	return result;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した範囲に描画
-//
-//-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const float left, const float top, const float right, const float bottom, bool isMirror)
-{
-
-	bool result = false;
-
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-	//	頂点情報を作成
-	CreateVertex(pContext, DX::tagRect(left, top, right, bottom), DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)), isMirror);
-
-	//	シェーダーを取得
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
-
-	//	シェーダーを利用
-	pVertexShader->Begin(pContext);
-	pPixelShader->Begin(pContext);
-
-	//	描画
-	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
-
-	//	シェーダーを終了
-	pVertexShader->End(pContext);
-	pPixelShader->End(pContext);
-
-	return result;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  指定した範囲に描画
-//
-//-----------------------------------------------------------------------------------------
-bool DX_2DObject::Render(const DX::tagRect& renderPos, const DX::tagRect& texturePos)
-{
-	bool result = false;
-
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-	//	頂点情報を作成
-	CreateVertex(pContext, renderPos, DX::tagRect(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height)));
+	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
 	//	シェーダーを取得
 	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
@@ -255,28 +172,26 @@ bool DX_2DObject::LoadTexture(const char* pFilepath)
 	//	テクスチャを取得
 	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
 
-	//	テクスチャがロードできてるかチェック
-	if (m_pShaderResourceView) {
-		//	テクスチャを細かな情報を取得
-		ID3D11Resource* l_pResource = nullptr;
-		m_pShaderResourceView->GetResource(&l_pResource);
-
-		ID3D11Texture2D* l_pTexture2D = nullptr;
-		l_pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&l_pTexture2D);
-
-		D3D11_TEXTURE2D_DESC l_texDesc;
-		l_pTexture2D->GetDesc(&l_texDesc);
-		//	テクスチャサイズを取得
-
-		m_height = l_texDesc.Height;
-		m_width = l_texDesc.Width;
-
-		SAFE_RELEASE(l_pResource);
-		SAFE_RELEASE(l_pTexture2D);
+	if (false == DebugValueCheck(m_pShaderResourceView, "テクスチャの読み込みができていません。")) {
+		return false;
 	}
-	else {
-		DEBUG_VALUE_CHECK(false, "テクスチャの読み込みができていません。");
-	}
+
+	//	テクスチャを細かな情報を取得
+	ID3D11Resource* pResource = nullptr;
+	m_pShaderResourceView->GetResource(&pResource);
+
+	ID3D11Texture2D* pTex2D = nullptr;
+	pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pTex2D);
+
+		D3D11_TEXTURE2D_DESC texDesc;
+	pTex2D->GetDesc(&texDesc);
+	//	テクスチャサイズを取得
+
+	m_height = texDesc.Height;
+	m_width = texDesc.Width;
+
+	SAFE_RELEASE(pResource);
+	SAFE_RELEASE(pTex2D);
 
 	return true;
 }
@@ -289,8 +204,8 @@ bool DX_2DObject::LoadTexture(const char* pFilepath)
 //-----------------------------------------------------------------------------------------
 DX_2DObject* DX_2DObject::Clone()
 {
-	DX_2DObject* pObject = new DX_2DObject(*this);
-	pObject->m_bClone = true;
+	auto pObject = new DX_2DObject(*this);
+	pObject->m_isCloned = true;
 	
 	return pObject;
 }
@@ -302,7 +217,7 @@ DX_2DObject* DX_2DObject::Clone()
 //-----------------------------------------------------------------------------------------
 bool DX_2DObject::IsClone() const
 {
-	return m_bClone;
+	return m_isCloned;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -312,7 +227,120 @@ bool DX_2DObject::IsClone() const
 //-----------------------------------------------------------------------------------------
 bool DX_2DObject::IsOriginal() const
 {
-	return !m_bClone;
+	return !m_isCloned;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	画面内に描画されているかどうか
+//
+//-----------------------------------------------------------------------------------------
+bool DX_2DObject::IsInScreen() const
+{
+	auto isInScreen = false;
+
+	DX_System* pSystem = DX_System::GetInstance();
+	float height = CAST_F(pSystem->GetWindowHeight());
+	float width = CAST_F(pSystem->GetWindowWidth());
+
+	if (0.0f <= m_rectPos.y && m_rectPos.bottom <= height &&
+		0.0f <= m_rectPos.x && m_rectPos.right <= width)
+	{
+		isInScreen = true;
+	}
+
+	return isInScreen;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	描画座標を設定する
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::SetRectPos(const DX::tagRect& rect)
+{
+	m_rectPos = rect;
+	m_isChanged = true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	描画座標を設定する
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::SetRectPos(const float left, const float top, const float right, const float bottom)
+{
+	m_rectPos.left = left;
+	m_rectPos.top = top;
+	m_rectPos.right = right;
+	m_rectPos.bottom = bottom;
+	m_isChanged = true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	UV座標を設定する
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::SetUV(const DX::tagRect& uv)
+{
+	m_uv = uv;
+	m_isChanged = true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	UV座標を設定する
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::SetUV(const float left, const float top, const float right, const float bottom)
+{
+	m_uv.left = left;
+	m_uv.top = top;
+	m_uv.right = right;
+	m_uv.bottom = bottom;
+	m_isChanged = true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	描画座標を取得する
+//
+//-----------------------------------------------------------------------------------------
+DX::tagRect  DX_2DObject::GetRectPos() const
+{
+	return m_rectPos;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	UV座標を取得する
+//
+//-----------------------------------------------------------------------------------------
+DX::tagRect  DX_2DObject::GetUV() const
+{
+	return m_uv;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	頂点情報を更新する
+//
+//-----------------------------------------------------------------------------------------
+void DX_2DObject::Update(const bool isLRMirror, const bool isUDMirror)
+{
+	if (m_isChanged || m_isLRMirror != isLRMirror || m_isUDMirror != isUDMirror)
+	{
+		DX_System* pSystem = DX_System::GetInstance();
+		ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+
+		//	頂点情報を作成
+		CreateVertex(pContext, m_rectPos, m_uv, isLRMirror, isUDMirror);
+
+		m_isChanged = false;
+		m_isLRMirror = isLRMirror;
+		m_isUDMirror = isUDMirror;
+	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -320,66 +348,104 @@ bool DX_2DObject::IsOriginal() const
 //  頂点情報を作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& renderPos, const DX::tagRect& texturePos, bool isMirror)
+void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror, const bool isUDMirror)
 {
-	//	頂点情報
-	DX::tagVertex2D pVertex[4];
+	DX_System* pSystem = DX_System::GetInstance();
 
-	//	1 ~ 0の値に変換
-	const float l_centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
-	const float l_centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+	float windowWidth = CAST_F(pSystem->GetWindowWidth());
+	float windowHeight = CAST_F(pSystem->GetWindowHeight());
 
-	//	0~1の割合の落とし込む
-	const float l_centerUv_X = (1.0f / m_width);
-	const float l_centerUv_Y = (1.0f / m_height);
+	//	-1.0f ~ 1.0fに座標を正規化する
+	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
 
-	// UVのほうこうを逆にする
-	//	左の座標
-	pVertex[1].pos.x = pVertex[0].pos.x = l_centerX * renderPos.x - 1.0f;
+	DX::tagRect norRectPos;
+	norRectPos.left		= center.x * rectPos.x - 1.0f;
+	norRectPos.right	= center.x * rectPos.w - 1.0f;
+	norRectPos.bottom	= 1.0f - center.y * rectPos.h;
+	norRectPos.top		= 1.0f - center.y * rectPos.y;
 
-	//	下の座標
-	pVertex[2].pos.y = pVertex[0].pos.y = 1.0f - l_centerY * renderPos.h;
 
-	//	上の座標
-	pVertex[3].pos.y = pVertex[1].pos.y = 1.0f - l_centerY * renderPos.y;
 
-	//	右の座標
-	pVertex[3].pos.x = pVertex[2].pos.x = l_centerX * renderPos.w - 1.0f;
+	//	UV座標を0.0f ~ 1.0fに正規化する
+	DirectX::XMFLOAT2 centerUV(1.0f / CAST_F(m_width), 1.0f / CAST_F(m_height));
 
-	//	z値
-	pVertex[0].pos.z = 0.0f;
-	pVertex[1].pos.z = 0.0f;
-	pVertex[2].pos.z = 0.0f;
-	pVertex[3].pos.z = 0.0f;
+	DX::tagRect norUV;
 
-	if (isMirror) {
-		//	左の座標
-		pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.w;
-
-		//	上の座標
-		pVertex[3].uv.y = pVertex[1].uv.y = l_centerUv_Y * texturePos.y;
-
-		//	右の座標
-		pVertex[3].uv.x = pVertex[2].uv.x = l_centerUv_X * texturePos.x;
-
-		//	下の座標
-		pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
+	//	上下左右反転するかどうか
+	if (isLRMirror && isUDMirror) {
+		norUV.left		= centerUV.x * uv.w;
+		norUV.top		= centerUV.y * uv.h;
+		norUV.right		= centerUV.x * uv.x;
+		norUV.bottom	= centerUV.y * uv.y;
 	}
 	else {
-		//	左の座標
-		pVertex[1].uv.x = pVertex[0].uv.x = l_centerUv_X * texturePos.x;
 
-		//	上の座標
-		pVertex[3].uv.y = pVertex[1].uv.y = l_centerUv_Y * texturePos.y;
-
-		//	右の座標
-		pVertex[3].uv.x = pVertex[2].uv.x = l_centerUv_X * texturePos.w;
-
-		//	下の座標
-		pVertex[2].uv.y = pVertex[0].uv.y = l_centerUv_Y * texturePos.h;
+		// 左右反転するかどうか
+		if (isLRMirror) {
+			norUV.left		= centerUV.x * uv.w;
+			norUV.top		= centerUV.y * uv.y;
+			norUV.right		= centerUV.x * uv.x;
+			norUV.bottom	= centerUV.y * uv.h;
+		}
+		//	上下反転するかどうか
+		else if (isUDMirror) {
+			norUV.left		= centerUV.x * uv.x;
+			norUV.top		= centerUV.y * uv.h;
+			norUV.right		= centerUV.x * uv.w;
+			norUV.bottom	= centerUV.y * uv.y;
+		}
+		//	なんもしない場合
+		else {
+			norUV.left		= centerUV.x * uv.x;
+			norUV.top		= centerUV.y * uv.y;
+			norUV.right		= centerUV.x * uv.w;
+			norUV.bottom	= centerUV.y * uv.h;
+		}
 	}
+	
+	//	頂点情報
+	DX::tagVertex2D pVertices[4];
 
+	//	描画座標を設定する
+	//	左の座標
+	pVertices[0].pos.x = norRectPos.left;
+	pVertices[1].pos.x = norRectPos.left;
+
+	//	下の座標
+	pVertices[0].pos.y = norRectPos.bottom;
+	pVertices[2].pos.y = norRectPos.bottom;
+
+	//	上の座標
+	pVertices[1].pos.y = norRectPos.top;
+	pVertices[3].pos.y = norRectPos.top;
+
+	//	右の座標
+	pVertices[2].pos.x = norRectPos.right;
+	pVertices[3].pos.x = norRectPos.right;
+
+	//	z値
+	pVertices[0].pos.z = 0.0f;
+	pVertices[1].pos.z = 0.0f;
+	pVertices[2].pos.z = 0.0f;
+	pVertices[3].pos.z = 0.0f;
+
+	//	UV座標を設定する
+	//	左の座標
+	pVertices[0].uv.x = norUV.left;
+	pVertices[1].uv.x = norUV.left;
+
+	//	下の座標
+	pVertices[0].uv.y = norUV.bottom;
+	pVertices[2].uv.y = norUV.bottom;
+
+	//	上の座標
+	pVertices[1].uv.y = norUV.top;
+	pVertices[3].uv.y = norUV.top;
+
+	//	右の座標
+	pVertices[2].uv.x = norUV.right;
+	pVertices[3].uv.x = norUV.right;
 
 	// バッファの上書き
-	pContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, pVertex, 0, 0);
+	pContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, pVertices, 0, 0);
 }

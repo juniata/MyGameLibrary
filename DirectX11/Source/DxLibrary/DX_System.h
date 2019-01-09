@@ -11,13 +11,6 @@ class DX_System
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		解放
-	//
-	//------------------------------------------------------------------------------
-	~DX_System();
-
-	//------------------------------------------------------------------------------
-	//
 	//  @brief		DX_Systemのインスタンスを取得する
 	//
 	//------------------------------------------------------------------------------
@@ -53,7 +46,7 @@ public:
 	//	@return		m_windowHeight
 	//
 	//------------------------------------------------------------------------------
-	static unsigned int GetWindowHeight();
+	unsigned int GetWindowHeight();
 
 	//------------------------------------------------------------------------------
 	//
@@ -61,7 +54,7 @@ public:
 	//	@return		m_windowWidth
 	//
 	//------------------------------------------------------------------------------
-	static unsigned int GetWindowWidth();
+	unsigned int GetWindowWidth();
 	
 	//------------------------------------------------------------------------------
 	//
@@ -156,12 +149,12 @@ private:
 	ID3D11RenderTargetView* m_pRtv;
 	ID3D11DepthStencilView* m_pDsv;
 	ID3D11Texture2D*		m_pDsb;
-	static D3D_FEATURE_LEVEL		m_featureLevel;
-	static D3D_DRIVER_TYPE			m_driverType;
-	static HWND						m_windowHandle;
+	D3D_FEATURE_LEVEL		m_featureLevel;
+	D3D_DRIVER_TYPE			m_driverType;
+	HWND					m_windowHandle;
 
-	static unsigned int m_windowWidth;
-	static unsigned int m_windowHeight;
+	unsigned int m_windowWidth;
+	unsigned int m_windowHeight;
 
 	//------------------------------------------------------------------------------
 	//
@@ -169,6 +162,14 @@ private:
 	//
 	//------------------------------------------------------------------------------
 	DX_System();
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		解放
+	//
+	//------------------------------------------------------------------------------
+	~DX_System();
+
 
 	//------------------------------------------------------------------------------
 	//

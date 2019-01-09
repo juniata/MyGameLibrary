@@ -190,25 +190,27 @@ bool DX_Input::IsMouseButtonDoubleClick(DX_MOUSE_BUTTON_KIND kind)
 //-----------------------------------------------------------------------------------------
 DirectX::XMFLOAT2 DX_Input::GetMousePos()
 {
-	POINT l_pos;
+	DX_System* pSystem = DX_System::GetInstance();
+
+	POINT pos;
 
 	//	マウスのスクリーン座標を取得
-	GetCursorPos(&l_pos);
+	GetCursorPos(&pos);
 
 	//	スクリーン座標からウィンド領域への変換
-	ClientToScreen(DX_System::GetInstance()->GetWindowHandle(), &l_pos);
+	ClientToScreen(pSystem->GetWindowHandle(), &pos);
 
 	//	ウィンドウ座標
-	LONG l_width	= CAST_L(DX_System::GetWindowWidth());
-	LONG l_height	= CAST_L(DX_System::GetWindowHeight());
+	LONG width	= CAST_L(pSystem->GetWindowWidth());
+	LONG height	= CAST_L(pSystem->GetWindowHeight());
 
-	if (l_pos.x < 0){ l_pos.x = 0; }
-	else if (l_pos.x > l_width){ l_pos.x = l_width; }
+	if (pos.x < 0){ pos.x = 0; }
+	else if (pos.x > width){ pos.x = width; }
 
-	if (l_pos.y < 0){ l_pos.y = 0; }
-	else if (l_pos.y > l_height){ l_pos.y = l_height; }
+	if (pos.y < 0){ pos.y = 0; }
+	else if (pos.y > height){ pos.y = height; }
 
-	return DirectX::XMFLOAT2(CAST_F(l_pos.x), CAST_F(l_pos.y));
+	return DirectX::XMFLOAT2(CAST_F(pos.x), CAST_F(pos.y));
 }
 
 

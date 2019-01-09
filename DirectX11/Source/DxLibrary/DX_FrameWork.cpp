@@ -1,5 +1,4 @@
 #include	"DX_Library.h"
-#include	"Games\SceneTitle\SceneTitle.h"
 #include	"Games\SceneMain\SceneMain.h"
 #include	<mmsystem.h>
 #include	<stdio.h>
@@ -130,11 +129,16 @@ void DX_FrameWork::Release()
 //-----------------------------------------------------------------------------------------
 bool DX_FrameWork::Initialize()
 {
+	DX_System* pSystem = DX_System::GetInstance();
+
 	//	スクリーンサイズを設定
-	DX_System::GetInstance()->SetWindowsSize(1280, 720);
+	pSystem->SetWindowsSize(1280, 720);
+
+	unsigned int windowWidth = pSystem->GetWindowWidth();
+	unsigned int windowHeight = pSystem->GetWindowHeight();
 
 	//	ウィンドウを作成
-	if (!CreateAppWindow("DirectX11", 0, 0, DX_System::GetWindowWidth(), DX_System::GetWindowHeight())){
+	if (!CreateAppWindow("DirectX11", 0, 0, windowWidth, windowHeight)){
 		return false;
 	}
 
@@ -164,7 +168,7 @@ void DX_FrameWork::Run()
 
 	//	現在のシーンを取得
 	DX_SceneManager* pSceneManager = DX_SceneManager::GetInstance();
-	pSceneManager->SetStartScene(new SceneTitle());
+	pSceneManager->SetStartScene(new SceneMain());
 
 	//	ループ処理
 	while (msg.message != WM_QUIT){
@@ -203,14 +207,14 @@ void DX_FrameWork::Run()
 					SystemParametersInfo(SPI_GETWORKAREA, 0, &windowsSize, 0);
 
 					//　中心の描画されるようにするため、描画開始点を算出する
-					const unsigned int centerPosX = static_cast<unsigned int>(windowsSize.right) / 2;
-					const unsigned int centerPosY = static_cast<unsigned int>(windowsSize.bottom) / 2;
+					auto centerPosX = windowsSize.right / 2;
+					auto centerPosY = windowsSize.bottom / 2;
 
-					const unsigned int halfWidth = rect.right / 2;
-					const unsigned int halfHeight = rect.bottom / 2;
+					auto halfWidth = rect.right / 2;
+					auto halfHeight = rect.bottom / 2;
 
-					const unsigned int leftPos = centerPosX - halfWidth;
-					const unsigned int topPos = centerPosY - halfHeight;
+					auto leftPos = centerPosX - halfWidth;
+					auto topPos = centerPosY - halfHeight;
 					SetWindowPos(m_hWnd, HWND_TOP, leftPos, topPos, rect.right, rect.bottom, SWP_SHOWWINDOW);
 				}
 				break;
@@ -516,7 +520,7 @@ LRESULT CALLBACK WndProc(HWND	hWnd, UINT	msg, WPARAM	wparam, LPARAM	lparam)
 //	Entry Point WinMain
 //
 //-----------------------------------------------------------------------------------------
-INT WINAPI WinMain(HINSTANCE arg_hInst, HINSTANCE arg_hPrevInst, LPSTR arg_szStr, INT arg_iCmdShow)
+INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szStr, INT iCmdShow)
 {
 	//	デバッグ時のみコンソール画面を開く
 	DEBUG_OPNE_CONSOLE

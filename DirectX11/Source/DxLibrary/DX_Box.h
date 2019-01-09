@@ -133,8 +133,8 @@ private:
 	DirectX::XMFLOAT3 m_angle;
 	DirectX::XMFLOAT4X4 m_worldMat;
 
-	bool m_bChanged;
-	bool m_bClone;
+	bool m_isChanged;
+	bool m_isCloned;
 
 };
 #endif // !__DX_BOX_H_
