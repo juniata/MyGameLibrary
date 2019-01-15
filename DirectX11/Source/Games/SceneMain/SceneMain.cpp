@@ -2,6 +2,7 @@
 #include	"SceneMain.h"
 using namespace DirectX;
 
+DX_Box* pBox = nullptr;
 //-----------------------------------------------------------------------------------------
 //
 //	コンストラクタ
@@ -9,16 +10,22 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------------------
 SceneMain::SceneMain() :
 	m_pTest(new DX_2DObject())
-{}
+{
+	pBox = new DX_Box();
+	pBox->SetPos(XMFLOAT3(0.0f, 0.0f, 20.0f));
+	pBox->SetScale(XMFLOAT3(10.0f, 10.0f, 10.0f));
+	pBox->Update();
+}
 
 //-----------------------------------------------------------------------------------------
 //
-//	デストラクタ
+//	デストラクタ---
 //
-//-----------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 SceneMain::~SceneMain()
 {
 	DELETE_OBJ(m_pTest);
+	DELETE_OBJ(pBox);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -35,7 +42,7 @@ bool SceneMain::Initialize()
 //	m_pTest->SetUV(0.0f, 0.0f, 64.0f, 64.0f);
 	//m_pTest->SetUV(64.0f, 0.0f, 128.0f, 64.0f);
 	m_pTest->Update(true, true);
-
+	
 	return result;
 }
 
@@ -47,6 +54,7 @@ bool SceneMain::Initialize()
 bool SceneMain::Update()
 {
 	bool result = true;
+	m_pView->SetTarget(pBox->GetPos());
 
 	return result;
 }
@@ -59,11 +67,12 @@ bool SceneMain::Update()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Render()
 {
-	bool result = false;
+	bool result = true;
 
 	m_pView->Active();
 	m_pView->Clear();
-	result = m_pTest->Render();
+	//result = m_pTest->Render();
+	pBox->Render();
 
 	return result;
 }

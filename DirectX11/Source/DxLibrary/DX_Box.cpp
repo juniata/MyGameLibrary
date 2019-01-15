@@ -2,6 +2,18 @@
 
 //-----------------------------------------------------------------------------------------
 //
+//	static定数
+//
+//-----------------------------------------------------------------------------------------
+const float DX_Box::LEFT_POS	= -1.0f;
+const float DX_Box::RIGHT_POS	= 1.0f;
+const float DX_Box::UP_POS		= 1.0f;
+const float DX_Box::DOWN_POS	= -1.0f;
+const float DX_Box::FRONT_POS	= -1.0f;
+const float DX_Box::BACK_POS	= 1.0f;
+
+//-----------------------------------------------------------------------------------------
+//
 //	変数の初期化とバッファの作成
 //
 //-----------------------------------------------------------------------------------------
@@ -15,7 +27,6 @@ DX_Box::DX_Box() :
 	m_isChanged(true),
 	m_isCloned(false)
 {
-	CreateBuffer();
 	Update();
 }
 
@@ -31,6 +42,16 @@ DX_Box::~DX_Box()
 		SAFE_RELEASE(m_pIndexBuffer);
 		SAFE_RELEASE(m_pConstantBuffer);
 	}
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	バッファを作成する
+//
+//-----------------------------------------------------------------------------------------
+bool DX_Box::Initialize()
+{
+	return CreateBuffer();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -207,74 +228,59 @@ bool DX_Box::RayCast(const DirectX::XMFLOAT3 pos)
 
 	return ret;
 }
+
 //-----------------------------------------------------------------------------------------
 //
 //	頂点バッファ等を作成する
 //
 //-----------------------------------------------------------------------------------------
-void DX_Box::CreateBuffer()
+bool DX_Box::CreateBuffer()
 {
 	const int VERTEX_NUM = 8;
 
 	DX::tagObjectVertext pVertices[VERTEX_NUM];
 
-	const float LEFT_POS = -1.0f;
-	const float RIGHT_POS = 1.0f;
-	const float UP_POS = 1.0f;
-	const float DOWN_POS = -1.0f;
-	const float FRONT_POS = -1.0f;
-	const float BACK_POS = 1.0f;
-
-	const int FRONT_LEFT_UP_INDEX = 0;
-	const int FRONT_RIGHT_UP_INDEX = 1;
-	const int FRONT_RIGHT_DOWN_INDEX = 2;
-	const int FRONT_LEFT_DOWN_INDEX = 3;
-	const int BACK_LEFT_UP_INDEX = 4;
-	const int BACK_RIGHT_UP_INDEX = 5;
-	const int BACK_RIGHT_DOWN_INDEX = 6;
-	const int BACK_LEFT_DOWN_INDEX = 7;
-
 	// 前
 	// 左上
-	pVertices[FRONT_LEFT_UP_INDEX].pos.x = LEFT_POS;
-	pVertices[FRONT_LEFT_UP_INDEX].pos.y = UP_POS;
-	pVertices[FRONT_LEFT_UP_INDEX].pos.z = FRONT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_UP].pos.x = DX_Box::LEFT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_UP].pos.y = DX_Box::UP_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_UP].pos.z = DX_Box::FRONT_POS;
 
 	// 右上
-	pVertices[FRONT_RIGHT_UP_INDEX].pos.x = RIGHT_POS;
-	pVertices[FRONT_RIGHT_UP_INDEX].pos.y = UP_POS;
-	pVertices[FRONT_RIGHT_UP_INDEX].pos.z = FRONT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_UP].pos.x = DX_Box::RIGHT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_UP].pos.y = DX_Box::UP_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_UP].pos.z = DX_Box::FRONT_POS;
 
 	// 右下
-	pVertices[FRONT_RIGHT_DOWN_INDEX].pos.x = RIGHT_POS;
-	pVertices[FRONT_RIGHT_DOWN_INDEX].pos.y = DOWN_POS;
-	pVertices[FRONT_RIGHT_DOWN_INDEX].pos.z = FRONT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN].pos.x = DX_Box::RIGHT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN].pos.y = DX_Box::DOWN_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN].pos.z = DX_Box::FRONT_POS;
 
 	// 左下
-	pVertices[FRONT_LEFT_DOWN_INDEX].pos.x = LEFT_POS;
-	pVertices[FRONT_LEFT_DOWN_INDEX].pos.y = DOWN_POS;
-	pVertices[FRONT_LEFT_DOWN_INDEX].pos.z = FRONT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_DOWN].pos.x = DX_Box::LEFT_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_DOWN].pos.y = DX_Box::DOWN_POS;
+	pVertices[DX_Box::BOX_INDEX::FRONT_LEFT_DOWN].pos.z = DX_Box::FRONT_POS;
 
 	// 後
 	// 左上
-	pVertices[BACK_LEFT_UP_INDEX].pos.x = LEFT_POS;
-	pVertices[BACK_LEFT_UP_INDEX].pos.y = UP_POS;
-	pVertices[BACK_LEFT_UP_INDEX].pos.z = BACK_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_UP].pos.x = DX_Box::LEFT_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_UP].pos.y = DX_Box::UP_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_UP].pos.z = DX_Box::BACK_POS;
 
 	// 右上
-	pVertices[BACK_RIGHT_UP_INDEX].pos.x = RIGHT_POS;
-	pVertices[BACK_RIGHT_UP_INDEX].pos.y = UP_POS;
-	pVertices[BACK_RIGHT_UP_INDEX].pos.z = BACK_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_UP].pos.x = DX_Box::RIGHT_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_UP].pos.y = DX_Box::UP_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_UP].pos.z = DX_Box::BACK_POS;
 
 	// 右下
-	pVertices[BACK_RIGHT_DOWN_INDEX].pos.x = RIGHT_POS;
-	pVertices[BACK_RIGHT_DOWN_INDEX].pos.y = DOWN_POS;
-	pVertices[BACK_RIGHT_DOWN_INDEX].pos.z = BACK_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_DOWN].pos.x = DX_Box::RIGHT_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_DOWN].pos.y = DX_Box::DOWN_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_RIGHT_DOWN].pos.z = DX_Box::BACK_POS;
 
 	// 左下
-	pVertices[BACK_LEFT_DOWN_INDEX].pos.x = LEFT_POS;
-	pVertices[BACK_LEFT_DOWN_INDEX].pos.y = DOWN_POS;
-	pVertices[BACK_LEFT_DOWN_INDEX].pos.z = BACK_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_DOWN].pos.x = DX_Box::LEFT_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_DOWN].pos.y = DX_Box::DOWN_POS;
+	pVertices[DX_Box::BOX_INDEX::BACK_LEFT_DOWN].pos.z = DX_Box::BACK_POS;
 
 	// 白色
 	for (int i = 0; i < VERTEX_NUM; ++i) {
@@ -282,6 +288,8 @@ void DX_Box::CreateBuffer()
 	}
 	
 	// 面法線を計算
+	CreateFaceNormal(pVertices);
+
 	// 頂点法線を計算
 	// 頂点法線を格納
 	// ジオメトリで面法制を計算　ライティングを行う
@@ -290,33 +298,84 @@ void DX_Box::CreateBuffer()
 	unsigned short pIndices[] =
 	{
 		// 前面
-		FRONT_LEFT_UP_INDEX,	FRONT_RIGHT_UP_INDEX,	FRONT_LEFT_DOWN_INDEX,
-		FRONT_RIGHT_UP_INDEX,	FRONT_RIGHT_DOWN_INDEX, FRONT_LEFT_DOWN_INDEX,
+		DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN, DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,
 
 		// 右面
-		FRONT_RIGHT_UP_INDEX,	BACK_RIGHT_UP_INDEX,	FRONT_RIGHT_DOWN_INDEX,
-		BACK_RIGHT_UP_INDEX,	BACK_RIGHT_DOWN_INDEX,	FRONT_RIGHT_DOWN_INDEX,
+		DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,
 
 		// 後面
-		BACK_RIGHT_UP_INDEX,	BACK_LEFT_UP_INDEX,		BACK_RIGHT_DOWN_INDEX,
-		BACK_LEFT_UP_INDEX,		BACK_LEFT_DOWN_INDEX,	BACK_RIGHT_DOWN_INDEX,
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,
 
 		// 上面
-		BACK_LEFT_UP_INDEX,		BACK_RIGHT_UP_INDEX,	FRONT_LEFT_UP_INDEX,
-		BACK_RIGHT_UP_INDEX,	FRONT_RIGHT_UP_INDEX,	FRONT_LEFT_UP_INDEX,
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,
 
 		// 左面
-		BACK_LEFT_UP_INDEX,		FRONT_LEFT_UP_INDEX,	BACK_LEFT_DOWN_INDEX,
-		FRONT_LEFT_UP_INDEX,	FRONT_LEFT_DOWN_INDEX,	BACK_LEFT_DOWN_INDEX,
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
 
 		// 下面
-		FRONT_LEFT_DOWN_INDEX,	FRONT_RIGHT_DOWN_INDEX, BACK_LEFT_DOWN_INDEX,
-		FRONT_RIGHT_DOWN_INDEX,	BACK_RIGHT_DOWN_INDEX,	BACK_LEFT_DOWN_INDEX
+		DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,		DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,		DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
 	};
 
 	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
 
 	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(pVertices), pVertices);
+	if (m_pVertexBuffer == nullptr) {
+		return false;
+	}
+
 	m_pIndexBuffer = DX_Buffer::CreateIndexBuffer(pDevice, sizeof(pIndices), pIndices);
+	if (m_pIndexBuffer == nullptr) {
+		return false;
+	}
+
 	m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4X4));
+	if (m_pConstantBuffer == nullptr) {
+		return false;
+	}
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	面法線を作成する
+//
+//-----------------------------------------------------------------------------------------
+void DX_Box::CreateFaceNormal(DX::tagObjectVertext* pVertex)
+{
+	DirectX::XMVECTOR p0;
+	DirectX::XMVECTOR p1;
+	DirectX::XMVECTOR p2;
+	p0 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_LEFT_UP].pos);
+	p1 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_RIGHT_UP].pos);
+	p2 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN].pos);
+
+	CalcTraiangleNormal(p0, p1, p2);
+}
+
+
+//-----------------------------------------------------------------------------------------
+//
+//	三角形の面法線を算出する
+//
+//-----------------------------------------------------------------------------------------
+DirectX::XMVECTOR DX_Box::CalcTraiangleNormal(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2)
+{
+	return DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p0)));
+}
+
+//-----------------------------------------------------------------------------------------
+//
+//	頂点法線を作成する
+//
+//-----------------------------------------------------------------------------------------
+void DX_Box::CreateVertexNormal()
+{
+
 }

@@ -12,7 +12,7 @@ class DX_Box
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		変数の初期化とバッファの作成
+	//  @brief		変数の初期化
 	//
 	//------------------------------------------------------------------------------
 	DX_Box();
@@ -23,6 +23,13 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	~DX_Box();
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		バッファの作成を行う
+	//
+	//------------------------------------------------------------------------------
+	bool Initialize();
 
 	//------------------------------------------------------------------------------
 	//
@@ -120,9 +127,45 @@ private:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		頂点バッファ等の作成を行う
+	//	@preturn	バッファの作成の成否
 	//
 	//------------------------------------------------------------------------------
-	void CreateBuffer();
+	bool CreateBuffer();
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		面法線を作成する
+	//
+	//------------------------------------------------------------------------------
+	void CreateFaceNormal(DX::tagObjectVertext* pVertex);
+
+	DirectX::XMVECTOR CalcTraiangleNormal(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2);
+
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		頂点法線を作成する
+	//
+	//------------------------------------------------------------------------------
+	void CreateVertexNormal();
+
+	enum BOX_INDEX : int {
+		FRONT_LEFT_UP,
+		FRONT_RIGHT_UP,
+		FRONT_RIGHT_DOWN,
+		FRONT_LEFT_DOWN,
+		BACK_LEFT_UP,
+		BACK_RIGHT_UP,
+		BACK_RIGHT_DOWN,
+		BACK_LEFT_DOWN,
+	};
+
+	static const float LEFT_POS;
+	static const float RIGHT_POS;
+	static const float UP_POS;
+	static const float DOWN_POS;
+	static const float FRONT_POS;
+	static const float BACK_POS;
+
 
 	ID3D11Buffer*	m_pVertexBuffer;
 	ID3D11Buffer*	m_pIndexBuffer;
