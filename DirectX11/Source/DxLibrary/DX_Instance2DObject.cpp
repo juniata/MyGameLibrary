@@ -28,7 +28,7 @@ DX_Instance2DObject::DX_Instance2DObject() :
 //-----------------------------------------------------------------------------------------
 DX_Instance2DObject::~DX_Instance2DObject()
 {
-	DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
+	DX_TextureManager::Release(m_pShaderResourceView);
 	DELETE_OBJ_ARRAY(m_pVertices);
 	DELETE_OBJ_ARRAY(m_pUvs);
 
@@ -45,8 +45,6 @@ DX_Instance2DObject::~DX_Instance2DObject()
 //-----------------------------------------------------------------------------------------
 bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize, const DirectX::XMFLOAT2& mapChipSize)
 {
-	DX_System* pSystem = DX_System::GetInstance();
-
 	m_pVertices = new DirectX::XMFLOAT3[num];
 	m_pUvs = new DirectX::XMFLOAT2[num];
 	for (UINT i = 0; i < num; ++i)
@@ -61,12 +59,14 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 
 	LoadTexture(pFilepath);
 
-	m_chipSize.x = mapChipSize.x / CAST_F(m_width);
-	m_chipSize.y = mapChipSize.y / CAST_F(m_height);
+	m_chipSize.x = mapChipSize.x / DX::CAST::F(m_width);
+	m_chipSize.y = mapChipSize.y / DX::CAST::F(m_height);
+
+	DX_System* pSystem = DX_System::GetInstance();
 
 	//	1 ~ 0の値に変換
-	const float centerX = 1.0f / (CAST_F(pSystem->GetWindowWidth()) * 0.5f);
-	const float centerY = 1.0f / (CAST_F(pSystem->GetWindowHeight()) * 0.5f);
+	auto centerX = 1.0f / (DX::CAST::F(pSystem->GetScreenWidth()) * 0.5f);
+	auto centerY = 1.0f / (DX::CAST::F(pSystem->GetScreenHeight()) * 0.5f);
 
 
 	DX::tagVertex2D vertices[] = {
@@ -114,8 +114,6 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 }
 bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, const DirectX::XMFLOAT2& renderSize)
 {
-	DX_System* pSystem = DX_System::GetInstance();
-
 	m_pVertices = new DirectX::XMFLOAT3[num];
 	m_pUvs = new DirectX::XMFLOAT2[num];
 	for (UINT i = 0; i < num; ++i)
@@ -130,9 +128,11 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 
 	LoadTexture(pFilepath);
 
+	DX_System* pSystem = DX_System::GetInstance();
+
 	//	1 ~ 0の値に変換
-	const float centerX = 1.0f / (CAST_F(pSystem->GetWindowWidth()) * 0.5f);
-	const float centerY = 1.0f / (CAST_F(pSystem->GetWindowHeight()) * 0.5f);
+	auto centerX = 1.0f / (DX::CAST::F(pSystem->GetScreenWidth()) * 0.5f);
+	auto centerY = 1.0f / (DX::CAST::F(pSystem->GetScreenHeight()) * 0.5f);
 
 
 	DX::tagVertex2D vertices[] = {
@@ -156,7 +156,7 @@ bool DX_Instance2DObject::Initialize(const char* pFilepath, const UINT num, cons
 	//	右の座標
 	vertices[3].pos.x = vertices[2].pos.x = centerX * renderPos.w - 1.0f;
 
-	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
+	ID3D11Device* pDevice = pSystem->GetDevice();
 
 	// 頂点バッファを作成
 	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(vertices), vertices);
@@ -183,7 +183,7 @@ bool DX_Instance2DObject::LoadTexture(const char* pFilepath)
 	sprintf_s(texturePath, "%s%s", "Resource\\2dobject\\", pFilepath);
 
 	//	テクスチャを取得
-	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(texturePath);
+	m_pShaderResourceView = DX_TextureManager::GetTexture(texturePath);
 
 	//	テクスチャがロードできてるかチェック
 	if (m_pShaderResourceView) {
@@ -243,13 +243,13 @@ bool DX_Instance2DObject::Render()
 	if (m_enabled) 
 	{
 		DX_System* pSystem = DX_System::GetInstance();
-		DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
+
 		ID3D11Device* pDevice = pSystem->GetDevice();
 		ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
 
 
-		DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
-		DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+		DX_Shader* pVertexShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER);
+		DX_Shader* pPixelShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 		//	シェーダー利用を開始
 		pVertexShader->Begin(pDeviceContext);
@@ -264,13 +264,13 @@ bool DX_Instance2DObject::Render()
 		ID3D11Buffer* buffers[] = { m_pVertexBuffer, m_pPosBuffer, m_pUVBuffer };
 
 		// 正規化したウィンドウサイズを送る
-		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+		DX_ShaderManager::SetVector(0, DirectX::XMFLOAT4(2.0f / DX::CAST::F(pSystem->GetScreenWidth()), 2.0f / DX::CAST::F(pSystem->GetScreenHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 		//	VertexBufferを送る
 		pDeviceContext->IASetVertexBuffers(0, 3, buffers, strides, offsets);
 
 		//	InputLayoutの設定を送る
-		pDeviceContext->IASetInputLayout(pShaderManager->GetDefaultInputLayoutInstance2D());
+		pDeviceContext->IASetInputLayout(DX_ShaderManager::GetDefaultInputLayoutInstance2D());
 
 		//	Primitiveの設定を送る
 		pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);

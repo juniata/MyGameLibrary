@@ -21,7 +21,7 @@
 ////-----------------------------------------------------------------------------------------
 //DX_InstanceSkinMesh::DX_InstanceSkinMesh(const char* pFilepath, const int instanceCount) : DX_InstanceSkinMesh()
 //{
-//	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
+//	ID3D11Device* l_pDevice = DX_System::GetDevice();
 //
 //	m_instanceCount = instanceCount;
 //

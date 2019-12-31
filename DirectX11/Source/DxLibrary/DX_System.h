@@ -6,55 +6,42 @@
 //	System
 //
 //****************************************************************************************************
-class DX_System
+class DX_System : public DX_Singleton<DX_System>
 {
+	friend class DX_Singleton<DX_System>;
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		DX_Systemのインスタンスを取得する
-	//
-	//------------------------------------------------------------------------------
-	static DX_System* GetInstance();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		Deviceなどを解放する
-	//
-	//------------------------------------------------------------------------------
-	static void Release();
-
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		DirectXを初期化する
 	//	@param[in]	hwnd	DX_Framework::GetHwnd()
 	//
 	//------------------------------------------------------------------------------
-	bool InitD3D(const HWND& hWnd);
+	bool Initialize(HWND hWnd, HINSTANCE hInst);
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		ウィンドウのサイズを設定
+	//  @brief		スクリーンサイズを設定
 	//	@param[in]	width ウィンドウ幅
 	//	@param[in]	height ウィンドウ高さ
 	//
 	//------------------------------------------------------------------------------
-	void SetWindowsSize(const unsigned int width, const unsigned int height);
+	void SetScreenSize(const unsigned int width, const unsigned int height);
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		ウィンドウの高さを取得
+	//  @brief		スクリーンの高さを取得
 	//	@return		m_windowHeight
 	//
 	//------------------------------------------------------------------------------
-	unsigned int GetWindowHeight();
+	unsigned int GetScreenHeight();
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		ウィンドウの幅を取得
+	//  @brief		スクリーンの幅を取得
 	//	@return		m_windowWidth
 	//
 	//------------------------------------------------------------------------------
-	unsigned int GetWindowWidth();
+	unsigned int GetScreenWidth();
 	
 	//------------------------------------------------------------------------------
 	//
@@ -62,7 +49,7 @@ public:
 	//	@return		m_pDevice
 	//
 	//------------------------------------------------------------------------------
-	ID3D11Device*	GetDevice() const;
+	ID3D11Device*	GetDevice();
 
 	//------------------------------------------------------------------------------
 	//
@@ -70,7 +57,7 @@ public:
 	//	@return		m_pDeviceContext
 	//
 	//------------------------------------------------------------------------------
-	ID3D11DeviceContext*	GetDeviceContext() const;
+	ID3D11DeviceContext*	GetDeviceContext();
 
 	//------------------------------------------------------------------------------
 	//
@@ -78,7 +65,7 @@ public:
 	//	@return		m_pSwapChain
 	//
 	//------------------------------------------------------------------------------
-	IDXGISwapChain*	GetSwapChain() const;
+	IDXGISwapChain*	GetSwapChain();
 
 	//------------------------------------------------------------------------------
 	//
@@ -102,7 +89,7 @@ public:
 	//	@return		m_pRenderTargetView
 	//
 	//------------------------------------------------------------------------------
-	ID3D11RenderTargetView*  GetDefaultRenderTargetView() const;
+	ID3D11RenderTargetView*  GetDefaultRenderTargetView();
 
 	//------------------------------------------------------------------------------
 	//
@@ -110,7 +97,7 @@ public:
 	//	@return		m_pDepthStencilview
 	//
 	//------------------------------------------------------------------------------
-	ID3D11DepthStencilView* 	GetDefaultDepthStencilView() const;
+	ID3D11DepthStencilView* 	GetDefaultDepthStencilView();
 
 	//------------------------------------------------------------------------------
 	//
@@ -118,7 +105,7 @@ public:
 	//	@return		m_pDepthStencilbuffer
 	//
 	//------------------------------------------------------------------------------
-	ID3D11Texture2D*		GetDepthStencilBuffer() const;
+	ID3D11Texture2D*		GetDepthStencilBuffer();
 
 	//------------------------------------------------------------------------------
 	//
@@ -126,50 +113,48 @@ public:
 	//	@return		m_windowHandle
 	//
 	//------------------------------------------------------------------------------
-	 HWND	GetWindowHandle();
+	HWND	GetWindowHandle();
 
 	 //------------------------------------------------------------------------------
 	 //
 	 //  @brief		バックバッファの初期化を行う
 	 //
 	 //------------------------------------------------------------------------------
-	 void InitBuckBuffer();
+	bool InitBuckBuffer();
 
 	 //------------------------------------------------------------------------------
 	 //
 	 //  @brief		リサイズ処理
 	 //
 	 //------------------------------------------------------------------------------
-	 bool BufferResize(const WORD width, const WORD height);
+	bool BufferResize(const WORD width, const WORD height);
 private:
-	static DX_System*		m_pInstnace;
-	ID3D11Device*			m_pDevice;
-	ID3D11DeviceContext*	m_pDeviceContext;
-	IDXGISwapChain*			m_pSwapChain;
-	ID3D11RenderTargetView* m_pRtv;
-	ID3D11DepthStencilView* m_pDsv;
-	ID3D11Texture2D*		m_pDsb;
+	Microsoft::WRL::ComPtr<ID3D11Device>			m_device;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_deviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain>			m_swapChain;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_rtv;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_dsv;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			m_dsb;
 	D3D_FEATURE_LEVEL		m_featureLevel;
 	D3D_DRIVER_TYPE			m_driverType;
 	HWND					m_windowHandle;
 
-	unsigned int m_windowWidth;
-	unsigned int m_windowHeight;
+	unsigned int m_screenWidth;
+	unsigned int m_screenHeight;
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		初期化
+	//  @brief		メンバ変数を初期化する
 	//
 	//------------------------------------------------------------------------------
 	DX_System();
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		解放
+	//  @brief		DirectX関連　解放
 	//
 	//------------------------------------------------------------------------------
 	~DX_System();
-
 
 	//------------------------------------------------------------------------------
 	//
@@ -177,28 +162,27 @@ private:
 	//	@param[in]	hWnd	DX_Framework::GetHwnd()
 	//
 	//------------------------------------------------------------------------------
-	void CreateDeviceAndSwapChain(const HWND& hWnd);
+	bool CreateDeviceAndSwapChain(const HWND& hWnd);
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		レンデーターゲットビューを作成
 	//
 	//------------------------------------------------------------------------------
-	void CreateRenderTargetView();
+	bool CreateRenderTargetView();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		深度･ステンシルバッファを作成する
 	//
 	//------------------------------------------------------------------------------
-	void CreateDepthStencilBuffer();
+	bool CreateDepthStencilBuffer();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		深度･ステンシルビューを作成
 	//
 	//------------------------------------------------------------------------------
-	void CreateDepthStencilView();
-
+	bool CreateDepthStencilView();
 };
 #endif // !__DX_SYSTEM_H_

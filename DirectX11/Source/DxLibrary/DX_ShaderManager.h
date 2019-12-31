@@ -42,17 +42,10 @@ class DX_ShaderManager
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		インスタンスを取得する
-	//
-	//------------------------------------------------------------------------------
-	static DX_ShaderManager* GetInstance();
-
-	//------------------------------------------------------------------------------
-	//
 	//  @brief		メンバ変数の初期化(シェーダーの作成)
 	//
 	//------------------------------------------------------------------------------
-	void Initialize();
+	static void Initialize();
 
 	//------------------------------------------------------------------------------
 	//
@@ -67,7 +60,7 @@ public:
 	//	@return		DX_Shader*
 	//
 	//------------------------------------------------------------------------------
-	DX_Shader* GetShader(const char* pFilepath);
+	static DX_Shader* GetShader(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
@@ -75,7 +68,7 @@ public:
 	//	@return		m_pInplutLayout2Dが返る
 	//
 	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetDefaultInputLayout2D();
+	static ID3D11InputLayout* GetDefaultInputLayout2D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -83,7 +76,7 @@ public:
 	//	@return		m_pInplutLayout3Dが返る
 	//
 	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
+	static ID3D11InputLayout* GetDefaultInputLayoutInstance2D();
 
 	//------------------------------------------------------------------------------
 	//
@@ -91,7 +84,7 @@ public:
 	//	@return		m_pInplutLayout3Dが返る
 	//
 	//------------------------------------------------------------------------------
-	ID3D11InputLayout* GetDefaultInputLayoutObject() {
+	static ID3D11InputLayout* GetDefaultInputLayoutObject() {
 		return m_pInputLayoutObject
 			;
 	}
@@ -105,7 +98,7 @@ public:
 	//	@note		レジスタ番号は1
 	//
 	//------------------------------------------------------------------------------
-	void SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT4X4& worldMat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
+	static void SetWorldMat(ID3D11Buffer* pBuffer, const DirectX::XMFLOAT4X4& worldMat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -113,7 +106,8 @@ public:
 	//	@return		m_pInplutLayout3Dが返る
 	//
 	//------------------------------------------------------------------------------
-	void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const int value, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	static void SetInt(ID3D11Buffer* pBuffer, const unsigned int registerNum, const int value, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		Vector4をシェーダーに送る
@@ -124,7 +118,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	void SetVector(
+	static void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT4&				vec4,
 		ID3D11Device*				pDevice,
@@ -142,7 +136,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	void SetVector(
+	static void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT3&				vec3,
 		ID3D11Device*				pDevice,
@@ -150,7 +144,7 @@ public:
 		DX_SHADER_TYPE	shaderType
 	);
 
-	void SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3,
+	static void SetVectorResource(const unsigned int registerNum, const DirectX::XMFLOAT4* pVec3,
 		const unsigned int			vecCount,
 		ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 	//------------------------------------------------------------------------------
@@ -163,7 +157,7 @@ public:
 	//	@param[in]	shaderType		SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	void SetVector(
+	static void SetVector(
 		const unsigned int			registerNum,
 		const DirectX::XMFLOAT2&				vec2,
 		ID3D11Device*				pDevice,
@@ -180,7 +174,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//	
 	//------------------------------------------------------------------------------
-	void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
+	static void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4& mat, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -192,7 +186,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//
 	//------------------------------------------------------------------------------
-	void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4*	pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
+	static void SetMatrix(ID3D11Buffer* pBuffer, const unsigned int regiserNum, const DirectX::XMFLOAT4X4*	pMat, const unsigned int matCount, ID3D11DeviceContext* pDeviceContext, DX_SHADER_TYPE	shaderType);
 
 	//------------------------------------------------------------------------------
 	//
@@ -204,7 +198,7 @@ public:
 	//	@param[in]	shaderType			SHADER_TYPE
 	//
 	//------------------------------------------------------------------------------
-	void SetMatrixResoruce(
+	static void SetMatrixResoruce(
 		const unsigned int			regiserNum,
 		const DirectX::XMFLOAT4X4*				pMat,
 		const unsigned int			matCount,
@@ -212,7 +206,7 @@ public:
 		DX_SHADER_TYPE	shaderType
 	);
 
-	void SetMatrixResoruce(
+	static void SetMatrixResoruce(
 		const unsigned int			regiserNum,
 		ID3D11Buffer*			pBuffer,
 		const unsigned int			matCount,
@@ -226,36 +220,21 @@ private:
 		DX_Shader* pShader;
 		const char* pFilepath;
 	};
-	Shader m_shaders[SHADER_NUM];
+	static Shader m_shaders[SHADER_NUM];
 
-	ID3D11InputLayout*	m_pInputLayout2D;
-	ID3D11InputLayout*	m_pInputLayoutInstance2D;
-	ID3D11InputLayout*	m_pInputLayoutObject;
+	static ID3D11InputLayout*	m_pInputLayout2D;
+	static ID3D11InputLayout*	m_pInputLayoutInstance2D;
+	static ID3D11InputLayout*	m_pInputLayoutObject;
 
 	//	コンピュートシェーダーが使えるかどうか
-	bool m_bCanUsetoComputeShader;
-
-	static DX_ShaderManager* m_pInstance;
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		初期化
-	//
-	//------------------------------------------------------------------------------
-	DX_ShaderManager();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		解放
-	//
-	//------------------------------------------------------------------------------
-	~DX_ShaderManager();
+	static bool m_bCanUsetoComputeShader;
 	
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		コンピュートシェーダーが使えるかどうかをチェック
 	//
 	//------------------------------------------------------------------------------
-	void UsedComputeShaderCheck();
+	static void UsedComputeShaderCheck();
 
 	//------------------------------------------------------------------------------
 	//
@@ -263,14 +242,14 @@ private:
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	void CreateShader(const char* pFilepath);
+	static void CreateShader(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		メンバ変数にあるInputLauoutを作成する
 	//
 	//------------------------------------------------------------------------------
-	void CreateInputLayout();
+	static void CreateInputLayout();
 
 	//------------------------------------------------------------------------------
 	//
@@ -282,7 +261,7 @@ private:
 	//	@param[in]	pInputLayout		作成したpInputLayout
 	//
 	//------------------------------------------------------------------------------
-	void CreateInputLayout(
+	static void CreateInputLayout(
 		ID3D11Device*				pDevice,
 		D3D11_INPUT_ELEMENT_DESC*	pInputLayoutDesc,
 		const unsigned int			inputLayoutCount,

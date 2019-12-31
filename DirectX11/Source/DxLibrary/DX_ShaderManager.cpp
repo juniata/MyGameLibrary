@@ -6,7 +6,11 @@
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_ShaderManager* DX_ShaderManager::m_pInstance = nullptr;
+DX_ShaderManager::Shader	DX_ShaderManager::m_shaders[DX_ShaderManager::SHADER_NUM];
+ID3D11InputLayout*			DX_ShaderManager::m_pInputLayout2D			= nullptr;
+ID3D11InputLayout*			DX_ShaderManager::m_pInputLayoutInstance2D	= nullptr;
+ID3D11InputLayout*			DX_ShaderManager::m_pInputLayoutObject		= nullptr;
+bool						DX_ShaderManager::m_bCanUsetoComputeShader	= false;
 
 const char*		DEFAULT_2D_SHADER::VERTEX_SHADER			= "VS_2DObject.hlsl";
 const char*		DEFAULT_2D_SHADER::PIXEL_SHADER				= "PS_2DObject.hlsl";
@@ -15,52 +19,7 @@ const char*		DEFAULT_2D_SHADER::INSTANCE_VERTEX_SHADER	= "VS_Instance2D.hlsl";
 const char*		DEFAULT_OBJECT_SHADER::VERTEX_SHADER	= "VS_Object.hlsl";
 const char*		DEFAULT_OBJECT_SHADER::GEOMETRY_SHADER	= "GS_Object.hlsl";
 const char*		DEFAULT_OBJECT_SHADER::PIXEL_SHADER		= "PS_Object.hlsl";
-
-//-----------------------------------------------------------------------------------------
 //
-//	初期化
-//
-//-----------------------------------------------------------------------------------------
-DX_ShaderManager::DX_ShaderManager() : 
-	m_bCanUsetoComputeShader(false),
-	m_pInputLayout2D(nullptr),
-	m_pInputLayoutInstance2D(nullptr),
-	m_pInputLayoutObject(nullptr)
-{
-	ZeroMemory(m_shaders, SHADER_NUM);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//	解放
-//
-//-----------------------------------------------------------------------------------------
-DX_ShaderManager::~DX_ShaderManager()
-{
-	for (size_t i = 0; i < SHADER_NUM; ++i)
-	{
-		DELETE_OBJ(m_shaders[i].pShader);
-	}
-
-	SAFE_RELEASE(m_pInputLayout2D);
-	SAFE_RELEASE(m_pInputLayoutInstance2D);
-	SAFE_RELEASE(m_pInputLayoutObject);
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//	インスタンスを取得する
-//
-//-----------------------------------------------------------------------------------------
-DX_ShaderManager* DX_ShaderManager::GetInstance()
-{
-	if (m_pInstance == nullptr) {
-		m_pInstance = new DX_ShaderManager();
-	}
-	return m_pInstance;
-}
-
 //-----------------------------------------------------------------------------------------
 //
 //	メンバ変数の初期化(シェーダーの作成)
@@ -68,6 +27,12 @@ DX_ShaderManager* DX_ShaderManager::GetInstance()
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::Initialize()
 {
+	for (size_t i = 0; i < SHADER_NUM; ++i)
+	{
+		m_shaders[i].pFilepath = nullptr;
+		m_shaders[i].pShader = nullptr;
+	}
+
 	//	コンピュートシェーダーが使えるかをチェック
 	UsedComputeShaderCheck();
 		
@@ -92,7 +57,14 @@ void DX_ShaderManager::Initialize()
 //-----------------------------------------------------------------------------------------
 void DX_ShaderManager::Release()
 {
-	DELETE_OBJ(m_pInstance);
+	for (size_t i = 0; i < SHADER_NUM; ++i)
+	{
+		DELETE_OBJ(m_shaders[i].pShader);
+	}
+
+	SAFE_RELEASE(m_pInputLayout2D);
+	SAFE_RELEASE(m_pInputLayoutInstance2D);
+	SAFE_RELEASE(m_pInputLayoutObject);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -297,8 +269,8 @@ void DX_ShaderManager::SetMatrixResoruce(
 	DX_SHADER_TYPE	shaderType
 	)
 {
-	//	ローカル変数
-	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
+	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11Device*	l_pDevice = pSystem->GetDevice();
 	ID3D11Buffer*	l_pBuffer = DX_Buffer::CPUWriteBuffer(l_pDevice,sizeof(DirectX::XMFLOAT4X4)* matCount);
 	ID3D11ShaderResourceView* l_pSrv = nullptr;
 
@@ -346,8 +318,8 @@ void DX_ShaderManager::SetMatrixResoruce(
 	DX_SHADER_TYPE	shaderType
 	)
 {
-	//	ローカル変数
-	ID3D11Device* l_pDevice = DX_System::GetInstance()->GetDevice();
+	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11Device*	l_pDevice = pSystem->GetDevice();
 	ID3D11ShaderResourceView*	l_pSrv = nullptr;
 	D3D11_SHADER_RESOURCE_VIEW_DESC l_srvDesc;
 	ZeroMemory(&l_srvDesc, sizeof(l_srvDesc));
@@ -382,7 +354,6 @@ void DX_ShaderManager::UsedComputeShaderCheck()
 	//}
 
 	D3D11_FEATURE_DATA_D3D10_X_HARDWARE_OPTIONS l_hardwareOptions;
-
 
 	DX_System::GetInstance()->GetDevice()->CheckFeatureSupport(
 		D3D11_FEATURE_D3D10_X_HARDWARE_OPTIONS,
@@ -511,7 +482,7 @@ void DX_ShaderManager::CreateInputLayout(
 	HRESULT l_hr = pDevice->CreateInputLayout(pInputLayoutDesc, inputLayoutCount, pByteCord->GetBufferPointer(), pByteCord->GetBufferSize(), pInputLayout);
 
 	//	戻り値チェック
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 		throw "create InputLayout failed()";
 	}
 

@@ -32,27 +32,31 @@ LPDIRECTINPUTDEVICE8 DX_Input::m_pDirectInputDevice = nullptr;
 
 bool DX_Input::Initialize(HWND hWnd, HINSTANCE hInstance)
 {
-	HRESULT hReuslt = S_FALSE;
-
-	if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDirectInput, NULL))) {
+	if (!DX_Debug::GetInstance()->CheckHresult(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDirectInput, NULL))) {
+		TRACE("failed to DirectInput8Create()");
 		return false;
 	}
 
-	if (FAILED(m_pDirectInput->CreateDevice(GUID_SysKeyboard, &m_pDirectInputDevice, NULL))) {
+	if (!DX_Debug::GetInstance()->CheckHresult(m_pDirectInput->CreateDevice(GUID_SysKeyboard, &m_pDirectInputDevice, NULL))) {
+		TRACE("failed to CreateDevice()");
 		return false;
 	}
 
-	
 
-	if (FAILED(hReuslt = m_pDirectInputDevice->SetDataFormat(&c_dfDIKeyboard))) {
+	if (!DX_Debug::GetInstance()->CheckHresult(m_pDirectInputDevice->SetDataFormat(&c_dfDIKeyboard))) {
+		TRACE("failed to SetDataFormat()");
 		return false;
 	}
 
-	if (FAILED(m_pDirectInputDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))) {
+	if (!DX_Debug::GetInstance()->CheckHresult(m_pDirectInputDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))) {
+		TRACE("failed to SetCooperativeLevel()");
 		return false;
 	}
 
-	m_pDirectInputDevice->Acquire();
+	if (!DX_Debug::GetInstance()->CheckHresult(m_pDirectInputDevice->Acquire())) {
+		TRACE("failed to Acquire()");
+		return false;
+	}
 
 	return true;
 }
@@ -77,7 +81,7 @@ void DX_Input::Release()
 bool DX_Input::IsKey(DX_INPUT_KEY key)
 {
 	//	現在、または過去がtrueなら、どれかのアクションをしている
-	return ( m_bKeys[CAST_I(key)] || m_bPrevKeys[CAST_I(key)] ) ? true : false;
+	return ( m_bKeys[DX::CAST::I(key)] || m_bPrevKeys[DX::CAST::I(key)] ) ? true : false;
 }
 
 
@@ -89,7 +93,7 @@ bool DX_Input::IsKey(DX_INPUT_KEY key)
 bool DX_Input::IsKeyDown(DX_INPUT_KEY key)
 {
 	//	現在true : 過去true なら押している間
-	return (m_bKeys[CAST_I(key)] && m_bPrevKeys[CAST_I(key)]) ? true : false;
+	return (m_bKeys[DX::CAST::I(key)] && m_bPrevKeys[DX::CAST::I(key)]) ? true : false;
 }
 
 
@@ -101,7 +105,7 @@ bool DX_Input::IsKeyDown(DX_INPUT_KEY key)
 bool DX_Input::IsKeyRelease(DX_INPUT_KEY key)
 {
 	//	現在false : 過去true なら離した瞬間
-	return (!m_bKeys[CAST_I(key)] && m_bPrevKeys[CAST_I(key)]) ? true : false;
+	return (!m_bKeys[DX::CAST::I(key)] && m_bPrevKeys[DX::CAST::I(key)]) ? true : false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -112,7 +116,7 @@ bool DX_Input::IsKeyRelease(DX_INPUT_KEY key)
 bool DX_Input::IsKeyHit(DX_INPUT_KEY key)
 {
 	//	現在true : 過去false なら押した瞬間
-	return  (m_bKeys[CAST_I(key)] && !m_bPrevKeys[CAST_I(key)]) ? true : false;
+	return  (m_bKeys[DX::CAST::I(key)] && !m_bPrevKeys[DX::CAST::I(key)]) ? true : false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -124,8 +128,8 @@ bool DX_Input::IsMouseButton(DX_MOUSE_BUTTON_KIND kind)
 {
 	//	現在false : 過去false 以外なら全状態取得
 	return (
-		(m_bMouseButtons[CAST_I(kind)]) ||
-		(m_bPrevMouseButtons[CAST_I(kind)])
+		(m_bMouseButtons[DX::CAST::I(kind)]) ||
+		(m_bPrevMouseButtons[DX::CAST::I(kind)])
 		) ? true : false;
 }
 
@@ -139,8 +143,8 @@ bool DX_Input::IsMouseButtonDown(DX_MOUSE_BUTTON_KIND kind)
 
 	//	現在true : 過去true なら押している間
 	return(
-		(m_bMouseButtons[CAST_I(kind)]) &&
-		(m_bPrevMouseButtons[CAST_I(kind)])
+		(m_bMouseButtons[DX::CAST::I(kind)]) &&
+		(m_bPrevMouseButtons[DX::CAST::I(kind)])
 		) ? true : false;
 }
 
@@ -153,8 +157,8 @@ bool DX_Input::IsMouseButtonRelease(DX_MOUSE_BUTTON_KIND kind)
 {
 	//	現在false : 過去true なら離した瞬間
 	return (
-		(!m_bMouseButtons[CAST_I(kind)]) &&
-		(m_bPrevMouseButtons[CAST_I(kind)])
+		(!m_bMouseButtons[DX::CAST::I(kind)]) &&
+		(m_bPrevMouseButtons[DX::CAST::I(kind)])
 		) ? true : false;
 }
 
@@ -167,8 +171,8 @@ bool DX_Input::IsMouseButtonClick(DX_MOUSE_BUTTON_KIND kind)
 {
 	//	現在true : 過去false なら押した瞬間瞬間
 	return(
-		(m_bMouseButtons[CAST_I(kind)]) &&
-		(!m_bPrevMouseButtons[CAST_I(kind)])
+		(m_bMouseButtons[DX::CAST::I(kind)]) &&
+		(!m_bPrevMouseButtons[DX::CAST::I(kind)])
 		) ? true : false;
 		 
 }
@@ -180,7 +184,7 @@ bool DX_Input::IsMouseButtonClick(DX_MOUSE_BUTTON_KIND kind)
 //-----------------------------------------------------------------------------------------
 bool DX_Input::IsMouseButtonDoubleClick(DX_MOUSE_BUTTON_KIND kind)
 {
-	return  (m_bMouseButtons[CAST_I(kind)] == MOUSE_BUTTON_DOUBLE_CLICK) ? true : false;
+	return  (m_bMouseButtons[DX::CAST::I(kind)] == MOUSE_BUTTON_DOUBLE_CLICK) ? true : false;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -201,8 +205,8 @@ DirectX::XMFLOAT2 DX_Input::GetMousePos()
 	ClientToScreen(pSystem->GetWindowHandle(), &pos);
 
 	//	ウィンドウ座標
-	LONG width	= CAST_L(pSystem->GetWindowWidth());
-	LONG height	= CAST_L(pSystem->GetWindowHeight());
+	LONG width	= DX::CAST::L(pSystem->GetScreenWidth());
+	LONG height	= DX::CAST::L(pSystem->GetScreenHeight());
 
 	if (pos.x < 0){ pos.x = 0; }
 	else if (pos.x > width){ pos.x = width; }
@@ -210,7 +214,7 @@ DirectX::XMFLOAT2 DX_Input::GetMousePos()
 	if (pos.y < 0){ pos.y = 0; }
 	else if (pos.y > height){ pos.y = height; }
 
-	return DirectX::XMFLOAT2(CAST_F(pos.x), CAST_F(pos.y));
+	return DirectX::XMFLOAT2(DX::CAST::F(pos.x), DX::CAST::F(pos.y));
 }
 
 
@@ -247,8 +251,8 @@ void DX_Input::GetMousePos(DirectX::XMINT2* pPos)
 }
 void DX_Input::GetMousePos(DirectX::XMFLOAT2* pPos)
 {
-	pPos->x = CAST_F(m_mousePos.x);
-	pPos->y = CAST_F(m_mousePos.y);
+	pPos->x = DX::CAST::F(m_mousePos.x);
+	pPos->y = DX::CAST::F(m_mousePos.y);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -263,8 +267,8 @@ void DX_Input::GetMouseClientPos(DirectX::XMINT2* pPos)
 }
 void DX_Input::GetMouseClientPos(DirectX::XMFLOAT2* pPos)
 {
-	pPos->x = CAST_F(m_mouseClientPos.x);
-	pPos->y = CAST_F(m_mouseClientPos.y);
+	pPos->x = DX::CAST::F(m_mouseClientPos.x);
+	pPos->y = DX::CAST::F(m_mouseClientPos.y);
 }
 //-----------------------------------------------------------------------------------------
 //

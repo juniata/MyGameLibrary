@@ -43,8 +43,8 @@
 //	}
 //
 //	//	1 ~ 0の値に変換
-//	const float centerX = 1.0f / (CAST_F(DX_System::GetWindowWidth()) * 0.5f);
-//	const float centerY = 1.0f / (CAST_F(DX_System::GetWindowHeight()) * 0.5f);
+//	const float centerX = 1.0f / (DX::CAST::F(DX_System::GetWindowWidth()) * 0.5f);
+//	const float centerY = 1.0f / (DX::CAST::F(DX_System::GetWindowHeight()) * 0.5f);
 //
 //
 //	DX::tagVertex2D pVertex[] = {
@@ -69,7 +69,7 @@
 //	pVertex[3].pos.x = pVertex[2].pos.x = centerX * renderPos.w - 1.0f;
 //
 //
-//	if (nullptr == (m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(pVertex[0]) * 4, pVertex))) {
+//	if (nullptr == (m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetDevice(), sizeof(pVertex[0]) * 4, pVertex))) {
 //		return false;
 //	}
 //
@@ -175,7 +175,7 @@
 //
 //
 //		// 正規化したウィンドウサイズを送る
-//		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / CAST_F(pSystem->GetWindowWidth()), 2.0f / CAST_F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+//		pShaderManager->SetVector(0, DirectX::XMFLOAT4(2.0f / DX::CAST::F(pSystem->GetWindowWidth()), 2.0f / DX::CAST::F(pSystem->GetWindowHeight()), 0.0f, 0.0f), pDevice, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 //
 //		//	VertexBufferを送る
 //		pDeviceContext->IASetVertexBuffers(0, 2, buffers, strides, offsets);

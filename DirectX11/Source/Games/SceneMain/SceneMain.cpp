@@ -3,18 +3,16 @@
 using namespace DirectX;
 
 DX_Box* pBox = nullptr;
+DX_2DObject* p2D = nullptr;
 //-----------------------------------------------------------------------------------------
 //
 //	コンストラクタ
 //
 //-----------------------------------------------------------------------------------------
-SceneMain::SceneMain() :
-	m_pTest(new DX_2DObject())
+SceneMain::SceneMain()
 {
 	pBox = new DX_Box();
-	pBox->SetPos(XMFLOAT3(0.0f, 0.0f, 20.0f));
-	pBox->SetScale(XMFLOAT3(10.0f, 10.0f, 10.0f));
-	pBox->Update();
+	p2D = new DX_2DObject();
 }
 
 //-----------------------------------------------------------------------------------------
@@ -24,10 +22,11 @@ SceneMain::SceneMain() :
 //--------------------------------------------------------------------------------------
 SceneMain::~SceneMain()
 {
-	DELETE_OBJ(m_pTest);
+	DELETE_OBJ(p2D);
 	DELETE_OBJ(pBox);
 }
 
+DirectX::XMFLOAT3 pos(1.0f, 1.0f, 1.0f);
 //-----------------------------------------------------------------------------------------
 //
 //	初期化
@@ -35,14 +34,11 @@ SceneMain::~SceneMain()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Initialize()
 {
-	bool result = false;
+	auto result = false;
+	result = pBox->Initialize();
+	result = p2D->Initialize("mapchip.png");
+	m_pView->SetTarget(pBox->GetPos());
 
-	result = m_pTest->Initialize("mapchip.png");
-	
-//	m_pTest->SetUV(0.0f, 0.0f, 64.0f, 64.0f);
-	//m_pTest->SetUV(64.0f, 0.0f, 128.0f, 64.0f);
-	m_pTest->Update(true, true);
-	
 	return result;
 }
 
@@ -53,9 +49,22 @@ bool SceneMain::Initialize()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Update()
 {
-	bool result = true;
-	m_pView->SetTarget(pBox->GetPos());
+	auto result = true;
 
+
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_A)) {
+		pos.x -= 1.0f;
+	}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_X)) {
+		pos.x += 1.0f;
+	}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_W)) {
+		pos.z += 1.0f;
+	}
+	if (DX_Input::IsKeyDown(DX_INPUT_KEY::DX_S)) {
+		pos.z -= 1.0f;
+	}
+	m_pView->SetPos(pos);
 	return result;
 }
 
@@ -67,11 +76,12 @@ bool SceneMain::Update()
 //-----------------------------------------------------------------------------------------
 bool SceneMain::Render()
 {
-	bool result = true;
+	auto result = true;
 
 	m_pView->Active();
 	m_pView->Clear();
-	//result = m_pTest->Render();
+
+//	p2D->Render();
 	pBox->Render();
 
 	return result;

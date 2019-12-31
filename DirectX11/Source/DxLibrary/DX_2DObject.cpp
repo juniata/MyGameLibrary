@@ -27,7 +27,7 @@ DX_2DObject::~DX_2DObject()
 {
 	if (IsOriginal()) {
 		SAFE_RELEASE(m_pVertexBuffer);
-		DX_TextureManager::GetInstance()->Release(m_pShaderResourceView);
+		DX_TextureManager::Release(m_pShaderResourceView);
 	}
 }
 
@@ -45,18 +45,17 @@ bool DX_2DObject::CommonInitialize(const char* pFilepath)
 		/* 右下 */	DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
 		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
 	};
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices);
-
-	if (false == DebugValueCheck(m_pVertexBuffer, "バッファの作成に失敗しています。")) {
+	
+	if (nullptr == (m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices))) {
+		TRACE("failed to DX_Buffer::CreateVertexBuffer()");
 		return false;
 	}
 
 	// テクスチャを読み込む
 	char texturePath[MAX_PATH] = { '\n' };
 	sprintf_s(texturePath, "%s%s", "Resource\\", pFilepath);
-	bool isSucceed = LoadTexture(texturePath);
-
-	return isSucceed;
+	
+	return LoadTexture(texturePath);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -69,9 +68,8 @@ bool DX_2DObject::Initialize(const char* pFilepath)
 	bool isSucceed = CommonInitialize(pFilepath);
 
 	DX_System* pSystem = DX_System::GetInstance();
-
-	SetRectPos(0.0f, 0.0f, CAST_F(pSystem->GetWindowWidth()), CAST_F(pSystem->GetWindowHeight()));
-	SetUV(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height));
+	SetRectPos(0.0f, 0.0f, DX::CAST::F(pSystem->GetScreenWidth()), DX::CAST::F(pSystem->GetScreenHeight()));
+	SetUV(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height));
 	Update();
 
 	return isSucceed;
@@ -87,7 +85,7 @@ bool DX_2DObject::Initialize(const char* pFilepath, const DX::tagRect& rectPos)
 	bool isSucceed = CommonInitialize(pFilepath);
 
 	SetRectPos(rectPos);
-	SetUV(0.0f, 0.0f, CAST_F(m_width), CAST_F(m_height));
+	SetUV(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height));
 	Update();
 
 	return isSucceed;
@@ -138,22 +136,19 @@ bool DX_2DObject::Render()
 {
 	auto result = false;
 
-
-	DX_System* pSystem = DX_System::GetInstance();
 	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	シェーダーを取得
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
 
 	//	シェーダーを利用
 	pVertexShader->Begin(pContext);
 	pPixelShader->Begin(pContext);
 
 	//	描画
-	result = DX_Buffer::Render2D(pShaderManager, pContext, m_pVertexBuffer, m_pShaderResourceView);
+	result = DX_Buffer::Render2D(pContext, m_pVertexBuffer, m_pShaderResourceView);
 
 	//	シェーダーを終了
 	pVertexShader->End(pContext);
@@ -170,28 +165,12 @@ bool DX_2DObject::Render()
 bool DX_2DObject::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
-	m_pShaderResourceView = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
-
-	if (false == DebugValueCheck(m_pShaderResourceView, "テクスチャの読み込みができていません。")) {
+	if (nullptr == (m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath))) {
+		TRACE2("failed to DX_TextureManager::GetTexture(), filepath = %s", pFilepath);
 		return false;
 	}
 
-	//	テクスチャを細かな情報を取得
-	ID3D11Resource* pResource = nullptr;
-	m_pShaderResourceView->GetResource(&pResource);
-
-	ID3D11Texture2D* pTex2D = nullptr;
-	pResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pTex2D);
-
-		D3D11_TEXTURE2D_DESC texDesc;
-	pTex2D->GetDesc(&texDesc);
-	//	テクスチャサイズを取得
-
-	m_height = texDesc.Height;
-	m_width = texDesc.Width;
-
-	SAFE_RELEASE(pResource);
-	SAFE_RELEASE(pTex2D);
+	DX_TextureManager::GetTextureSize(&m_width, &m_height, m_pShaderResourceView);
 
 	return true;
 }
@@ -240,8 +219,9 @@ bool DX_2DObject::IsInScreen() const
 	auto isInScreen = false;
 
 	DX_System* pSystem = DX_System::GetInstance();
-	float height = CAST_F(pSystem->GetWindowHeight());
-	float width = CAST_F(pSystem->GetWindowWidth());
+
+	float height = DX::CAST::F(pSystem->GetScreenHeight());
+	float width = DX::CAST::F(pSystem->GetScreenWidth());
 
 	if (0.0f <= m_rectPos.y && m_rectPos.bottom <= height &&
 		0.0f <= m_rectPos.x && m_rectPos.right <= width)
@@ -331,8 +311,7 @@ void DX_2DObject::Update(const bool isLRMirror, const bool isUDMirror)
 {
 	if (m_isChanged || m_isLRMirror != isLRMirror || m_isUDMirror != isUDMirror)
 	{
-		DX_System* pSystem = DX_System::GetInstance();
-		ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+		ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 		//	頂点情報を作成
 		CreateVertex(pContext, m_rectPos, m_uv, isLRMirror, isUDMirror);
@@ -352,8 +331,8 @@ void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect&
 {
 	DX_System* pSystem = DX_System::GetInstance();
 
-	float windowWidth = CAST_F(pSystem->GetWindowWidth());
-	float windowHeight = CAST_F(pSystem->GetWindowHeight());
+	float windowWidth = DX::CAST::F(pSystem->GetScreenWidth());
+	float windowHeight = DX::CAST::F(pSystem->GetScreenHeight());
 
 	//	-1.0f ~ 1.0fに座標を正規化する
 	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
@@ -367,7 +346,7 @@ void DX_2DObject::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect&
 
 
 	//	UV座標を0.0f ~ 1.0fに正規化する
-	DirectX::XMFLOAT2 centerUV(1.0f / CAST_F(m_width), 1.0f / CAST_F(m_height));
+	DirectX::XMFLOAT2 centerUV(1.0f / DX::CAST::F(m_width), 1.0f / DX::CAST::F(m_height));
 
 	DX::tagRect norUV;
 

@@ -122,8 +122,7 @@ void DX_Lighting::SetViewPos(const DirectX::XMFLOAT3& pos)
 //-----------------------------------------------------------------------------------------
 bool DX_Lighting::SetLightVertexShader()
 {
-	DX_System* pSystem = DX_System::GetInstance();
-	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	ローカル変数
 	ID3D11Buffer*				pBuffer = nullptr;
@@ -149,7 +148,7 @@ bool DX_Lighting::SetLightVertexShader()
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	pBuffer = DX_Buffer::CreateConstantBuffer(pSystem->GetDevice(), sizeof(vertexLighting));	// TODO:こいつを使う
+	pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertexLighting));	// TODO:こいつを使う
 	if (false == DebugValueCheck(pBuffer, "定数バッファの作成に失敗しました。")) {
 		return false;
 	}
@@ -173,8 +172,7 @@ bool DX_Lighting::SetLightVertexShader()
 //-----------------------------------------------------------------------------------------
 bool DX_Lighting::SetLightPixelShader()
 {
-	DX_System* pSystem = DX_System::GetInstance();
-	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 	//	ローカル変数
 	ID3D11Buffer*				pBuffer = nullptr;
@@ -198,7 +196,7 @@ bool DX_Lighting::SetLightPixelShader()
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	pBuffer = DX_Buffer::CreateConstantBuffer(pSystem->GetDevice(), sizeof(pixelLighting));
+	pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(pixelLighting));
 	if (false == DebugValueCheck(pBuffer, "定数バッファの作成に失敗しました。")) {
 		return false;
 	}

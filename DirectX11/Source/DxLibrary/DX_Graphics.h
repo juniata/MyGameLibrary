@@ -11,25 +11,10 @@ class DX_Graphics
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		自身のインスタンスを取得する
-	//	@return		インスタンス
-	//
-	//------------------------------------------------------------------------------
-	static DX_Graphics* GetInstance();
-
-	//------------------------------------------------------------------------------
-	//
 	//  @brief		Graphicsを初期化する
 	//
 	//------------------------------------------------------------------------------
-	void Initialize();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		インスタンスの開放を行う
-	//
-	//------------------------------------------------------------------------------
-	static void Release();
+	static bool Initialize();
 
 	//------------------------------------------------------------------------------
 	//
@@ -37,7 +22,7 @@ public:
 	//	@param[in]	pSwapChain DX_System::GetSwapChain()
 	//
 	//------------------------------------------------------------------------------
-	void BeginRender(IDXGISwapChain* pSwapChain);
+	static void BeginRender(IDXGISwapChain* pSwapChain);
 
 	//------------------------------------------------------------------------------
 	//
@@ -45,7 +30,7 @@ public:
 	//	@param[in]	pSwapChain DX_System::GetSwapChain()
 	//
 	//------------------------------------------------------------------------------
-	void EndRender(IDXGISwapChain* pSwapChain);
+	static void EndRender(IDXGISwapChain* pSwapChain);
 
 	//------------------------------------------------------------------------------
 	//
@@ -53,7 +38,7 @@ public:
 	//	@return		m_refreshRateN
 	//
 	//------------------------------------------------------------------------------
-	unsigned int GetRefreshRateN() const;
+	static unsigned int GetRefreshRateN();
 
 	//------------------------------------------------------------------------------
 	//
@@ -61,7 +46,7 @@ public:
 	//	@return		m_refreshRateD
 	//
 	//------------------------------------------------------------------------------
-	unsigned int GetRefreshRateD() const;
+	static unsigned int GetRefreshRateD();
 
 	//------------------------------------------------------------------------------
 	//
@@ -69,7 +54,7 @@ public:
 	//	@return		m_videoCardMemory
 	//
 	//------------------------------------------------------------------------------
-	unsigned int GetVieoCardMemory() const;
+	static unsigned int GetVieoCardMemory();
 
 	//------------------------------------------------------------------------------
 	//
@@ -77,7 +62,7 @@ public:
 	//	@return		m_videoCardDescription
 	//
 	//------------------------------------------------------------------------------
-	const char* GetVideoCardDescription() const;
+	static const char* GetVideoCardDescription();
 
 	//------------------------------------------------------------------------------
 	//
@@ -85,7 +70,7 @@ public:
 	//	@return		m_scanlineOrder
 	//
 	//------------------------------------------------------------------------------
-	DXGI_MODE_SCANLINE_ORDER GetScanLineOrder();
+	static DXGI_MODE_SCANLINE_ORDER GetScanLineOrder();
 
 	//------------------------------------------------------------------------------
 	//
@@ -93,7 +78,7 @@ public:
 	//	@return		m_scaling
 	//
 	//------------------------------------------------------------------------------
-	DXGI_MODE_SCALING GetScaling();
+	static DXGI_MODE_SCALING GetScaling();
 
 	//------------------------------------------------------------------------------
 	//
@@ -101,47 +86,29 @@ public:
 	//	@return		m_format
 	//
 	//------------------------------------------------------------------------------
-	DXGI_FORMAT	GetFortmat();
+	static DXGI_FORMAT	GetFortmat();
 
 private:
-	static DX_Graphics* m_pInstance;
-
 	//	画面が開かれている時だけ描画を行うためのフラグ
-	bool m_stand_by_mode;
+	static bool m_standByMode;
 
 	//	リフレッシュシートの分母と分子
-	unsigned int m_refreshRateN;	//	分子 nolecule
-	unsigned int m_refreshRateD;	//	分母 denominator
+	static unsigned int m_refreshRateN;	//	分子 nolecule
+	static unsigned int m_refreshRateD;	//	分母 denominator
 
 	//	ビデオカードのメモリ量			
-	unsigned int m_videoCardMemory;
+	static unsigned int m_videoCardMemory;
 
 	//	ビデオカードの名前
-	char m_videoCardDescription[128];
+	static char m_videoCardDescription[128];
 
 	//	スキャンライン
-	DXGI_MODE_SCANLINE_ORDER m_scanlineOrder;
+	static DXGI_MODE_SCANLINE_ORDER m_scanlineOrder;
 
 	//	スケーリング
-	DXGI_MODE_SCALING		m_scaling;
+	static DXGI_MODE_SCALING		m_scaling;
 
 	//	フォーマット
-	DXGI_FORMAT				m_format;
-
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		コンストラクタ
-	//
-	//------------------------------------------------------------------------------
-	DX_Graphics();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		何もしない
-	//
-	//------------------------------------------------------------------------------
-	~DX_Graphics() {}
-
+	static DXGI_FORMAT				m_format;
 };
 #endif // !__DX_GRAPHICS_H_

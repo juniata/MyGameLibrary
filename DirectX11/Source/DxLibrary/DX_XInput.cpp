@@ -51,7 +51,7 @@ DX_XInput::~DX_XInput()
 //-----------------------------------------------------------------------------------------
 bool DX_XInput::IsKey(XINPUT_KEY key, const int id)
 {
-	const int l_key = CAST_I(key);
+	const int l_key = DX::CAST::I(key);
 
 	//	–¢Ú‘±‚È‚çfalse‚ğ•Ô‚·
 	if (m_players[id].id == -1){ return false; }
@@ -68,7 +68,7 @@ bool DX_XInput::IsKey(XINPUT_KEY key, const int id)
 //-----------------------------------------------------------------------------------------
 bool DX_XInput::IsKeyDown(XINPUT_KEY key, const int id)
 {
-	const int l_key = CAST_I(key);
+	const int l_key = DX::CAST::I(key);
 
 	//	–¢Ú‘±‚È‚çfalse‚ğ•Ô‚·
 	if (m_players[id].id == -1){ return false; }
@@ -85,7 +85,7 @@ bool DX_XInput::IsKeyDown(XINPUT_KEY key, const int id)
 //-----------------------------------------------------------------------------------------
 bool DX_XInput::IsKeyRelease(XINPUT_KEY key, const int id)
 {
-	const int l_key = CAST_I(key);
+	const int l_key = DX::CAST::I(key);
 
 	//	–¢Ú‘±‚È‚çfalse‚ğ•Ô‚·
 	if (m_players[id].id == -1){ return false; }
@@ -103,7 +103,7 @@ bool DX_XInput::IsKeyRelease(XINPUT_KEY key, const int id)
 //-----------------------------------------------------------------------------------------
 bool DX_XInput::IsKeyHit(XINPUT_KEY key, const int id)
 {
-	const int l_key = CAST_I(key);
+	const int l_key = DX::CAST::I(key);
 
 	//	–¢Ú‘±‚È‚çfalse‚ğ•Ô‚·
 	if (m_players[id].id == -1){ return false; }

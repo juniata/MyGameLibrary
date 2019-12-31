@@ -25,7 +25,8 @@ DX_Box::DX_Box() :
 	m_scale(1.0f, 1.0f, 1.0f),
 	m_angle(0.0f, 0.0f, 0.0f),
 	m_isChanged(true),
-	m_isCloned(false)
+	m_isCloned(false),
+	m_pastRaypickIndexk(-1)
 {
 	Update();
 }
@@ -37,7 +38,7 @@ DX_Box::DX_Box() :
 //-----------------------------------------------------------------------------------------
 DX_Box::~DX_Box()
 {
-	if (m_isCloned) {
+	if (!m_isCloned) {
 		SAFE_RELEASE(m_pVertexBuffer);
 		SAFE_RELEASE(m_pIndexBuffer);
 		SAFE_RELEASE(m_pConstantBuffer);
@@ -143,14 +144,11 @@ void DX_Box::Update()
 //-----------------------------------------------------------------------------------------
 void DX_Box::Render()
 {
-	DX_System*	pSystem = DX_System::GetInstance();
-
+	DX_System* pSystem = DX_System::GetInstance();
 	ID3D11DeviceContext* pDeviceContext = pSystem->GetDeviceContext();
 
-	DX_ShaderManager* pShaderManager = DX_ShaderManager::GetInstance();
-
-	DX_Shader* pVertexShader = pShaderManager->GetShader(DEFAULT_OBJECT_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = pShaderManager->GetShader(DEFAULT_OBJECT_SHADER::PIXEL_SHADER);
+	DX_Shader* pVertexShader = DX_ShaderManager::GetShader(DEFAULT_OBJECT_SHADER::VERTEX_SHADER);
+	DX_Shader* pPixelShader = DX_ShaderManager::GetShader(DEFAULT_OBJECT_SHADER::PIXEL_SHADER);
 
 	//	シェーダー利用を開始
 	pVertexShader->Begin(pDeviceContext);
@@ -166,13 +164,13 @@ void DX_Box::Render()
 	pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0);
 
 	//	InputLayoutの設定を送る
-	pDeviceContext->IASetInputLayout(pShaderManager->GetDefaultInputLayoutObject());
+	pDeviceContext->IASetInputLayout(DX_ShaderManager::GetDefaultInputLayoutObject());
 
 	//	Primitiveの設定を送る
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//	ワールド行列を送る
-	pShaderManager->SetWorldMat(m_pConstantBuffer, m_worldMat, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::SetWorldMat(m_pConstantBuffer, m_worldMat, pDeviceContext, DX_SHADER_TYPE::VERTEX_SHADER);
 
 	// 描画を行う
 	pDeviceContext->DrawIndexed(36, 0, 0);
@@ -222,7 +220,7 @@ bool DX_Box::IsOriginal() const
 //  レイキャスト判定
 //
 //------------------------------------------------------------------------------
-bool DX_Box::RayCast(const DirectX::XMFLOAT3 pos)
+bool DX_Box::RayCast(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& vec, const float distance)
 {
 	auto ret = false;
 
@@ -288,7 +286,7 @@ bool DX_Box::CreateBuffer()
 	}
 	
 	// 面法線を計算
-	CreateFaceNormal(pVertices);
+	//CreateFaceNormal(pVertices);
 
 	// 頂点法線を計算
 	// 頂点法線を格納
@@ -324,18 +322,15 @@ bool DX_Box::CreateBuffer()
 
 	ID3D11Device* pDevice = DX_System::GetInstance()->GetDevice();
 
-	m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(pVertices), pVertices);
-	if (m_pVertexBuffer == nullptr) {
+	if (nullptr == (m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(pDevice, sizeof(pVertices), pVertices))) {
 		return false;
 	}
 
-	m_pIndexBuffer = DX_Buffer::CreateIndexBuffer(pDevice, sizeof(pIndices), pIndices);
-	if (m_pIndexBuffer == nullptr) {
+	if (nullptr == (m_pIndexBuffer = DX_Buffer::CreateIndexBuffer(pDevice, sizeof(pIndices), pIndices))) {
 		return false;
 	}
-
-	m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(DirectX::XMFLOAT4X4));
-	if (m_pConstantBuffer == nullptr) {
+	
+	if (nullptr == (m_pConstantBuffer = DX_Buffer::CreateConstantBuffer(pDevice, sizeof(m_worldMat)))) {
 		return false;
 	}
 
@@ -349,14 +344,59 @@ bool DX_Box::CreateBuffer()
 //-----------------------------------------------------------------------------------------
 void DX_Box::CreateFaceNormal(DX::tagObjectVertext* pVertex)
 {
+	// インデックスを設定
+	unsigned short pIndices[] =
+	{
+		// 前面
+		DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN, DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,
+
+		// 右面
+		DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,	DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,
+
+		// 後面
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,
+
+		// 上面
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,
+		DX_Box::BOX_INDEX::BACK_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_RIGHT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,
+
+		// 左面
+		DX_Box::BOX_INDEX::BACK_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_LEFT_UP,	DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+
+		// 下面
+		DX_Box::BOX_INDEX::FRONT_LEFT_DOWN,		DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,	DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+		DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN,	DX_Box::BOX_INDEX::BACK_RIGHT_DOWN,		DX_Box::BOX_INDEX::BACK_LEFT_DOWN,
+	};
+
+
 	DirectX::XMVECTOR p0;
 	DirectX::XMVECTOR p1;
 	DirectX::XMVECTOR p2;
-	p0 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_LEFT_UP].pos);
-	p1 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_RIGHT_UP].pos);
-	p2 = DirectX::XMLoadFloat3(&pVertex[DX_Box::BOX_INDEX::FRONT_RIGHT_DOWN].pos);
+	DirectX::XMVECTOR faceNor;
+	DirectX::XMFLOAT3 faceNorV;
 
-	CalcTraiangleNormal(p0, p1, p2);
+	int index0 = 0;
+	int index1 = 0;
+	int index2 = 0;
+
+	for (unsigned short i = 0; i < 36; i += 3)
+	{
+		index0 = pIndices[i];
+		index1 = pIndices[i + 1];
+		index2 = pIndices[i + 2];
+
+		p0 = DirectX::XMLoadFloat3(&pVertex[index0].pos);
+		p1 = DirectX::XMLoadFloat3(&pVertex[index1].pos);
+		p2 = DirectX::XMLoadFloat3(&pVertex[index2].pos);
+
+		faceNor = CalcTraiangleNormal(p0, p1, p2);
+
+		DirectX::XMStoreFloat3(&faceNorV, faceNor);
+	}
 }
 
 
@@ -367,7 +407,7 @@ void DX_Box::CreateFaceNormal(DX::tagObjectVertext* pVertex)
 //-----------------------------------------------------------------------------------------
 DirectX::XMVECTOR DX_Box::CalcTraiangleNormal(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2)
 {
-	return DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p0)));
+	return DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p1)));
 }
 
 //-----------------------------------------------------------------------------------------

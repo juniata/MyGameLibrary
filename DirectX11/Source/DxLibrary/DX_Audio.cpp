@@ -20,7 +20,7 @@
 //	//	XAudio2‚ð‰Šú‰»
 //	l_hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 //
-//	if (!DX_Debug::IsHresultCheck(l_hr)){
+//	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 //		throw "CoInitializeEx() : failed";
 //	}
 //
@@ -33,14 +33,14 @@
 //	//	XAudio2‚ð¶¬
 //	l_hr = XAudio2Create(&m_pIXAudio, l_flags);
 //
-//	if (!DX_Debug::IsHresultCheck(l_hr)){
+//	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 //		throw "XAudio2Create() : failed";
 //	}
 //
 //	//	mastering voice‚ðì¬
 //	l_hr = m_pIXAudio->CreateMasteringVoice(&m_pIXAudioMasteringVoice);
 //	
-//	if (!DX_Debug::IsHresultCheck(l_hr)){
+//	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 //		throw "IXAudio2::CreateMasteringVoice() : failed";
 //	}
 //}

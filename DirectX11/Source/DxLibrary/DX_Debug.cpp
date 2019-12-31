@@ -1,51 +1,43 @@
 #include	"DX_Library.h"
 #include	<stdio.h>
-
+#include <dxgidebug.h>
 //-----------------------------------------------------------------------------------------
 //
 //  staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_Debug* DX_Debug::m_pInstance = nullptr;
+
+void __Trace(const char* pFile, int line, LPCSTR pszFormat, ...)
+{
+	va_list	argp;
+	char pszBuf[256];
+	char pszBuf2[512];
+
+
+	va_start(argp, pszFormat);
+	vsprintf_s(pszBuf, sizeof(pszBuf), pszFormat, argp);
+	va_end(argp);
+
+	sprintf_s(pszBuf2, "[FILE : %s] [LINE : %d] %s", pFile, line, pszBuf);
+
+	OutputDebugString(pszBuf2);
+}
 
 
 //-----------------------------------------------------------------------------------------
 //
-//  初期化
+//	メンバ変数の初期化を行う
 //
 //-----------------------------------------------------------------------------------------
 DX_Debug::DX_Debug()
-#if defined(DEBUG) || defined(_DEBUG)
-	: m_consoleHandle(NULL), m_csbi({NULL}), m_pDebug(nullptr)
-#endif
-{}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  解放
-//
-//-----------------------------------------------------------------------------------------
-DX_Debug::~DX_Debug()
 {
 #if defined(DEBUG) || defined(_DEBUG)
-	SAFE_RELEASE(m_pDebug);
+	m_consoleHandle = NULL;
+	ZeroMemory(&m_csbi, sizeof(m_csbi));
 #endif
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  インスタンスを取得する
-//
-//-----------------------------------------------------------------------------------------
-DX_Debug* DX_Debug::GetInstance()
-{
-	if (m_pInstance == nullptr) {
-		m_pInstance = new DX_Debug();
-	}
-	
-	return m_pInstance;
-}
+
 //-----------------------------------------------------------------------------------------
 //
 //	メンバ変数の初期化を行う
@@ -59,26 +51,8 @@ void DX_Debug::Initialize()
 	//現在の画面の情報をcsbiに保存
 	GetConsoleScreenBufferInfo(m_consoleHandle, &m_csbi);
 
+	CreateDebugDevice();
 #endif
-
-	try{
-		//	デバッグデバイスを作成する
-		CreateDebugDevice();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//	メンバ変数の解放を行う
-//
-//-----------------------------------------------------------------------------------------
-void DX_Debug::Release()
-{
-	DELETE_OBJ(m_pInstance);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -90,10 +64,12 @@ void DX_Debug::ReportLiveDeviceObjects(const char* pMessage)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	OutputDebugString("\n\n===============================================================================================================================\n");
-	char l_message[512] = { NULL };
-	sprintf_s(l_message, "%s\n", pMessage);
-	OutputDebugString(l_message);
-	m_pDebug->ReportLiveDeviceObjects(D3D11_RLDO_FLAGS::D3D11_RLDO_DETAIL);
+	char message[512] = { NULL };
+	sprintf_s(message, "%s\n", pMessage);
+	OutputDebugString(message);
+	
+	// 出力
+	m_debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
 	OutputDebugString("\n\n===============================================================================================================================\n");
 #endif
 }
@@ -104,7 +80,7 @@ void DX_Debug::ReportLiveDeviceObjects(const char* pMessage)
 //	戻り値をチェックする
 //
 //-----------------------------------------------------------------------------------------
-bool DX_Debug::IsHresultCheck(HRESULT hr)
+bool DX_Debug::CheckHresult(HRESULT hr)
 {
 	bool result = true;
 
@@ -119,6 +95,10 @@ bool DX_Debug::IsHresultCheck(HRESULT hr)
 	return result;
 }
 
+bool DX_Debug::IsFailedHresult(HRESULT hr)
+{
+	return !CheckHresult(hr);
+}
 
 
 //-----------------------------------------------------------------------------------------
@@ -183,7 +163,6 @@ void DX_Debug::Printf(const char* pFormat, ...)
 	vprintf_s(pFormat, l_arg);
 
 	va_end(l_arg);
-#endif
 }
 //-----------------------------------------------------------------------------------------
 //
@@ -192,10 +171,11 @@ void DX_Debug::Printf(const char* pFormat, ...)
 //-----------------------------------------------------------------------------------------
 void DX_Debug::CreateDebugDevice()
 {
-#if defined(DEBUG) || defined(_DEBUG)
-	if (!IsHresultCheck(DX_System::GetInstance()->GetDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&m_pDebug))){
-		throw "ID3D11Device::QueryInterface() : create ID3D11Debug failed";
-	}
-#endif
-}
+	// 作成
+	typedef HRESULT(__stdcall *fPtr)(const IID&, void**);
+	HMODULE hDll = GetModuleHandleW(L"dxgidebug.dll");
+	fPtr DXGIGetDebugInterface = (fPtr)GetProcAddress(hDll, "DXGIGetDebugInterface");
 
+	DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&m_debug);
+}
+#endif

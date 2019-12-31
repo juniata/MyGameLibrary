@@ -3,12 +3,8 @@
 
 //	デフォルト用
 #ifndef PI
-	#define PI CAST_F(3.14159265358979323846f) 
+	#define PI DX::CAST::F(3.14159265358979323846f) 
 #endif
-
-#define VIEW_DEFAULT_ASPECT  CAST_F(PI * 0.25f)
-#define VIEW_DEFAULT_ZNEAR  CAST_F(1.0f)
-#define VIEW_DEFAULT_ZFAR	CAST_F(1000.0f)
 
 //****************************************************************************************************
 //
@@ -20,18 +16,17 @@ class DX_View
 public:
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		インスタンスを取得する
-	//	@return		インスタンス
+	//  @brief		メンバ変数を初期化
 	//
 	//------------------------------------------------------------------------------
-	static DX_View* GetInstance();
+	DX_View();
 
 	//------------------------------------------------------------------------------
 	//
-	//  @brief		インスタンスを解放する
+	//  @brief		解放
 	//
 	//------------------------------------------------------------------------------
-	static void Release();
+	virtual ~DX_View();
 
 	//------------------------------------------------------------------------------
 	//
@@ -43,11 +38,11 @@ public:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		RenderTargetViewとDepthStencileViewをクリアする
-	//	@param[in]	bZClear			trueなら深度をクリアする(白色でクリア)
-	//	@param[in]	bStencilClear	trueならステンシルをクリアする(0でクリア)
+	//	@param[in]	isZClear 		trueなら深度をクリアする(白色でクリア)
+	//	@param[in]	isStencilClear 	trueならステンシルをクリアする(0でクリア)
 	//
 	//------------------------------------------------------------------------------
-	void Clear(const bool bZClear = true, const bool bStencilClear = true, ID3D11RenderTargetView* pRtv = nullptr, ID3D11DepthStencilView* pDsv = nullptr);
+	void Clear(const bool isZClear = true, const bool isStencilClear = true, ID3D11RenderTargetView* pRtv = nullptr, ID3D11DepthStencilView* pDsv = nullptr);
 
 	//------------------------------------------------------------------------------
 	//
@@ -149,9 +144,7 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	bool IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const float radius);
-
-private:
-	static DX_View* m_pInstance;
+protected:
 	D3D11_VIEWPORT m_viewPort;
 
 	DirectX::XMFLOAT4X4 m_matView;
@@ -162,7 +155,7 @@ private:
 	DirectX::XMFLOAT3 m_target;
 	DirectX::XMFLOAT3 m_upDirection;
 
-	ID3D11Buffer* m_pConstantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 
 	struct tagViewInfo{
 		float fovY;
@@ -178,20 +171,5 @@ private:
 
 	//	視錐台の面を何フレームおきに作成するかを設定
 	int m_updateFrameNum;
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数を初期化
-	//
-	//------------------------------------------------------------------------------
-	DX_View();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		解放
-	//
-	//------------------------------------------------------------------------------
-	~DX_View();
-
 };
 #endif // !__DX_VIEW_H_

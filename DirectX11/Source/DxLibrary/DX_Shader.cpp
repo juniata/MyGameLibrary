@@ -108,7 +108,7 @@ void DX_Shader::CompileFromFile(
 //-----------------------------------------------------------------------------------------
 void DX_Shader::CreateClassLinkage()
 {
-	if (!DX_Debug::GetInstance()->IsHresultCheck(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_pClassLinkage))){
+	if (!DX_Debug::GetInstance()->CheckHresult(DX_System::GetInstance()->GetDevice()->CreateClassLinkage(&m_pClassLinkage))){
 		SAFE_RELEASE(m_pClassLinkage);
 	}
 }

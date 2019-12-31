@@ -5,30 +5,18 @@
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_SceneManager*	DX_SceneManager::m_pInstance = nullptr;
+DX_Scene*				DX_SceneManager::m_pCurScene	= nullptr;	//	現在のシーン
+DX_Scene*				DX_SceneManager::m_pNextScene	= nullptr;	//	次のシーン
+DX_SceneManager::STATE	DX_SceneManager::m_state		= DX_SceneManager::STATE::NONE;
+bool					DX_SceneManager::m_isGameEnd	= false;
 
 //-----------------------------------------------------------------------------------------
 //
-//	staticメンバ変数
+//	解放を行う
 //
 //-----------------------------------------------------------------------------------------
-DX_SceneManager::DX_SceneManager() :
-	m_pCurScene(nullptr),
-	m_pNextScene(nullptr),
-	m_state(DX_SceneManager::STATE::NONE),
-	m_isGameEnd(false)
-{}
-
-//-----------------------------------------------------------------------------------------
-//
-//	staticメンバ変数
-//
-//-----------------------------------------------------------------------------------------
-DX_SceneManager::~DX_SceneManager()
+void DX_SceneManager::Release()
 {
-	// vieeの開放を行う.
-	DX_View::Release();
-
 	// TODO:メモリリークのため削除するが、本来はしない。(されてはいけない)
 	DELETE_OBJ(m_pCurScene);
 	DELETE_OBJ(m_pNextScene);
@@ -36,33 +24,10 @@ DX_SceneManager::~DX_SceneManager()
 
 //-----------------------------------------------------------------------------------------
 //
-//	staticメンバ変数
-//
-//-----------------------------------------------------------------------------------------
-DX_SceneManager* DX_SceneManager::GetInstance()
-{
-	if (m_pInstance == nullptr) {
-		m_pInstance = new DX_SceneManager();
-	}
-
-	return m_pInstance;
-}
-//-----------------------------------------------------------------------------------------
-//
-//	インスタンスの解放を行う
-//
-//-----------------------------------------------------------------------------------------
-void DX_SceneManager::Release()
-{
-	DELETE_OBJ(m_pInstance);
-}
-
-//-----------------------------------------------------------------------------------------
-//
 //	ゲーム起動時のシーンを設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::SetStartScene(DX_Scene* pScene)
+void DX_SceneManager::SetBootScene(DX_Scene* pScene)
 {
 	m_pCurScene = pScene;
 	m_state = DX_SceneManager::STATE::INIT;
@@ -78,10 +43,9 @@ void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM w
 	switch (m_state)
 	{
 	case DX_SceneManager::STATE::INIT:
-		if (false == m_pCurScene->Initialize()) {
-			ErrorGameEnd();
-		}
-		m_state = DX_SceneManager::STATE::UPDATE;
+		m_pCurScene->Initialize() ? m_state = DX_SceneManager::STATE::UPDATE : ErrorGameEnd();
+		break;
+
 	case DX_SceneManager::STATE::UPDATE:
 		//	全キー更新
 		DX_Input::Update(hWnd, message, wParam);
@@ -101,14 +65,14 @@ void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM w
 //	シーンを描画する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Render(DX_Graphics* pGrapchis, IDXGISwapChain* pSwapChain)
+void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
 {
 	switch (m_state)
 	{
 	case DX_SceneManager::STATE::UPDATE:
 
 		//	描画開始
-		pGrapchis->BeginRender(pSwapChain);
+		DX_Graphics::BeginRender(pSwapChain);
 
 		//	シーンを描画
 		if (false == m_pCurScene->Render()) {
@@ -117,7 +81,7 @@ void DX_SceneManager::Render(DX_Graphics* pGrapchis, IDXGISwapChain* pSwapChain)
 		}
 
 		//	描画終了
-		pGrapchis->EndRender(pSwapChain);
+		DX_Graphics::EndRender(pSwapChain);
 
 		// 次のシーンが設定されたらシーンを変更する(現在のシーンが描画され終わった後に次のシーンへの遷移を行う)
 		if (m_pNextScene) {

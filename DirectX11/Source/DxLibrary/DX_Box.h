@@ -122,7 +122,7 @@ public:
 	//  @brief		レイキャスト判定
 	//
 	//------------------------------------------------------------------------------
-	bool RayCast(const DirectX::XMFLOAT3 pos);
+	bool RayCast(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& vec, const float distance);
 private:
 	//------------------------------------------------------------------------------
 	//
@@ -139,6 +139,15 @@ private:
 	//------------------------------------------------------------------------------
 	void CreateFaceNormal(DX::tagObjectVertext* pVertex);
 
+	//------------------------------------------------------------------------------
+	//
+	//  @brief		三角形の面法線を算出する
+	//	@param[in]	p0 頂点0の座標
+	//	@param[in]	p1 頂点1の座標
+	//	@param[in]	p2 頂点2の座標
+	//	@return		正規化された面法線
+	//
+	//------------------------------------------------------------------------------
 	DirectX::XMVECTOR CalcTraiangleNormal(const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2);
 
 	//------------------------------------------------------------------------------
@@ -159,6 +168,10 @@ private:
 		BACK_LEFT_DOWN,
 	};
 
+	struct tagBox {
+		DX::tagVertex vertex[3];
+	};
+
 	static const float LEFT_POS;
 	static const float RIGHT_POS;
 	static const float UP_POS;
@@ -175,6 +188,8 @@ private:
 	DirectX::XMFLOAT3 m_scale;
 	DirectX::XMFLOAT3 m_angle;
 	DirectX::XMFLOAT4X4 m_worldMat;
+
+	int m_pastRaypickIndexk;
 
 	bool m_isChanged;
 	bool m_isCloned;

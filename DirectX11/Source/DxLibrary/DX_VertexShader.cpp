@@ -6,10 +6,7 @@
 //  メンバ変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_VertexShader::DX_VertexShader() :
-	m_pVertexShader(nullptr)
-{
-}
+DX_VertexShader::DX_VertexShader() {}
 
 
 
@@ -18,10 +15,7 @@ DX_VertexShader::DX_VertexShader() :
 //  実体があれば解放
 //
 //-----------------------------------------------------------------------------------------
-DX_VertexShader::~DX_VertexShader()
-{
-	SAFE_RELEASE(m_pVertexShader);
-}
+DX_VertexShader::~DX_VertexShader() {}
 
 //-----------------------------------------------------------------------------------------
 //
@@ -50,7 +44,7 @@ void DX_VertexShader::CreateShader(const char* pFilepath)
 //-----------------------------------------------------------------------------------------
 void DX_VertexShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
 {
-	pDeviceContext->VSSetShader(m_pVertexShader, &m_pClassInstance, classInstanceCount);
+	pDeviceContext->VSSetShader(m_vertexShader.Get(), &m_pClassInstance, classInstanceCount);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -78,11 +72,11 @@ void DX_VertexShader::CreateShaderObject()
 		m_pBytecord->GetBufferPointer(),
 		m_pBytecord->GetBufferSize(),
 		m_pClassLinkage,
-		&m_pVertexShader
+		&m_vertexShader
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 		throw "VertexShaderオブジェクトの作成に失敗しました";
 	}
 	

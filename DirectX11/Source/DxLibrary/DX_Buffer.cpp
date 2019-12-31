@@ -165,7 +165,7 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(ID3D11Device* pDevice, const size_t buffe
 //  2D‚ð•`‰æ
 //
 //-----------------------------------------------------------------------------------------
-bool DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
+bool DX_Buffer::Render2D(ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
 {
 	bool result = false;
 
@@ -176,7 +176,7 @@ bool DX_Buffer::Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* 
 	pContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
 
 	//	InputLayout‚ÌÝ’è‚ð‘—‚é
-	pContext->IASetInputLayout(pShaderManager->GetDefaultInputLayout2D());
+	pContext->IASetInputLayout(DX_ShaderManager::GetDefaultInputLayout2D());
 
 	//	Primitive‚ÌÝ’è‚ð‘—‚é
 	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -200,7 +200,7 @@ ID3D11Buffer* DX_Buffer::CreateBuffer(ID3D11Device* pDevice, D3D11_BUFFER_DESC* 
 	ID3D11Buffer* pBuffer = nullptr;
 
 	//	buffer‚ðì¬‚·‚é
-	if (!DX_Debug::GetInstance()->IsHresultCheck(pDevice->CreateBuffer(pDesc, pSubResource, &pBuffer))) {
+	if (!DX_Debug::GetInstance()->CheckHresult(pDevice->CreateBuffer(pDesc, pSubResource, &pBuffer))) {
 		SAFE_RELEASE(pBuffer);
 	}
 	

@@ -6,6 +6,8 @@
 	Windwos10に対応。
 	DreictX11で作成中。
 
+	使いやすさ重視で設計します。
+
 */
 
 #define DIRECTINPUT_VERSION  0x0800
@@ -17,7 +19,9 @@
 #include	<XAudio2.h>
 #include	<XInput.h>
 #include	<dinput.h>
+#include	<wrl/client.h>
 
+#include	"DX_Singleton.h"
 #include	"DX_Define.h"
 #include	"DX_Scene.h"
 #include	"DX_SceneManager.h"
@@ -32,7 +36,7 @@
 #include	"DX_View.h"
 #include	"DX_Buffer.h"
 #include	"DX_Resource.h"
-#include	"DX_Texture.h"
+#include	"DX_TextureManager.h"
 #include	"DX_GameObject.h"
 #include	"DX_2DObject.h"
 #include	"DX_Button.h"

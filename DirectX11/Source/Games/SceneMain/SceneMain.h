@@ -47,6 +47,5 @@ public:
 	//------------------------------------------------------------------------------
 	bool Render();
 private:
-	DX_2DObject* m_pTest;
 };
 #endif // !__SCENE_TITLE_H_

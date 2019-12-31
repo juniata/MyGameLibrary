@@ -81,8 +81,8 @@ public:
 	inline void SetPos(const unsigned int index, const DirectX::XMFLOAT2& pos) { m_pVertices[index].x = pos.x; m_pVertices[index].y = pos.y; m_changedPos = true; }
 	inline DirectX::XMFLOAT2 GetPos(const unsigned int index) { return DirectX::XMFLOAT2(m_pVertices[index].x, m_pVertices[index].y); }
 	inline void SetUV(const unsigned int index, const unsigned int uvIndexX, const unsigned int uvIndexY) { 
-		m_pUvs[index].x = m_chipSize.x * CAST_F(uvIndexX);
-		m_pUvs[index].y = m_chipSize.y * CAST_F(uvIndexY);
+		m_pUvs[index].x = m_chipSize.x * DX::CAST::F(uvIndexX);
+		m_pUvs[index].y = m_chipSize.y * DX::CAST::F(uvIndexY);
 		m_changedUV = true; 
 	}
 	inline DirectX::XMFLOAT2 GetUV(const unsigned int index) { return m_pUvs[index]; }

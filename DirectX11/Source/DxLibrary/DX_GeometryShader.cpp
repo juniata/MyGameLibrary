@@ -87,7 +87,7 @@ void DX_GeometryShader::CreateShaderObject()
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 		//SAFE_RELEASE(m_pBytecord);
 		throw "GeometryShaderオブジェクトの作成に失敗しました";
 	}
@@ -119,7 +119,7 @@ void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(
 		);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->IsHresultCheck(l_hr)){
+	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
 		//SAFE_RELEASE(m_pBytecord);
 		throw "GeometryShaderWithStreamOutputオブジェクトの作成に失敗しました";
 	}

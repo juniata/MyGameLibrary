@@ -128,7 +128,7 @@ public:
 	//				独自に設定もできるが、描画後にデフォルトに戻す事
 	//
 	//------------------------------------------------------------------------------
-	static bool Render2D(DX_ShaderManager* pShaderManager, ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView);
+	static bool Render2D(ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView);
 
 private:
 

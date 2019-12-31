@@ -104,7 +104,7 @@
 //void DX_SkinMesh::LoadModel(const char* pFilepath)
 //{
 //	//	デバイスを取得する
-//	auto l_pDevice = DX_System::GetInstance()->GetDevice();
+//	auto l_pDevice = DX_System::GetDevice();
 //
 //	//	IEMLoaderを生成
 //	IEMLoader l_iemLoader(pFilepath);
@@ -262,7 +262,7 @@
 //	if (m_frame != m_dwFrame){
 //	
 //		//	フレームによって姿勢を更新する
-//		UpdateSkinMeshFrame(CAST_F(m_dwFrame));
+//		UpdateSkinMeshFrame(DX::CAST::F(m_dwFrame));
 //
 //		//	パレット行列を作成
 //		UpdateBoneMatrix();
@@ -283,7 +283,7 @@
 //void DX_SkinMesh::Render()
 //{
 //	//	デバイスコンテキストを取得
-//	auto l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
+//	auto l_pDeviceContext = DX_System::GetDeviceContext();
 //
 //	//	stride
 //	unsigned int l_stride[] = {
@@ -504,7 +504,7 @@
 //float DX_SkinMesh::GetElapsedFrame(const float argFrame, const WORD argCurFrame, const WORD argNextFrame)
 //{
 //	//	(現在フレーム - 開始フレーム) / (終了フレーム - 開始フレーム)
-//	return (CAST_F(argFrame - argCurFrame) / CAST_F(argNextFrame - argCurFrame));
+//	return (DX::CAST::F(argFrame - argCurFrame) / DX::CAST::F(argNextFrame - argCurFrame));
 //}
 //
 ////-----------------------------------------------------------------------------------------

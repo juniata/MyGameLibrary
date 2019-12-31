@@ -134,7 +134,7 @@
 //void DX_Mesh::Render()
 //{
 //	//	デバイスコンテキストを取得
-//	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
+//	ID3D11DeviceContext*	l_pDeviceContext = DX_System::GetDeviceContext();
 //
 //	//	buffer stride and offset
 //	unsigned int l_stride = sizeof(tagMeshVertex);
@@ -177,7 +177,7 @@
 //void DX_Mesh::LoadModel(const char* pFilepath)
 //{
 //	//	デバイスを取得する
-//	ID3D11Device*	l_pDevice = DX_System::GetInstance()->GetDevice();
+//	ID3D11Device*	l_pDevice = DX_System::GetDevice();
 //
 //	//	IMOLoaderを生成する
 //	IMOLoader l_imoLoader(pFilepath);
@@ -251,7 +251,7 @@
 //	ID3D11Buffer*				l_pBuffer			= nullptr;
 //	D3D11_BUFFER_DESC			l_bufferDesc		= { NULL };
 //	D3D11_MAPPED_SUBRESOURCE	l_subResource		= { NULL };
-//	ID3D11DeviceContext*		l_pDeviceContext	= DX_System::GetInstance()->GetDeviceContext();
+//	ID3D11DeviceContext*		l_pDeviceContext	= DX_System::GetDeviceContext();
 //
 //	//	定数バッファを作成
 //	l_bufferDesc.ByteWidth		= sizeof(tagRayPick);
@@ -260,7 +260,7 @@
 //	l_bufferDesc.CPUAccessFlags = 0;
 //
 //	//	bufferを作成
-//	DX_System::GetInstance()->GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
+//	DX_System::GetDevice()->CreateBuffer(&l_bufferDesc, nullptr, &l_pBuffer);
 //
 //	//	updateSubResource
 //	l_pDeviceContext->UpdateSubresource(l_pBuffer, 0, nullptr, &l_rayPick, 0, 0);
@@ -275,7 +275,7 @@
 //	};
 //
 //	//	CPUで値を読めるバッファを作成
-//	ID3D11Buffer* l_pCpuReadBuffer = DX_Buffer::CPUReadBuffer(DX_System::GetInstance()->GetDevice(), (sizeof(XMFLOAT4)+sizeof(XMFLOAT4)) * m_faceCount * 3);
+//	ID3D11Buffer* l_pCpuReadBuffer = DX_Buffer::CPUReadBuffer(DX_System::GetDevice(), (sizeof(XMFLOAT4)+sizeof(XMFLOAT4)) * m_faceCount * 3);
 //
 //	//	値チェック
 //	DEBUG_VALUE_CHECK((l_pCpuReadBuffer == nullptr) ? false : true, "DX_Buffer::CPUReadBuffer() : failed");

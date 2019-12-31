@@ -7,13 +7,31 @@
 #define DELETE_OBJ_ARRAY(x)		if(x){  delete[] x;		x = nullptr;	}	
 #define SAFE_RELEASE(x)			if(x){  x->Release();	x = nullptr;	}
 
-//	キャストマクロ
-#define CAST_C(x) static_cast<char>(x)
-#define CAST_I(x) static_cast<int>(x)
-#define CAST_UI(x) static_cast<unsigned int>(x)
-#define CAST_F(x) static_cast<float>(x)
-#define CAST_D(x) static_cast<double>(x)
-#define CAST_L(x) static_cast<long>(x)
+typedef bool dx_bool;
+typedef void dx_void;
+
+// 1byte
+typedef unsigned char dx_uchar8;
+typedef char dx_char8;
+
+// 2byte
+typedef unsigned short dx_uint16;
+typedef short dx_int16;
+
+// 4byte
+typedef unsigned long dx_uint32;
+typedef long dx_int32;
+
+// 8byte
+typedef unsigned long int dx_uint64;
+typedef long int dx_int64;
+
+// 4byte
+typedef float dx_float;
+
+// 8byte
+typedef double dx_double;
+
 
 typedef ID3D11DeviceContext			ID3D11DC;
 typedef ID3D11ShaderResourceView	ID3D11SRV;
@@ -29,6 +47,38 @@ typedef ID3D11ComputeShader			ID3D11CS;
 typedef ID3D11PixelShader			ID3D11PS;
 
 namespace DX {
+
+	namespace CAST {
+		template<class Type> unsigned int UI(Type t)
+		{
+			return static_cast<unsigned int>(t);
+		}
+
+		template<class Type>  int I(Type t)
+		{
+			return static_cast<int>(t);
+		}
+
+		template<class Type>  char C(Type t)
+		{
+			return static_cast<char>(t);
+		}
+
+		template<class Type>  float F(Type t)
+		{
+			return static_cast<float>(t);
+		}
+
+		template<class Type>  double D(Type t)
+		{
+			return static_cast<double>(t);
+		}
+		template <class Type> long L(Type t)
+		{
+			return static_cast<long>(t);
+		}
+	}
+	
 	struct tagRect {
 		union { float x, left;	};
 		union { float y, top;	};
@@ -53,6 +103,16 @@ namespace DX {
 		//------------------------------------------------------------------------------
 		tagRect(const float x, const float y, const float w, const float h) : x(x), y(y), w(w), h(h) {}
 	};
+
+
+	//--------------------------------------------------
+	//	テクスチャ情報
+	//--------------------------------------------------
+	struct tagTextureInfo : public D3D11_TEXTURE2D_DESC {
+		char filepath[_MAX_PATH];
+		ID3D11ShaderResourceView* pSrv;
+	};
+
 	//--------------------------------------------------
 	//	2D用頂点情報
 	//--------------------------------------------------
@@ -76,6 +136,17 @@ namespace DX {
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT4 color;
 	};
+
+	//--------------------------------------------------
+	//	面情報
+	//--------------------------------------------------
+	struct tagFace {
+		tagVertex			vertex[3];		//	頂点情報
+		DirectX::XMFLOAT3	normal;			//	面法線
+		DWORD				materialNum;	//	マテリアル番号
+		WORD				index[3];		//	インデックス番号
+	};
+
 
 };
 

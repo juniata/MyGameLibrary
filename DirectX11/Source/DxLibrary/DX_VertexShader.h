@@ -29,9 +29,7 @@ public:
 	//	@param[in]	pFilepath	シェーダーファイルのパス
 	//
 	//------------------------------------------------------------------------------
-	void CreateShader(
-		const char* pFilepath
-		);
+	void CreateShader(const char* pFilepath);
 
 	//------------------------------------------------------------------------------
 	//
@@ -40,10 +38,7 @@ public:
 	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
 	//
 	//------------------------------------------------------------------------------
-	void Begin(
-		ID3D11DeviceContext*	pDeviceContext,
-		const unsigned int classInstanceCount = 0
-		);
+	void Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount = 0);
 
 	//------------------------------------------------------------------------------
 	//
@@ -51,12 +46,10 @@ public:
 	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
 	//
 	//------------------------------------------------------------------------------
-	void End(
-		ID3D11DeviceContext*	pDeviceContext
-		);
+	void End(ID3D11DeviceContext* pDeviceContext);
 
 private:
-	ID3D11VertexShader* m_pVertexShader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
 
 	//------------------------------------------------------------------------------
 	//
