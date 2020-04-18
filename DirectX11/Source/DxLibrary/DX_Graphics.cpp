@@ -144,7 +144,9 @@ void DX_Graphics::BeginRender(IDXGISwapChain* pSwapChain)
 {
 	if (m_standByMode){
 		//	Å¬‰»‚È‚Ç‚É‚³‚ê‚Ä‚¨‚èA•`‰æ‚·‚é•K—v‚ª–³‚¢ê‡‚Íreturn
-		if (pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED){ return; }
+		if (pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED){ 
+			return; 
+		}
 		m_standByMode = false;
 	}
 }
@@ -157,7 +159,7 @@ void DX_Graphics::BeginRender(IDXGISwapChain* pSwapChain)
 void DX_Graphics::EndRender(IDXGISwapChain* pSwapChain)
 {
 	if (m_standByMode == false) {
-		if (pSwapChain->Present(FPS_60, 0) == DXGI_STATUS_OCCLUDED) {
+		if (pSwapChain->Present(1, 0) == DXGI_STATUS_OCCLUDED) {
 			m_standByMode = true; 
 		}
 	}

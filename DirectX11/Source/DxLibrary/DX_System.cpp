@@ -85,7 +85,7 @@ DX_System::~DX_System()
 	m_deviceContext->ClearState();
 	m_deviceContext->Flush();
 
-	DX_SceneManager::Release();
+	//DX_SceneManager::Release();
 	DX_Input::Release();
 	DX_RenderState::Destroy();
 	DX_ShaderManager::Release();
@@ -186,7 +186,7 @@ D3D_DRIVER_TYPE DX_System::GetDriverType()
 //  レンダーターゲットを取得
 //
 //-----------------------------------------------------------------------------------------
-ID3D11RenderTargetView*	DX_System::GetDefaultRenderTargetView()
+ID3D11RenderTargetView*	DX_System::GetRenderTargetView()
 {
 	return m_rtv.Get();
 }
@@ -196,7 +196,7 @@ ID3D11RenderTargetView*	DX_System::GetDefaultRenderTargetView()
 //  深度･ステンシルビューを取得
 //
 //-----------------------------------------------------------------------------------------
-ID3D11DepthStencilView*	DX_System::GetDefaultDepthStencilView()
+ID3D11DepthStencilView*	DX_System::GetDepthStencilView()
 {
 	return m_dsv.Get();
 }

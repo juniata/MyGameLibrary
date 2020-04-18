@@ -67,7 +67,7 @@ public:
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	m_rasterizerState;
-	Microsoft::WRL::ComPtr<ID3D11BlendState>			m_blendState;
+	Microsoft::WRL::ComPtr<ID3D11BlendState>		m_blendState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	m_depthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>		m_samplerState;
 
@@ -103,7 +103,6 @@ private:
 	//
 	//------------------------------------------------------------------------------
 	bool CreateSamplerState(ID3D11Device* pDevice);
-
 #if defined(DEBUG) || defined(_DEBUG)
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	m_wireFrameRS;
 #endif

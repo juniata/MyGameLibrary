@@ -23,23 +23,23 @@
 
 #include	"DX_Singleton.h"
 #include	"DX_Define.h"
-#include	"DX_Scene.h"
-#include	"DX_SceneManager.h"
+// #include	"DX_Scene.h"// TODO:SkyLibraryに移行
+//#include	"DX_SceneManager.h"// TODO:SkyLibraryに移行
 #include	"DX_System.h"
-#include	"DX_FrameWork.h"
+//#include	"DX_FrameWork.h"// TODO:SkyLibraryに移行
 #include	"DX_Debug.h"
 #include	"DX_Graphics.h"
 #include	"DX_RenderState.h"
 #include	"DX_Shader.h"
 #include	"DX_ShaderManager.h"
 #include	"DX_ResourceManager.h"
-#include	"DX_View.h"
+//#include	"DX_View.h"// TODO:SkyLibraryに移行
 #include	"DX_Buffer.h"
 #include	"DX_Resource.h"
 #include	"DX_TextureManager.h"
 #include	"DX_GameObject.h"
-#include	"DX_2DObject.h"
-#include	"DX_Button.h"
+//#include	"DX_2DObject.h" // TODO:SkyLibraryに移行
+//#include	"DX_Button.h" // TODO:SkyLibraryに移行
 #include	"DX_Instance2DObject.h"
 #include	"DX_MaptipObject.h"
 #include	"DX_Mesh.h"

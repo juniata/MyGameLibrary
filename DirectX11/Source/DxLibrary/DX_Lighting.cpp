@@ -148,7 +148,7 @@ bool DX_Lighting::SetLightVertexShader()
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertexLighting));	// TODO:こいつを使う
+	pBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertexLighting));
 	if (false == DebugValueCheck(pBuffer, "定数バッファの作成に失敗しました。")) {
 		return false;
 	}

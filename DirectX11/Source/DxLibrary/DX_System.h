@@ -89,7 +89,7 @@ public:
 	//	@return		m_pRenderTargetView
 	//
 	//------------------------------------------------------------------------------
-	ID3D11RenderTargetView*  GetDefaultRenderTargetView();
+	ID3D11RenderTargetView*  GetRenderTargetView();
 
 	//------------------------------------------------------------------------------
 	//
@@ -97,7 +97,7 @@ public:
 	//	@return		m_pDepthStencilview
 	//
 	//------------------------------------------------------------------------------
-	ID3D11DepthStencilView* 	GetDefaultDepthStencilView();
+	ID3D11DepthStencilView* 	GetDepthStencilView();
 
 	//------------------------------------------------------------------------------
 	//

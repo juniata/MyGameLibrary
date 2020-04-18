@@ -1,9 +1,8 @@
-#ifndef __DX_VIEW_H_
-#define __DX_VIEW_H_
+#pragma once
 
 //	デフォルト用
 #ifndef PI
-	#define PI DX::CAST::F(3.14159265358979323846f) 
+#define PI DX::CAST::F(3.14159265358979323846f) 
 #endif
 
 //****************************************************************************************************
@@ -11,7 +10,7 @@
 //	View
 //
 //****************************************************************************************************
-class DX_View
+class View
 {
 public:
 	//------------------------------------------------------------------------------
@@ -19,14 +18,14 @@ public:
 	//  @brief		メンバ変数を初期化
 	//
 	//------------------------------------------------------------------------------
-	DX_View();
+	View();
 
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		解放
 	//
 	//------------------------------------------------------------------------------
-	virtual ~DX_View();
+	virtual ~View();
 
 	//------------------------------------------------------------------------------
 	//
@@ -91,7 +90,7 @@ public:
 	//
 	//------------------------------------------------------------------------------
 	void SetTarget(const DirectX::XMFLOAT3& target);
-	
+
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		座標を取得
@@ -150,14 +149,14 @@ protected:
 	DirectX::XMFLOAT4X4 m_matView;
 	DirectX::XMFLOAT4X4 m_matProj;
 	DirectX::XMFLOAT4X4 m_matViewProj;
-	
+
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_target;
 	DirectX::XMFLOAT3 m_upDirection;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 
-	struct tagFov{
+	struct tagFov {
 		float fovY;
 		float znear;
 		float zfar;
@@ -172,4 +171,3 @@ protected:
 	//	視錐台の面を何フレームおきに作成するかを設定
 	int m_updateFrameNum;
 };
-#endif // !__DX_VIEW_H_

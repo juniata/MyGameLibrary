@@ -1,4 +1,4 @@
-#include	"DX_Library.h"
+#include	"SkyLibrary.h"
 #include	"Games\SceneMain\SceneMain.h"
 #include	<mmsystem.h>
 #include	<stdio.h>
@@ -74,10 +74,10 @@ void CloseConsoleWindow()
 //	メンバー変数を初期化
 //
 //-----------------------------------------------------------------------------------------
-DX_FrameWork::DX_FrameWork() :
-m_pAppName(nullptr),
-m_hInstance(NULL),
-m_hWnd(NULL)
+FrameWork::FrameWork() :
+	m_pAppName(nullptr),
+	m_hInstance(NULL),
+	m_hWnd(NULL)
 {
 	ZeroMemory(&m_fps, sizeof(m_fps));
 	m_fps.startTime = timeGetTime();
@@ -88,11 +88,13 @@ m_hWnd(NULL)
 //	ウィンドウクラスを削除し、メモリを解放
 //
 //-----------------------------------------------------------------------------------------
-DX_FrameWork::~DX_FrameWork()
+FrameWork::~FrameWork()
 {
+	// SkyLibraryを解放
+	SceneManager::Release();
+
 	//	DX_Libraryを解放する
 	DX_System::Destroy();
-
 	DX_Debug::GetInstance()->ReportLiveDeviceObjects("DX_System::Destroy() after");
 	DX_Debug::Destroy();
 
@@ -104,7 +106,7 @@ DX_FrameWork::~DX_FrameWork()
 //	ウィンドウを初期化する
 //
 //-----------------------------------------------------------------------------------------
-bool DX_FrameWork::Initialize()
+bool FrameWork::Initialize()
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	// メモリリークチェック
@@ -121,7 +123,7 @@ bool DX_FrameWork::Initialize()
 	unsigned int screenHeight = pSystem->GetScreenHeight();
 
 	//	ウィンドウを作成
-	if (!CreateAppWindow("DirectX11", screenWidth, screenHeight)){
+	if (!CreateAppWindow("DirectX11", screenWidth, screenHeight)) {
 		return false;
 	}
 
@@ -138,34 +140,34 @@ bool DX_FrameWork::Initialize()
 //  シーンを走らせる(更新＆描画)
 //
 //-----------------------------------------------------------------------------------------
-void DX_FrameWork::Run()
+void FrameWork::Run()
 {
 	MSG msg = { NULL };
-	
+
 	//	スワップチェインを取得
 	IDXGISwapChain* pSwapChain = DX_System::GetInstance()->GetSwapChain();
 
 	//	現在のシーンを取得
-	DX_SceneManager::SetBootScene(new SceneMain());
-	
+	SceneManager::SetBootScene(new SceneMain());
+
 	//	ループ処理
-	while (msg.message != WM_QUIT){
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
+	while (msg.message != WM_QUIT) {
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else{
+		else {
 			//	FPSを更新
 			FPSUpdate();
-		
+
 			// シーンの更新
-			DX_SceneManager::Update(m_hWnd, msg.message, msg.wParam);
+			SceneManager::Update(m_hWnd, msg.message, msg.wParam);
 
 			// シーンの描画
-			DX_SceneManager::Render(pSwapChain);
+			SceneManager::Render(pSwapChain);
 
 			// ゲームエンドか？
-			if (DX_SceneManager::IsGameEnd()) {
+			if (SceneManager::IsGameEnd()) {
 				break;
 			}
 		}
@@ -177,7 +179,7 @@ void DX_FrameWork::Run()
 //	ウィンドウを作成する
 //
 //-----------------------------------------------------------------------------------------
-bool DX_FrameWork::CreateAppWindow(char* pAppName, const unsigned int width, const unsigned int height)
+bool FrameWork::CreateAppWindow(char* pAppName, const unsigned int width, const unsigned int height)
 {
 	//	アプリケーション名を保存
 	m_pAppName = pAppName;
@@ -187,26 +189,26 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const unsigned int width, con
 
 	// windowクラスを設定
 	WNDCLASS wc;
-	wc.style			= CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc		= WndProc;
-	wc.cbClsExtra		= 0;
-	wc.cbWndExtra		= 0;
-	wc.hInstance		= m_hInstance;
-	wc.hIcon			= LoadIcon(m_hInstance, IDI_APPLICATION);
-	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground	= (HBRUSH)GetStockObject(BACKUP_SPARSE_BLOCK);
-	wc.lpszMenuName		= NULL;
-	wc.lpszClassName	= m_pAppName;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = WndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = m_hInstance;
+	wc.hIcon = LoadIcon(m_hInstance, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(BACKUP_SPARSE_BLOCK);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = m_pAppName;
 
 	//	クラスを登録する5
-	if (!RegisterClass(&wc)){
+	if (!RegisterClass(&wc)) {
 		MessageBox(NULL, "RegisterClass() failed", "Error", MB_OK);
 		return false;
 	}
 
 	//	ウィンドウのスタイルを設定
 	int style = WS_OVERLAPPEDWINDOW | WS_POPUP;
-	
+
 	// 画面の中心に描画されるようにする
 	RECT rect;
 	SetRect(&rect, 0, 0, DX::CAST::I(width), DX::CAST::I(height));
@@ -230,46 +232,46 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const unsigned int width, con
 
 	//	windowを作成する
 	m_hWnd = CreateWindow(
-		m_pAppName, 
+		m_pAppName,
 		m_pAppName,
 		style,
 		leftPos,
 		topPos,
 		rect.right,
 		rect.bottom,
-		NULL, 
-		NULL, 
+		NULL,
+		NULL,
 		m_hInstance,
 		NULL);
 
-	if (m_hWnd == NULL){
+	if (m_hWnd == NULL) {
 		MessageBox(NULL, "CreateWindow() failed", "Error", MB_OK);
 		PostQuitMessage(0);
 		return false;
 	}
-	
-//
-//	HMENU hMenu = CreateMenu();
-//	//	メニューを作成
-//#if defined(DEBUG) || defined(_DEBUG)
-//	HMENU renderFileMenu = CreateMenu();
-//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_SOLID, "ソリッド");
-//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_WIRE_FRAME, "ワイヤーフレーム");
-//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderFileMenu, "描画方法");
-//	SetMenu(m_hWnd, hMenu);
-//#endif
-//	HMENU renderSizeFileMenu = CreateMenu();
-//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_WINDOW_MODE, "ウィンドウモード");
-//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_FULL_SCREEN, "フルスクリーンモード");
-//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
-//	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderSizeFileMenu, "ウィンドウサイズ");
-//
-//	SetMenu(m_hWnd, hMenu);
+
+	//
+	//	HMENU hMenu = CreateMenu();
+	//	//	メニューを作成
+	//#if defined(DEBUG) || defined(_DEBUG)
+	//	HMENU renderFileMenu = CreateMenu();
+	//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_SOLID, "ソリッド");
+	//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(renderFileMenu, MF_STRING, FILE_MENU_RENDER_WIRE_FRAME, "ワイヤーフレーム");
+	//	AppendMenu(renderFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderFileMenu, "描画方法");
+	//	SetMenu(m_hWnd, hMenu);
+	//#endif
+	//	HMENU renderSizeFileMenu = CreateMenu();
+	//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_WINDOW_MODE, "ウィンドウモード");
+	//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(renderSizeFileMenu, MF_STRING, FILE_MENU_RENDER_FULL_SCREEN, "フルスクリーンモード");
+	//	AppendMenu(renderSizeFileMenu, MF_SEPARATOR, NULL, NULL);
+	//	AppendMenu(hMenu, MF_POPUP, (UINT_PTR)renderSizeFileMenu, "ウィンドウサイズ");
+	//
+	//	SetMenu(m_hWnd, hMenu);
 
 	ShowWindow(m_hWnd, SW_SHOW);
 	SetForegroundWindow(m_hWnd);
@@ -283,7 +285,7 @@ bool DX_FrameWork::CreateAppWindow(char* pAppName, const unsigned int width, con
 //	FPSを更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_FrameWork::FPSUpdate()
+void FrameWork::FPSUpdate()
 {
 	m_fps.count++;
 

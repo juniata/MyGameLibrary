@@ -1,20 +1,20 @@
-#include	"DX_Library.h"
+#include	"SkyLibrary.h"
 
 //-----------------------------------------------------------------------------------------
 //
 //	staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DX_Scene*				DX_SceneManager::m_pCurScene	= nullptr;	//	現在のシーン
-DX_Scene*				DX_SceneManager::m_pNextScene	= nullptr;	//	次のシーン
-DX_SceneManager::STATE	DX_SceneManager::m_state		= DX_SceneManager::STATE::NONE;
+Scene*				SceneManager::m_pCurScene = nullptr;	//	現在のシーン
+Scene*				SceneManager::m_pNextScene = nullptr;	//	次のシーン
+SceneManager::STATE	SceneManager::m_state = SceneManager::STATE::NONE;
 
 //-----------------------------------------------------------------------------------------
 //
 //	解放を行う
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Release()
+void SceneManager::Release()
 {
 	// TODO:メモリリークのため削除するが、本来はしない。(されてはいけない)
 	DELETE_OBJ(m_pCurScene);
@@ -26,10 +26,10 @@ void DX_SceneManager::Release()
 //	ゲーム起動時のシーンを設定
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::SetBootScene(DX_Scene* pScene)
+void SceneManager::SetBootScene(Scene* pScene)
 {
 	m_pCurScene = pScene;
-	m_state = DX_SceneManager::STATE::INIT;
+	m_state = SceneManager::STATE::INIT;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -37,25 +37,25 @@ void DX_SceneManager::SetBootScene(DX_Scene* pScene)
 //	シーンを更新する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM wParam)
+void SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM wParam)
 {
 	switch (m_state)
 	{
-	case DX_SceneManager::STATE::INIT:
+	case SceneManager::STATE::INIT:
 		if (m_pCurScene->Initialize()) {
-			m_state = DX_SceneManager::STATE::UPDATE;
+			m_state = SceneManager::STATE::UPDATE;
 		}
 		else {
 			GameEnd();
 			break;
 		}
 
-	case DX_SceneManager::STATE::UPDATE:
+	case SceneManager::STATE::UPDATE:
 		DX_Input::Update(hWnd, message, wParam);
-		m_pCurScene->Update() ? m_state = DX_SceneManager::STATE::RENDER : GameEnd();
+		m_pCurScene->Update() ? m_state = SceneManager::STATE::RENDER : GameEnd();
 		break;
 	}
-	
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -63,11 +63,11 @@ void DX_SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM w
 //	シーンを描画する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
+void SceneManager::Render(IDXGISwapChain* pSwapChain)
 {
 	switch (m_state)
 	{
-	case DX_SceneManager::STATE::RENDER:
+	case SceneManager::STATE::RENDER:
 
 		//	描画開始
 		DX_Graphics::BeginRender(pSwapChain);
@@ -78,7 +78,7 @@ void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
 			GameEnd();
 		}
 		else {
-			m_state = DX_SceneManager::STATE::UPDATE;
+			m_state = SceneManager::STATE::UPDATE;
 		}
 
 		//	描画終了
@@ -89,10 +89,10 @@ void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
 			ChangeScene();
 		}
 		break;
-	case DX_SceneManager::STATE::END:
+	case SceneManager::STATE::END:
 		EndScene();
 	}
-	
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -100,9 +100,9 @@ void DX_SceneManager::Render(IDXGISwapChain* pSwapChain)
 //	ゲーム終了かどうか
 //
 //-----------------------------------------------------------------------------------------
-bool DX_SceneManager::IsGameEnd()
+bool SceneManager::IsGameEnd()
 {
-	return m_state == DX_SceneManager::STATE::END;
+	return m_state == SceneManager::STATE::END;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ bool DX_SceneManager::IsGameEnd()
 //	シーンを変更する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::ChangeScene(DX_Scene* pNextScene)
+void SceneManager::ChangeScene(Scene* pNextScene)
 {
 	m_pNextScene = pNextScene;
 }
@@ -120,9 +120,9 @@ void DX_SceneManager::ChangeScene(DX_Scene* pNextScene)
 //	ゲームを終了する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::GameEnd()
+void SceneManager::GameEnd()
 {
-	m_state = DX_SceneManager::STATE::END;
+	m_state = SceneManager::STATE::END;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -130,19 +130,19 @@ void DX_SceneManager::GameEnd()
 //	シーンを遷移する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::ChangeScene()
+void SceneManager::ChangeScene()
 {
 	// 破棄処理に成功したときだけ遷移処理を実行
 	if (m_pCurScene->Destroy()) {
 		DELETE_OBJ(m_pCurScene);
 		m_pCurScene = m_pNextScene;
 		m_pNextScene = nullptr;
-		m_state = DX_SceneManager::STATE::INIT;
+		m_state = SceneManager::STATE::INIT;
 	}
 	else {
-		 GameEnd();
+		GameEnd();
 	}
-	
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void DX_SceneManager::ChangeScene()
 //	現在のシーンを破棄する
 //
 //-----------------------------------------------------------------------------------------
-void DX_SceneManager::EndScene()
+void SceneManager::EndScene()
 {
 	if (m_pCurScene->Destroy()) {
 		DELETE_OBJ(m_pCurScene);

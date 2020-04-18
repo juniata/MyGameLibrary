@@ -33,11 +33,10 @@ bool DX_RenderState::Initialize()
 
 
 	//	OMに必要情報を設定
-	float l_blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	ID3D11RenderTargetView* const targets[1] = { pSystem->GetDefaultRenderTargetView() };
-	pContext->OMSetRenderTargets(1, targets, pSystem->GetDefaultDepthStencilView());
+	ID3D11RenderTargetView* const targets[1] = { pSystem->GetRenderTargetView() };
+	pContext->OMSetRenderTargets(1, targets, pSystem->GetDepthStencilView());
 	pContext->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
-	
+
 	//	サンプラーを設定する
 	ID3D11SamplerState* const sampler[1] = { m_samplerState.Get() };
 	pContext->PSSetSamplers(0, 1, sampler);

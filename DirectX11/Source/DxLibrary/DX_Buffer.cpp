@@ -160,35 +160,6 @@ ID3D11Buffer*	DX_Buffer::CPUReadBuffer(ID3D11Device* pDevice, const size_t buffe
 
 	return CreateBuffer(pDevice, &desc);
 }
-//-----------------------------------------------------------------------------------------
-//
-//  2D‚ğ•`‰æ
-//
-//-----------------------------------------------------------------------------------------
-bool DX_Buffer::Render2D(ID3D11DeviceContext* pContext, ID3D11Buffer* pVertexBuffer, ID3D11ShaderResourceView* pShaderRerousceView)
-{
-	bool result = false;
-
-	unsigned int l_stride = sizeof(DX::tagVertex2D);
-	unsigned int l_offset = 0;
-
-	//	VertexBuffer‚ğ‘—‚é
-	pContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &l_stride, &l_offset);
-
-	//	InputLayout‚Ìİ’è‚ğ‘—‚é
-	pContext->IASetInputLayout(DX_ShaderManager::GetDefaultInputLayout2D());
-
-	//	Primitive‚Ìİ’è‚ğ‘—‚é
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	//	PixelShader‚ÉƒeƒNƒXƒ`ƒƒî•ñ‚ğ‘—‚é
-	result = DX_ResourceManager::SetShaderResources(pContext, 0, 1, &pShaderRerousceView,DX_SHADER_TYPE::PIXEL_SHADER);
-
-	//	•`‰æ
-	pContext->Draw(4, 0);
-
-	return result;
-}
 
 //-----------------------------------------------------------------------------------------
 //
