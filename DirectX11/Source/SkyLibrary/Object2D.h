@@ -165,13 +165,15 @@ public:
 	//------------------------------------------------------------------------------
 	void Update(const bool isLRMirror = false, const bool isUDMirror = false);
 
+	static void SetCalcRectVertex(DX::tagVertex2D** rectVertices, DX::tagRect& rectPos);
+
 protected:
 	DX::tagRect m_rectPos;
 	DX::tagRect m_uv;
 
 private:
-	ID3D11Buffer*				m_pVertexBuffer;
-	ID3D11ShaderResourceView*	m_pShaderResourceView;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>				m_vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	m_srv;
 	unsigned int m_height;
 	unsigned int m_width;
 	bool m_isCloned;
@@ -200,12 +202,11 @@ private:
 	//------------------------------------------------------------------------------
 	//
 	//  @brief		頂点情報を作成する
-	//	@param[in]	pContext	コンテキスト
 	//	@param[in]	rectPos		画面に描画する範囲	
 	//	@param[in]	uv			描画する画像の範囲
 	//	@param[in]	isLRMirror	左右反転するかどうか
 	//	@param[in]	isUDMirror	上下反転するかどうか
 	//
 	//------------------------------------------------------------------------------
-	void CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror = false, const bool isUDMirror = false);
+	void CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror = false, const bool isUDMirror = false);
 };

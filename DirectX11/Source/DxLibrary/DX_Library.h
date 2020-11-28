@@ -5,8 +5,28 @@
 	DirectXを用いたゲームエンジンです。
 	Windwos10に対応。
 	DreictX11で作成中。
+	のちにDirectX12に対応させます。
+	DirectX APIをラップして使いやすくしてクラス群があります。
 
 	使いやすさ重視で設計します。
+
+
+	コーティング規約
+	・メンバ変数はm_をつける。
+	理由：クラス内で使用する際、メンバ変数に何があるかが把握しやすいから！
+	
+	・｛｝は改行してやる。
+	例)
+	if ()
+	{
+	}
+	理由：クラスを定義するときもカッコは改行してるから統制している。
+
+	・条件式では否定系を使うときは、falseを使おう！
+	例)
+	if (hogehoge == false)
+	理由：！を使うとたまに見落としてしまう目ん玉してるから
+
 
 */
 
@@ -23,35 +43,20 @@
 
 #include	"DX_Singleton.h"
 #include	"DX_Define.h"
-// #include	"DX_Scene.h"// TODO:SkyLibraryに移行
-//#include	"DX_SceneManager.h"// TODO:SkyLibraryに移行
 #include	"DX_System.h"
-//#include	"DX_FrameWork.h"// TODO:SkyLibraryに移行
 #include	"DX_Debug.h"
 #include	"DX_Graphics.h"
 #include	"DX_RenderState.h"
 #include	"DX_Shader.h"
 #include	"DX_ShaderManager.h"
-#include	"DX_ResourceManager.h"
-//#include	"DX_View.h"// TODO:SkyLibraryに移行
-#include	"DX_Buffer.h"
+#include	"DX_BufferCreater.h"
 #include	"DX_Resource.h"
 #include	"DX_TextureManager.h"
-#include	"DX_GameObject.h"
-//#include	"DX_2DObject.h" // TODO:SkyLibraryに移行
-//#include	"DX_Button.h" // TODO:SkyLibraryに移行
 #include	"DX_Instance2DObject.h"
-#include	"DX_MaptipObject.h"
-#include	"DX_Mesh.h"
-#include	"DX_SkinMesh.h"
-#include	"DX_InstanceMesh.h"
-#include	"DX_InstanceSkinMesh.h"
-#include	"DX_Box.h"
-#include	"DX_Lighting.h"
 #include	"DX_Audio.h"
 #include	"DX_Input.h"
 #include	"DX_XInput.h"
-#include	"DX_Particle.h"
 #include	"DX_Font.h"
+#include	"DX_Text.h"
 
 #endif // !__DX_LIBRARY_H_

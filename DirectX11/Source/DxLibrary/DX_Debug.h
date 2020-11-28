@@ -10,123 +10,66 @@ enum class SET_PRINT_COLOR : int {
 };
 
 
-//****************************************************************************************************
-//
-//	debug時のみ、値チェックをする。
-//
-//****************************************************************************************************
+/// <summary>
+/// Debugコンソールに文字を出力する。
+/// </summary>
 #if defined(DEBUG) || defined(_DEBUG)
-template<class T> bool DebugValueCheck(T value, const char* pErrMsg)
-{
-	bool isSucceed = value ? true : false;
-	
-	if (isSucceed == false) {
-		MessageBox(DX_System::GetInstance()->GetWindowHandle(), pErrMsg,  "Error", MB_OK);
-	}
-
-	return isSucceed;
-}
-
-
-void __Trace(const char* pFile, int line, LPCSTR pszFormat, ...);
-#define TRACE(x)			__Trace(__FILE__, __LINE__, x)
-#define TRACE2(x, x2)		__Trace(__FILE__, __LINE__, x, x2)
-#define TRACE3(x, x2, x3)	__Trace(__FILE__, __LINE__, x, x2, x3)
-
+	void __Trace(const char* file, int line, LPCSTR pszFormat, ...);
+	#define TRACE(...)			__Trace(__FILE__, __LINE__, __VA_ARGS__);
 #else
-#define DebugValueCheck(bFlag, pMessage) true
-#define TRACE(x)
-#define TRACE2(x, x2)
-#define TRACE3(x, x2, x3)
+	#define TRACE(...)
 #endif
 
 struct IDXGIDebug;
-//****************************************************************************************************
-//
-//	DX_Debug
-//
-//****************************************************************************************************
+
+/// <summary>
+/// IDXGIDebugを管理
+/// </summary>
 class DX_Debug : public DX_Singleton<DX_Debug>
 {
-	friend class DX_Singleton<DX_Debug>;
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数の初期化を行う
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// デバイスの生成等を行う
+	/// </summary>
 	void Initialize();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		ID3D系の生存オブジェクトを調査する
-	//
-	//------------------------------------------------------------------------------
-	void ReportLiveDeviceObjects(const char* pMessage);
+	/// <summary>
+	/// ID3D系の生存オブジェクトを調査する
+	/// </summary>
+	/// <param name="message">デバッグコンソールに表示する内容</param>
+	void ReportLiveDeviceObjects(const char* message);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		戻り値をチェックする
-	//	@param[in]	hr	さまざまな関数の戻り値(D3D系)
-	//	@retrun		true:成功	false:失敗
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// HRESULT型をチェックする
+	/// </summary>
+	/// <param name="hr">HRESULT型の戻り値</param>
+	/// <returns>成否</returns>
 	bool CheckHresult(HRESULT hr);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		戻り値をチェックする
-	//	@param[in]	hr	さまざまな関数の戻り値(D3D系)
-	//	@retrun		true:成功	false:失敗
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// HRESULT型をチェックする
+	/// </summary>
+	/// <param name="hr">HRESULT型の戻り値</param>
+	/// <returns>成否</returns>
 	bool IsFailedHresult(HRESULT hr);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーファイルをチェック
-	//	@param[in]	hr			D3DX11CompileFromFile()の戻り値
-	//	@param[in]	pBytecord	D3DX11CompileFromFile()で出来たバイトコード
-	//
-	//------------------------------------------------------------------------------
-	void CheckSourceCordOfShaderFile(HRESULT hr, ID3DBlob* pBytecord);
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		コンソール画面に出力する文字の色を設定
-	//	@param[in]	printColor	SET_PRINT_COLOR
-	//	
-	//------------------------------------------------------------------------------
-	void SetPrintColor(SET_PRINT_COLOR printColor);
-	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		コンソール画面に文字を出力する
-	//	@param[in]	pFormat printfのラッパーなので同じ使い方
-	//	@note		debug時のみ出力
-	//	
-	//------------------------------------------------------------------------------
-	void Printf(const char* pFormat, ...);
 private:
+	friend class DX_Singleton<DX_Debug>;
+
+	/// <summary>
+	/// メンバ変数の初期化を行う。
+	/// </summary>
+	DX_Debug();
+
+
 #if defined(DEBUG) || defined(_DEBUG)
 	Microsoft::WRL::ComPtr<IDXGIDebug> m_debug;
 	HANDLE	m_consoleHandle;
 	CONSOLE_SCREEN_BUFFER_INFO m_csbi;
-#endif
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		コンストラクタ
-	//
-	//------------------------------------------------------------------------------
-	DX_Debug();
-
-#if defined(DEBUG) || defined(_DEBUG)
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		m_debugを生成する
-	//
-	//------------------------------------------------------------------------------
+	
+	/// <summary>
+	/// IDXGIDebugを生成する
+	/// </summary>
 	void CreateDebugDevice();
 #endif
 

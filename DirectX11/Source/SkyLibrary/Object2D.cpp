@@ -9,8 +9,6 @@
 //
 //-----------------------------------------------------------------------------------------
 Object2D::Object2D() :
-	m_pVertexBuffer(nullptr),
-	m_pShaderResourceView(nullptr),
 	m_height(0),
 	m_width(0),
 	m_isCloned(false),
@@ -27,10 +25,6 @@ Object2D::Object2D() :
 //-----------------------------------------------------------------------------------------
 Object2D::~Object2D()
 {
-	if (IsOriginal()) {
-		SAFE_RELEASE(m_pVertexBuffer);
-		DX_TextureManager::Release(m_pShaderResourceView);
-	}
 }
 
 //-----------------------------------------------------------------------------------------
@@ -48,7 +42,8 @@ bool Object2D::CommonInitialize(const char* pFilepath)
 		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
 	};
 
-	if (nullptr == (m_pVertexBuffer = DX_Buffer::CreateVertexBuffer(DX_System::GetInstance()->GetDevice(), sizeof(vertices), vertices))) {
+	m_vertexBuffer.Attach(DX_BufferCreater::VertexBuffer(sizeof(vertices), vertices));
+	if (nullptr == m_vertexBuffer.Get()) {
 		TRACE("failed to DX_Buffer::CreateVertexBuffer()");
 		return false;
 	}
@@ -136,41 +131,31 @@ unsigned int Object2D::GetWidth()const
 //-----------------------------------------------------------------------------------------
 bool Object2D::Render()
 {
-	auto result = false;
+	auto result = true;
 
-	//	デバイスコンテキストを取得
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
+	ID3D11DeviceContext* deviceContext = DX_System::GetInstance()->GetDeviceContext();
 
-	//	シェーダーを取得
-	DX_Shader* pVertexShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::VERTEX_SHADER);
-	DX_Shader* pPixelShader = DX_ShaderManager::GetShader(DEFAULT_2D_SHADER::PIXEL_SHADER);
+	DX_ShaderManager* shaderManager = DX_ShaderManager::GetInstance();
 
-	//	シェーダーを利用
-	pVertexShader->Begin(pContext);
-	pPixelShader->Begin(pContext);
+	DX_Shader* vertexShader = shaderManager->GetShader(SHADER_OBJECT_2D::VERTEX_SHADER);
+	DX_Shader* pixelShader = shaderManager->GetShader(SHADER_OBJECT_2D::PIXEL_SHADER);
 
-	//	描画
+	vertexShader->Begin();
+	pixelShader->Begin();
+
 	unsigned int stride = sizeof(DX::tagVertex2D);
 	unsigned int offset = 0;
 
-	//	VertexBufferを送る
-	pContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+	deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
+	deviceContext->IASetInputLayout(shaderManager->GetInputLayout2D());
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	
+	shaderManager->SetShaderResources(0, 1, m_srv.GetAddressOf(), SHADER_TYPE::PIXEL_SHADER);
 
-	//	InputLayoutの設定を送る
-	pContext->IASetInputLayout(DX_ShaderManager::GetDefaultInputLayout2D());
+	deviceContext->Draw(4, 0);
 
-	//	Primitiveの設定を送る
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	//	PixelShaderにテクスチャ情報を送る
-	result = DX_ResourceManager::SetShaderResources(pContext, 0, 1, &m_pShaderResourceView, DX_SHADER_TYPE::PIXEL_SHADER);
-
-	//	描画
-	pContext->Draw(4, 0);
-
-	//	シェーダーを終了
-	pVertexShader->End(pContext);
-	pPixelShader->End(pContext);
+	vertexShader->End();
+	pixelShader->End();
 
 	return result;
 }
@@ -183,12 +168,14 @@ bool Object2D::Render()
 bool Object2D::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
-	if (nullptr == (m_pShaderResourceView = DX_TextureManager::GetTexture(pFilepath))) {
-		TRACE2("failed to DX_TextureManager::GetTexture(), filepath = %s", pFilepath);
+	m_srv.Attach(DX_TextureManager::GetTexture(pFilepath));
+
+	if (nullptr == m_srv.Get()) {
+		TRACE("failed to DX_TextureManager::GetTexture(), filepath = %s", pFilepath);
 		return false;
 	}
 
-	DX_TextureManager::GetTextureSize(&m_width, &m_height, m_pShaderResourceView);
+	DX_TextureManager::GetTextureSize(&m_height, &m_width, m_srv.Get());
 
 	return true;
 }
@@ -203,6 +190,7 @@ Object2D* Object2D::Clone()
 {
 	auto pObject = new Object2D(*this);
 	pObject->m_isCloned = true;
+	pObject->m_vertexBuffer = m_vertexBuffer;
 
 	return pObject;
 }
@@ -332,7 +320,7 @@ void Object2D::Update(const bool isLRMirror, const bool isUDMirror)
 		ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
 		//	頂点情報を作成
-		CreateVertex(pContext, m_rectPos, m_uv, isLRMirror, isUDMirror);
+		CreateVertex(m_rectPos, m_uv, isLRMirror, isUDMirror);
 
 		m_isChanged = false;
 		m_isLRMirror = isLRMirror;
@@ -340,14 +328,55 @@ void Object2D::Update(const bool isLRMirror, const bool isUDMirror)
 	}
 }
 
+void Object2D::SetCalcRectVertex(DX::tagVertex2D** rectVertices, DX::tagRect& rectPos)
+{
+	DX_System* system = DX_System::GetInstance();
+	ID3D11DeviceContext* deviceContext = system->GetDeviceContext();
+
+	float windowWidth	= static_cast<float>(system->GetScreenWidth());
+	float windowHeight	= static_cast<float>(system->GetScreenHeight());
+
+	//	-1.0f ~ 1.0fに座標を正規化する
+	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
+
+	DX::tagRect resultRect;
+	resultRect.left		= center.x * rectPos.x - 1.0f;
+	resultRect.right	= center.x * rectPos.w - 1.0f;
+	resultRect.bottom	= 1.0f - center.y * rectPos.h;
+	resultRect.top		= 1.0f - center.y * rectPos.y;
+
+
+	//	左
+	rectVertices[0]->pos.x = resultRect.left;
+	rectVertices[1]->pos.x = resultRect.left;
+
+	//	下の座標
+	rectVertices[0]->pos.y = resultRect.bottom;
+	rectVertices[2]->pos.y = resultRect.bottom;
+
+	//	上の座標
+	rectVertices[1]->pos.y = resultRect.top;
+	rectVertices[3]->pos.y = resultRect.top;
+
+	//	右の座標
+	rectVertices[2]->pos.x = resultRect.right;
+	rectVertices[3]->pos.x = resultRect.right;
+
+	//	z値
+	rectVertices[0]->pos.z = 0.0f;
+	rectVertices[1]->pos.z = 0.0f;
+	rectVertices[2]->pos.z = 0.0f;
+	rectVertices[3]->pos.z = 0.0f;
+}
 //-----------------------------------------------------------------------------------------
 //
 //  頂点情報を作成する
 //
 //-----------------------------------------------------------------------------------------
-void Object2D::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror, const bool isUDMirror)
+void Object2D::CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror, const bool isUDMirror)
 {
 	DX_System* pSystem = DX_System::GetInstance();
+	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
 
 	float windowWidth = DX::CAST::F(pSystem->GetScreenWidth());
 	float windowHeight = DX::CAST::F(pSystem->GetScreenHeight());
@@ -444,5 +473,5 @@ void Object2D::CreateVertex(ID3D11DeviceContext* pContext, const DX::tagRect& re
 	pVertices[3].uv.x = norUV.right;
 
 	// バッファの上書き
-	pContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, pVertices, 0, 0);
+	pContext->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, pVertices, 0, 0);
 }

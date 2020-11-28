@@ -34,7 +34,7 @@ View::View() :
 	//	Ž‹‘ä‚Ì–Ê‚ðì¬
 	CreateFrustum();
 
-	m_constantBuffer = DX_Buffer::CreateConstantBuffer(DX_System::GetInstance()->GetDevice(), sizeof(DirectX::XMFLOAT4X4) * 3);
+	m_constantBuffer = DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4X4) * 3);
 }
 
 
@@ -162,14 +162,14 @@ void View::SetProjection(
 //-----------------------------------------------------------------------------------------
 void View::SetMatrixForTheView()
 {
-	DirectX::XMFLOAT4X4 l_mat[] = {
+	DirectX::XMFLOAT4X4 mat[] = {
 		m_matView,
 		m_matProj,
 		m_matViewProj
 	};
 
 	//	s—ñ‚ð‘—‚é
-	DX_ShaderManager::SetMatrix(m_constantBuffer.Get(), 0, l_mat, 3, DX_System::GetInstance()->GetDeviceContext(), DX_SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetMatrix(m_constantBuffer.GetAddressOf(), 0, mat, 1, SHADER_TYPE::VERTEX_SHADER);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -397,6 +397,7 @@ bool View::IsCheckCubeInFrustum(const DirectX::XMFLOAT3& center, const float rad
 //-----------------------------------------------------------------------------------------
 bool View::IsCheckSphereInFrustum(const DirectX::XMFLOAT3& center, const float radius)
 {
+	
 	//for (int i = 0; i < 6; ++i){
 	//	if (PlaneDotCoord(m_plane[i], center) < -radius){
 	//		return false;

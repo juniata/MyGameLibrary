@@ -1,134 +1,104 @@
 #ifndef __DX_SYSTEM_H_
 #define __DX_SYSTEM_H_
 	
-//****************************************************************************************************
-//
-//	System
-//
-//****************************************************************************************************
+/*
+	DirectXデバイス等を管理するクラスです。
+*/
 class DX_System : public DX_Singleton<DX_System>
 {
-	friend class DX_Singleton<DX_System>;
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		DirectXを初期化する
-	//	@param[in]	hwnd	DX_Framework::GetHwnd()
-	//
-	//------------------------------------------------------------------------------
-	bool Initialize(HWND hWnd, HINSTANCE hInst);
+	/// <summary>
+	/// DirectXのデバイス等を初期化する
+	/// </summary>
+	/// <param name="hWnd">ウィンドウのインスタンスハンドル</param>
+	/// <param name="hInst">ウィンドウのインスタンス</param>
+	/// <param name="width">スクリーンの幅</param>
+	/// <param name="height">スクリーンの高さ</param>
+	/// <returns>成否</returns>
+	bool Initialize(HWND hWnd, HINSTANCE hInst, const UINT width, const UINT height);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スクリーンサイズを設定
-	//	@param[in]	width ウィンドウ幅
-	//	@param[in]	height ウィンドウ高さ
-	//
-	//------------------------------------------------------------------------------
-	void SetScreenSize(const unsigned int width, const unsigned int height);
+	/// <summary>
+	/// スクリーンの高さを取得する
+	/// </summary>
+	/// <returns>スクリーンの高さ</returns>
+	UINT GetScreenHeight();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スクリーンの高さを取得
-	//	@return		m_windowHeight
-	//
-	//------------------------------------------------------------------------------
-	unsigned int GetScreenHeight();
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スクリーンの幅を取得
-	//	@return		m_windowWidth
-	//
-	//------------------------------------------------------------------------------
-	unsigned int GetScreenWidth();
+	/// <summary>
+	/// スクリーンの幅を取得する
+	/// </summary>
+	/// <returns>スクリーンの幅</returns>
+	UINT GetScreenWidth();
 	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デバイスを取得
-	//	@return		m_pDevice
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// DirectXのデバイスを取得する
+	/// </summary>
+	/// <returns>デバイス</returns>
 	ID3D11Device*	GetDevice();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デバイスコンテキストを取得
-	//	@return		m_pDeviceContext
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// DIrectXのデバイスコンテキストを取得する
+	/// </summary>
+	/// <returns>デバイスコンテキスト</returns>
 	ID3D11DeviceContext*	GetDeviceContext();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スワップチェインを取得
-	//	@return		m_pSwapChain
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// スワップチェインを取得する
+	/// </summary>
+	/// <returns>スワップチェイン</returns>
 	IDXGISwapChain*	GetSwapChain();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		FeatureLevelを取得
-	//	@return		m_featureLevel
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// FeatureLevelを取得する
+	/// </summary>
+	/// <returns>FeatureLevel</returns>
 	D3D_FEATURE_LEVEL GetFeatureLevel();
-	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		DriverTypeを取得
-	//	@return		m_driverType
-	//
-	//------------------------------------------------------------------------------
+
+	/// <summary>
+	/// DriverTypeを取得する
+	/// </summary>
+	/// <returns>DriverType</returns>
 	D3D_DRIVER_TYPE GetDriverType();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		レンダーターゲットを取得
-	//	@return		m_pRenderTargetView
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// レンダーターゲットを取得する
+	/// </summary>
+	/// <returns>レンダーターゲット</returns>
 	ID3D11RenderTargetView*  GetRenderTargetView();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		深度･ステンシルビュー取得
-	//	@return		m_pDepthStencilview
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 深度・ステンシルビューを取得する
+	/// </summary>
+	/// <returns>深度・ステンシルビュー</returns>
 	ID3D11DepthStencilView* 	GetDepthStencilView();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		深度･ステンシルバッファを取得
-	//	@return		m_pDepthStencilbuffer
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 深度・ステンシルバッファを取得する
+	/// </summary>
+	/// <returns>深度・ステンシルバッファ</returns>
 	ID3D11Texture2D*		GetDepthStencilBuffer();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		ウィンドウハンドルを取得
-	//	@return		m_windowHandle
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// ウィンドウのインスタンスハンドルを取得する
+	/// </summary>
+	/// <returns>ウィンドウのインスタンスハンドル</returns>
 	HWND	GetWindowHandle();
 
-	 //------------------------------------------------------------------------------
-	 //
-	 //  @brief		バックバッファの初期化を行う
-	 //
-	 //------------------------------------------------------------------------------
+	/// <summary>
+	/// バックバッファを初期化する
+	/// </summary>
+	/// <returns>成否</returns>
 	bool InitBuckBuffer();
 
-	 //------------------------------------------------------------------------------
-	 //
-	 //  @brief		リサイズ処理
-	 //
-	 //------------------------------------------------------------------------------
+	/// <summary>
+	/// 画面変更に伴うバッファのリサイズを行う
+	/// </summary>
+	/// <param name="width">スクリーンの幅</param>
+	/// <param name="height">スクリーンの高さ</param>
+	/// <returns>成否</returns>
 	bool BufferResize(const WORD width, const WORD height);
 private:
+	friend class DX_Singleton<DX_System>;
+
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_deviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>			m_swapChain;
@@ -139,50 +109,42 @@ private:
 	D3D_DRIVER_TYPE			m_driverType;
 	HWND					m_windowHandle;
 
-	unsigned int m_screenWidth;
-	unsigned int m_screenHeight;
+	UINT m_screenWidth;
+	UINT m_screenHeight;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数を初期化する
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// メンバ変数を初期化する
+	/// </summary>
 	DX_System();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		DirectX関連　解放
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// DXにかかわるすべてのデバイス等の解放を行う
+	/// </summary>
 	~DX_System();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		SwapChain,ID3D11Device,ID3D11DeviceContextを作成
-	//	@param[in]	hWnd	DX_Framework::GetHwnd()
-	//
-	//------------------------------------------------------------------------------
-	bool CreateDeviceAndSwapChain(const HWND& hWnd);
+	/// <summary>
+	/// DirectXのデバイス及びデバイスコンテキスト並びにスワップチェインを作成する
+	/// </summary>
+	/// <param name="hWnd">ウィンドウのインスタンスハンドル</param>
+	/// <returns>成否</returns>
+	bool CreateDeviceAndSwapChain(const HWND hWnd);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		レンデーターゲットビューを作成
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// レンダーターゲットビューを作成する
+	/// </summary>
+	/// <returns>成否</returns>
 	bool CreateRenderTargetView();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		深度･ステンシルバッファを作成する
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 深度・ステンシルバッファを作成する
+	/// </summary>
+	/// <returns>成否<</returns>
 	bool CreateDepthStencilBuffer();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		深度･ステンシルビューを作成
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 深度・ステンシルビューを作成
+	/// </summary>
+	/// <returns>成否</returns>
 	bool CreateDepthStencilView();
 };
 #endif // !__DX_SYSTEM_H_

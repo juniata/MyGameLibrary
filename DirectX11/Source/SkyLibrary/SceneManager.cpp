@@ -16,7 +16,6 @@ SceneManager::STATE	SceneManager::m_state = SceneManager::STATE::NONE;
 //-----------------------------------------------------------------------------------------
 void SceneManager::Release()
 {
-	// TODO:メモリリークのため削除するが、本来はしない。(されてはいけない)
 	DELETE_OBJ(m_pCurScene);
 	DELETE_OBJ(m_pNextScene);
 }
@@ -51,7 +50,7 @@ void SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM wPar
 		}
 
 	case SceneManager::STATE::UPDATE:
-		DX_Input::Update(hWnd, message, wParam);
+		DX_Input::GetInstance()->Update(hWnd, message, wParam);
 		m_pCurScene->Update() ? m_state = SceneManager::STATE::RENDER : GameEnd();
 		break;
 	}
@@ -63,29 +62,34 @@ void SceneManager::Update(const HWND hWnd, const UINT message, const WPARAM wPar
 //	シーンを描画する
 //
 //-----------------------------------------------------------------------------------------
-void SceneManager::Render(IDXGISwapChain* pSwapChain)
+void SceneManager::Render()
 {
+	DX_Graphics* graphics = DX_Graphics::GetInstance();
+
 	switch (m_state)
 	{
 	case SceneManager::STATE::RENDER:
 
 		//	描画開始
-		DX_Graphics::BeginRender(pSwapChain);
+		graphics->BeginRender();
 
 		//	シーンを描画
-		if (false == m_pCurScene->Render()) {
+		if (m_pCurScene->Render() == false)
+		{
 			// 失敗ならゲーム終了
 			GameEnd();
 		}
-		else {
+		else
+		{
 			m_state = SceneManager::STATE::UPDATE;
 		}
 
 		//	描画終了
-		DX_Graphics::EndRender(pSwapChain);
+		graphics->EndRender();
 
 		// 次のシーンが設定されたらシーンを変更する(現在のシーンが描画され終わった後に次のシーンへの遷移を行う)
-		if (m_pNextScene) {
+		if (m_pNextScene)
+		{
 			ChangeScene();
 		}
 		break;

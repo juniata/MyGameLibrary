@@ -1,21 +1,12 @@
 #ifndef __DX_SHADER_H_
 #define __DX_SHADER_H_
 
-//	各シェーダーのエントリーポイント
-#define VS_ENTRY_POINT "VS_Main"
-#define HS_ENTRY_POINT "HS_Main"
-#define DS_ENTRY_POINT "DS_Main"
-#define GS_ENTRY_POINT "GS_Main"
-#define PS_ENTRY_POINT "PS_Main"
-#define CS_ENTRY_POINT "CS_Main"
-
-//	各シェーダーのバージョン
-#define VS_VERSION "vs_5_0"
-#define HS_VERSION "hs_5_0"
-#define DS_VERSION "ds_5_0"
-#define GS_VERSION "gs_5_0"
-#define PS_VERSION "ps_5_0"
-#define CS_VERSION "cs_5_0"
+enum class SHADER_TYPE {
+	VERTEX_SHADER,
+	GEOMETRY_SHADER,
+	PIXEL_SHADER,
+	COMPUTE_SHADER,
+};
 
 //****************************************************************************************************
 //
@@ -25,93 +16,89 @@
 class DX_Shader
 {
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数を初期化
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	DX_Shader();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		実体があれば解放
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 引数付きコンストラクタ
+	/// </summary>
+	/// <param name="type">シェーダータイプ</param>
+	DX_Shader(SHADER_TYPE type);
+
+	/// <summary>
+	///	仮想デストラクタ
+	/// </summary>
 	virtual ~DX_Shader();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーを作成する
-	//	@param[in]	pFilepath	シェーダーファイルのパス
-	//
-	//------------------------------------------------------------------------------
-	virtual void CreateShader(
-		const char* pFilepath
-		) = 0;
+	/// <summary>
+	/// シェーダーを作成する
+	/// </summary>
+	/// <param name="filepath">シェーダーのファイルパス</param>
+	/// <returns>成否</returns>
+	bool CreateShader(const char* filepath);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーの使用を開始
-	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
-	//	@param[in]	classInstanceCount	クラスインスタンスの数
-	//
-	//------------------------------------------------------------------------------
-	virtual void Begin(
-		ID3D11DeviceContext*	pDeviceContext,
-		const unsigned int classInstanceCount = 0
-		) = 0;
+	/// <summary>
+	/// シェーダーを利用する
+	/// </summary>
+	/// <param name="classInstanceCount">クラスインスタンスの数</param>
+	virtual void Begin(const unsigned int classInstanceCount = 0) = 0;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーの利用を終える
-	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
-	//
-	//------------------------------------------------------------------------------
-	virtual void End(
-		ID3D11DeviceContext*	pDeviceContext
-		) = 0;
+	/// <summary>
+	/// シェーダーの利用を終える
+	/// </summary>
+	void End();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		コンパイルした時のバイトコードを取得
-	//	@return		コンパイルした時のバイトコード
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// シェーダーファイルをコンパイルした時のバイトコードを取得
+	/// </summary>
+	/// <returns>バイトコード</returns>
 	ID3DBlob* GetByteCord();
 
 protected:
-	ID3D11ClassLinkage*		m_pClassLinkage;
-	ID3D11ClassInstance*	m_pClassInstance;
-	ID3D11InputLayout*		m_pInputLayout;
-	ID3DBlob*				m_pBytecord;
+	Microsoft::WRL::ComPtr<ID3D11ClassLinkage>	m_classLinkage;
+	Microsoft::WRL::ComPtr<ID3D11ClassInstance>	m_classInstance;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>	m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3DBlob>			m_bytecord;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーファイルをコンパイルする
-	//	@param[in]	pFilepath		シェーダーファイルのパス
-	//	@param[in]	pEntryPoint		シェーダーのエントリーポイント
-	//	@param[in]	pShaderVersion	シェーダーのバージョン
-	//
-	//------------------------------------------------------------------------------
-	void CompileFromFile(
-		const char* pFilepath, 
-		const char* pEntryPoint,
-		const char* pShaderVersion
-		);
+	SHADER_TYPE m_shaderType;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーオブジェクトを作成する
-	//
-	//------------------------------------------------------------------------------
-	virtual void CreateShaderObject() = 0;
+	/// <summary>
+	/// シェーダーファイルをコンパイルする
+	/// </summary>
+	/// <param name="filepath">ファイルパス</param>
+	/// <returns>成否</returns>
+	bool Compile(const char* filepath);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		動的シェーダーを有効にするリンクを作成
-	//
-	//------------------------------------------------------------------------------
-	void CreateClassLinkage();
+	/// <summary>
+	/// シェーダーオブジェクトを作成する
+	/// </summary>
+	/// <returns>成否</returns>
+	virtual bool CreateShaderObject() = 0;
+
+	/// <summary>
+	/// 動的シェーダーを有効にするリンクを作成
+	/// </summary>
+	/// <returns>成否</returns>
+	bool CreateClassLinkage();
+
+private:
+	//	各シェーダーのエントリーポイント
+	static const char* VS_ENTRY_POINT;
+	static const char* HS_ENTRY_POINT;
+	static const char* DS_ENTRY_POINT;
+	static const char* GS_ENTRY_POINT;
+	static const char* PS_ENTRY_POINT;
+	static const char* CS_ENTRY_POINT;
+
+	//	各シェーダーのバージョン
+	static const char* VS_VERSION;
+	static const char* HS_VERSION;
+	static const char* DS_VERSION;
+	static const char* GS_VERSION;
+	static const char* PS_VERSION;
+	static const char* CS_VERSION;
 };
 
 //	各シェーダーヘッダーをインクルード

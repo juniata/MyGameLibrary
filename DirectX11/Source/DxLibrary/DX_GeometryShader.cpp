@@ -1,127 +1,80 @@
 #include	"DX_Library.h"
 
+/// <summary>
+/// メンバ変数を初期化
+/// </summary>
+DX_GeometryShader::DX_GeometryShader() : DX_Shader(SHADER_TYPE::GEOMETRY_SHADER)
+{}
 
-//-----------------------------------------------------------------------------------------
-//
-//  メンバ変数を初期化
-//
-//-----------------------------------------------------------------------------------------
-DX_GeometryShader::DX_GeometryShader() :
-	m_pOutputGeometryShader(nullptr),
-	m_pGeometryShader(nullptr)
-{
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  実体があれば解放
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// デストラクタ
+/// </summary>
 DX_GeometryShader::~DX_GeometryShader()
+{}
+
+/// シェーダーを利用する
+/// </summary>
+/// <param name="classInstanceCount">クラスインスタンスの数</param>
+void DX_GeometryShader::Begin(const unsigned int classInstanceCount)
 {
-	SAFE_RELEASE(m_pGeometryShader);
-	SAFE_RELEASE(m_pOutputGeometryShader);
-}
+	ID3D11DeviceContext* deviceContext = DX_System::GetInstance()->GetDeviceContext();
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateShader(const char* pFilepath)
-{
-	try{
-
-		//	シェーダーファイルをコンパイルする
-		CompileFromFile(pFilepath, GS_ENTRY_POINT, GS_VERSION);
-
-		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
+	if (m_outputGeometryShader)
+	{
+		deviceContext->GSSetShader(m_outputGeometryShader.Get(), m_classInstance.GetAddressOf(), classInstanceCount);
 	}
-	catch (char* pMessage){
-		throw pMessage;
+	else
+	{
+		deviceContext->GSSetShader(m_geometryShader.Get(), m_classInstance.GetAddressOf(), classInstanceCount);
 	}
 }
 
-//-----------------------------------------------------------------------------------------
-//
-// シェーダーの使用を開始
-//
-//-----------------------------------------------------------------------------------------
-void DX_GeometryShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
+
+/// <summary>
+/// シェーダーオブジェクトを作成する
+/// </summary>
+/// <returns>成否</returns>
+bool DX_GeometryShader::CreateShaderObject()
 {
-	if (m_pOutputGeometryShader){
-		pDeviceContext->GSSetShader(m_pOutputGeometryShader, &m_pClassInstance, classInstanceCount);
-	}
-	else{
-		pDeviceContext->GSSetShader(m_pGeometryShader, &m_pClassInstance, classInstanceCount);
-	}
+	auto succeed = false;
+
+	do
+	{
+		if (false == CreateClassLinkage())
+		{
+			break;
+		}
+
+		HRESULT hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShader(m_bytecord->GetBufferPointer(), m_bytecord->GetBufferSize(), m_classLinkage.Get(), &m_geometryShader);
+
+		if (DX_Debug::GetInstance()->IsFailedHresult(hr))
+		{
+			TRACE("GeometryShaderオブジェクトの作成に失敗しました。");
+			break;
+		}
+
+		succeed = true;
+
+	} while (false);
+	
+	return succeed;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーの利用を終える
-//
-//-----------------------------------------------------------------------------------------
-void DX_GeometryShader::End(ID3D11DeviceContext* pDeviceContext)
-{
-	pDeviceContext->GSSetShader(nullptr, nullptr, 0);
-}
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーオブジェクトを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateShaderObject()
+/// <summary>
+/// ジオメトリシェーダーから出力したデータを取得
+/// </summary>
+/// <param name="decreation">ジオメトリと同じセマンティクスのものにデータを出力</param>
+/// <param name="decreationElementCount">decreationの要素数</param>
+/// <param name="bufferStrides">データを分割する線引き</param>
+/// <param name="stridesElementCount">bufferStridesの要素数</param>
+void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(D3D11_SO_DECLARATION_ENTRY decreation[], const UINT decreationElementCount, unsigned int* pBufferStrides, const UINT stridesElementCount)
 {
-	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
-
-	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_pGeometryShader
-		);
+	HRESULT hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(m_bytecord->GetBufferPointer(), m_bytecord->GetBufferSize(), decreation, decreationElementCount, pBufferStrides, stridesElementCount, 0, nullptr, &m_outputGeometryShader);
 
 	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
-		//SAFE_RELEASE(m_pBytecord);
-		throw "GeometryShaderオブジェクトの作成に失敗しました";
-	}
-}
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  ジオメトリーシェーダーから出力したデータを取得
-//
-//-----------------------------------------------------------------------------------------
-void DX_GeometryShader::CreateGeometryShaderWithStreamOutput(
-	D3D11_SO_DECLARATION_ENTRY	decreation[],
-	const UINT					decreationElementCount,
-	unsigned int*				pBufferStrides,
-	const UINT					stridesElementCount
-	)
-{
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateGeometryShaderWithStreamOutput(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		decreation,
-		decreationElementCount,
-		pBufferStrides,
-		stridesElementCount,
-		0,
-		nullptr,
-		&m_pOutputGeometryShader
-		);
-
-	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
-		//SAFE_RELEASE(m_pBytecord);
-		throw "GeometryShaderWithStreamOutputオブジェクトの作成に失敗しました";
+	if (DX_Debug::GetInstance()->IsFailedHresult(hr)){
+		TRACE("GeometryShaderWithStreamOutputオブジェクトの作成に失敗しました");
 	}
 
 }

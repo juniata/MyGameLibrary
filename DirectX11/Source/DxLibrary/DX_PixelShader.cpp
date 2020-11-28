@@ -1,86 +1,51 @@
 #include	"DX_Library.h"
 
 
-//-----------------------------------------------------------------------------------------
-//
-//  メンバ変数を初期化
-//
-//-----------------------------------------------------------------------------------------
-DX_PixelShader::DX_PixelShader(){}
+/// <summary>
+/// メンバ変数を初期化
+/// </summary>
+DX_PixelShader::DX_PixelShader() : DX_Shader(SHADER_TYPE::PIXEL_SHADER)
+{}
 
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  実体があれば解放
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// デストラクタ
+/// </summary>
 DX_PixelShader::~DX_PixelShader() {}
 
 
-
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_PixelShader::CreateShader(const char* pFilepath)
+/// シェーダーを利用する
+/// </summary>
+/// <param name="classInstanceCount">クラスインスタンスの数</param>
+void DX_PixelShader::Begin(const unsigned int classInstanceCount)
 {
-	try{
-
-		//	シェーダーファイルをコンパイルする
-		CompileFromFile(pFilepath, PS_ENTRY_POINT, PS_VERSION);
-
-		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
+	DX_System::GetInstance()->GetDeviceContext()->PSSetShader(m_pixelShader.Get(), m_classInstance.GetAddressOf(), classInstanceCount);
 }
 
-//-----------------------------------------------------------------------------------------
-//
-// シェーダーの使用を開始
-//
-//-----------------------------------------------------------------------------------------
-void DX_PixelShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
+/// <summary>
+/// シェーダーオブジェクトを作成する
+/// </summary>
+/// <returns>成否</returns>
+bool DX_PixelShader::CreateShaderObject()
 {
-	pDeviceContext->PSSetShader(m_pixelShader.Get(), &m_pClassInstance, classInstanceCount);
-}
+	auto succeed = false;
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーの利用を終える
-//
-//-----------------------------------------------------------------------------------------
-void DX_PixelShader::End(ID3D11DeviceContext* pDeviceContext)
-{
-	pDeviceContext->PSSetShader(nullptr, nullptr, 0);
-}
+	do
+	{
+		if (false == CreateClassLinkage())
+		{
+			break;
+		}
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーオブジェクトを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_PixelShader::CreateShaderObject()
-{
-	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
+		HRESULT hr = DX_System::GetInstance()->GetDevice()->CreatePixelShader(m_bytecord->GetBufferPointer(), m_bytecord->GetBufferSize(), m_classLinkage.Get(), &m_pixelShader);
 
-	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreatePixelShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_pixelShader
-		);
+		if (DX_Debug::GetInstance()->IsFailedHresult(hr)) {
+			TRACE("PixelShaderオブジェクトの作成に失敗しました");
+			break;
+		}
 
-	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
-		throw "PixelShaderオブジェクトの作成に失敗しました";
-	}
+		succeed = true;
+	} while (false);
 
+	return succeed;
 }
 

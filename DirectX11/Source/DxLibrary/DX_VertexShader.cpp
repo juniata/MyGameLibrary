@@ -1,84 +1,63 @@
 #include	"DX_Library.h"
 
 
-//-----------------------------------------------------------------------------------------
-//
-//  メンバ変数を初期化
-//
-//-----------------------------------------------------------------------------------------
-DX_VertexShader::DX_VertexShader() {}
+/// <summary>
+/// メンバ変数を初期化
+/// </summary>
+DX_VertexShader::DX_VertexShader() : DX_Shader(SHADER_TYPE::VERTEX_SHADER)
+{
+}
 
-
-
-//-----------------------------------------------------------------------------------------
-//
-//  実体があれば解放
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// デストラクタ
+/// </summary>
 DX_VertexShader::~DX_VertexShader() {}
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_VertexShader::CreateShader(const char* pFilepath)
+/// <summary>
+/// シェーダーを利用する
+/// </summary>
+/// <param name="classInstanceCount">クラスインスタンスの数</param>
+void DX_VertexShader::Begin(const unsigned int classInstanceCount)
 {
-	try{
-		//	シェーダーファイルをコンパイルする
-		CompileFromFile(pFilepath, VS_ENTRY_POINT, VS_VERSION);
-
-		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
-
+	DX_System::GetInstance()->GetDeviceContext()->VSSetShader(m_vertexShader.Get(), m_classInstance.GetAddressOf(), classInstanceCount);
 }
 
-//-----------------------------------------------------------------------------------------
-//
-// シェーダーの使用を開始
-//
-//-----------------------------------------------------------------------------------------
-void DX_VertexShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
+/// <summary>
+/// シェーダーの利用を終える
+/// </summary>
+void DX_VertexShader::End()
 {
-	pDeviceContext->VSSetShader(m_vertexShader.Get(), &m_pClassInstance, classInstanceCount);
+	DX_System::GetInstance()->GetDeviceContext()->VSSetShader(nullptr, nullptr, 0);
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーの利用を終える
-//
-//-----------------------------------------------------------------------------------------
-void DX_VertexShader::End(ID3D11DeviceContext* pDeviceContext)
+/// <summary>
+/// シェーダーオブジェクトを作成する
+/// </summary>
+/// <returns>成否</returns>
+bool DX_VertexShader::CreateShaderObject()
 {
-	pDeviceContext->VSSetShader(nullptr, nullptr, 0);
-}
+	auto succeed = false;
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーオブジェクトを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_VertexShader::CreateShaderObject()
-{
-	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
+	do
+	{
+		if (false == CreateClassLinkage())
+		{
+			break;
+		}
 
-	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateVertexShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_vertexShader
-		);
+		HRESULT hr = DX_System::GetInstance()->GetDevice()->CreateVertexShader(m_bytecord->GetBufferPointer(), m_bytecord->GetBufferSize(), m_classLinkage.Get(), &m_vertexShader);
 
-	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
-		throw "VertexShaderオブジェクトの作成に失敗しました";
-	}
+
+		if (DX_Debug::GetInstance()->IsFailedHresult(hr)) 
+		{
+			TRACE("VertexShaderオブジェクトの作成に失敗しました");
+			break;
+		}
+
+		succeed = true;
+	} while (false);
+
 	
+	return succeed;
 }
 

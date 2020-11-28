@@ -5,60 +5,30 @@
 class DX_ComputeShader : public DX_Shader
 {
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数を初期化
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// メンバ変数を初期化
+	/// </summary>
 	DX_ComputeShader();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		実体があれば解放
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~DX_ComputeShader();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーを作成する
-	//	@param[in]	pFilepath	シェーダーファイルのパス
-	//
-	//------------------------------------------------------------------------------
-	void CreateShader(
-		const char* pFilepath
-		);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーの使用を開始
-	//	@param[in]	classInstanceCount	クラスインスタンスの数
-	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
-	//
-	//------------------------------------------------------------------------------
-	void Begin(
-		ID3D11DeviceContext*	pDeviceContext,
-		const unsigned int		classInstanceCount = 0
-		);
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーの利用を終える
-	//	@param[in]	pDeviceContext		DX_System::GetDeviceContext()
-	//
-	//------------------------------------------------------------------------------
-	void End(
-		ID3D11DeviceContext*	pDeviceContext
-		);
+	/// シェーダーを利用する
+	/// </summary>
+	/// <param name="classInstanceCount">クラスインスタンスの数</param>
+	void Begin(const unsigned int classInstanceCount = 0);
 
 private:
-	ID3D11ComputeShader*	m_pComputeShader;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_conmputeShader;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		シェーダーオブジェクトを作成する
-	//
-	//------------------------------------------------------------------------------
-	void CreateShaderObject();
+
+	/// <summary>
+	/// シェーダーオブジェクトを作成する
+	/// </summary>
+	/// <returns>成否</returns>
+	bool CreateShaderObject();
 };
 #endif // !__DX_COMPUTE_SHADER_H_

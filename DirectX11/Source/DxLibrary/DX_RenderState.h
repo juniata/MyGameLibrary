@@ -8,7 +8,6 @@
 //****************************************************************************************************
 class DX_RenderState : public DX_Singleton<DX_RenderState>
 {
-	friend class DX_Singleton<DX_RenderState>;
 public:
 	//------------------------------------------------------------------------------
 	//
@@ -66,6 +65,8 @@ public:
 #endif
 
 private:
+	friend class DX_Singleton<DX_RenderState>;
+
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	m_rasterizerState;
 	Microsoft::WRL::ComPtr<ID3D11BlendState>		m_blendState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>	m_depthStencilState;

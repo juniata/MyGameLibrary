@@ -17,30 +17,16 @@ enum class XINPUT_KEY{
 	X,
 	Y
 };
-//****************************************************************************************************
-//
-//	XInput
-//
-//****************************************************************************************************
+
+/// <summary>
+/// キー、マウス入力を管理
+/// </summary>
 class DX_XInput
 {
-private:
-	static const int KEY_MAX = 14;
-	struct tagInputInfo{
-		XINPUT_STATE state;
-		int id;
-		bool keys[KEY_MAX];
-		bool prevKeys[KEY_MAX];
-	}m_players[XUSER_MAX_COUNT];
-
-	int m_connectCount;	
-	int m_buttonBitJuage[KEY_MAX];
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバ変数の初期化
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// メンバ変数を初期化
+	/// </summary>
 	DX_XInput();
 
 	//------------------------------------------------------------------------------
@@ -58,7 +44,7 @@ public:
 	//	@return		true:押した	false:押してない
 	//
 	//------------------------------------------------------------------------------
-	bool IsKey(XINPUT_KEY key,const int id = 0);
+	bool IsKey(XINPUT_KEY key, const int id = 0);
 
 	//------------------------------------------------------------------------------
 	//
@@ -97,6 +83,18 @@ public:
 
 
 private:
-	void Connect(const int playerNum);
+	static const int KEY_MAX = 14;
+	static const int NOT_CONNECT = -1;
+
+	struct tagInputInfo {
+		XINPUT_STATE state;
+		int id;
+		bool keys[KEY_MAX];
+		bool prevKeys[KEY_MAX];
+	} m_players[XUSER_MAX_COUNT];
+
+	int m_connectCount;
+	int m_buttonBitJuage[KEY_MAX];
+
 };
 #endif // !__DX_X_INPUT_H_

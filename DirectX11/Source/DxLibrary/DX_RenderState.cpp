@@ -7,42 +7,45 @@
 //-----------------------------------------------------------------------------------------
 bool DX_RenderState::Initialize()
 {
-	DX_System* pSystem					= DX_System::GetInstance();
-	ID3D11Device*			pDevice		= pSystem->GetDevice();
-	ID3D11DeviceContext*	pContext	= pSystem->GetDeviceContext();
+	DX_System*				system	= DX_System::GetInstance();
+	ID3D11Device*			device	= system->GetDevice();
+	ID3D11DeviceContext*	context	= system->GetDeviceContext();
 
 	//	ラスタライザーステートを作成
-	if (!CreateRasterizerState(pDevice)) {
+	if (!CreateRasterizerState(device))
+	{
 		return false;
 	}
 
 	//	ブレンドステートを作成
-	if (!CreateBlendState(pDevice)) {
+	if (!CreateBlendState(device))
+	{
 		return false;
 	}
 
 	//	深度･ステンシルステートを作成
-	if (!CreateDepthStencilState(pDevice)) {
+	if (!CreateDepthStencilState(device))
+	{
 		return false;
 	}
 		
 	//	サンプラーステートを作成
-	if (!CreateSamplerState(pDevice)) {
+	if (!CreateSamplerState(device))
+	{
 		return false;
 	}
 
-
 	//	OMに必要情報を設定
-	ID3D11RenderTargetView* const targets[1] = { pSystem->GetRenderTargetView() };
-	pContext->OMSetRenderTargets(1, targets, pSystem->GetDepthStencilView());
-	pContext->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
+	ID3D11RenderTargetView* const targets[1] = { system->GetRenderTargetView() };
+	context->OMSetRenderTargets(1, targets, system->GetDepthStencilView());
+	context->OMSetDepthStencilState(m_depthStencilState.Get(), 1);
 
 	//	サンプラーを設定する
 	ID3D11SamplerState* const sampler[1] = { m_samplerState.Get() };
-	pContext->PSSetSamplers(0, 1, sampler);
+	context->PSSetSamplers(0, 1, sampler);
 
 	//	ポリゴン描画設定
-	pContext->RSSetState(m_rasterizerState.Get());
+	context->RSSetState(m_rasterizerState.Get());
 
 	return true;
 }

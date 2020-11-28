@@ -11,195 +11,177 @@ enum class DX_MOUSE_BUTTON_KIND : int{
 	BUTTON_R,	//	右ボタン
 };
 
-//****************************************************************************************************
-//
-//	Input
-//
-//****************************************************************************************************
-class DX_Input
+
+/// <summary>
+/// キー、マウスの入力を管理する
+/// </summary>
+class DX_Input : public DX_Singleton<DX_Input>
 {
 public:
-	static bool Initialize(HWND hWnd, HINSTANCE hInstance);
-	static void Release();
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		キーへのアクション時の反応を得る
-	//	@param[in]	key		DX_INPUT_KEY
-	//	@return		true:押した	false:押してない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsKey(DX_INPUT_KEY key);
+	/// <summary>
+	/// デバイス等の初期化を行う
+	/// </summary>
+	~DX_Input();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		押している間の反応を得る
-	//	@param[in]	key		DX_INPUT_KEY
-	//	@return		true:押している		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsKeyDown(DX_INPUT_KEY key);
+	/// <summary>
+	/// メンバ変数を初期化する
+	/// </summary>
+	/// <param name="hWnd">ウィンドウハンドル</param>
+	/// <param name="hInstance">インスタントハンドル</param>
+	/// <returns>成否</returns>
+	bool Initialize(HWND hWnd, HINSTANCE hInstance);
+
+	/// <summary>
+	/// キーへのアクション時の反応を取得する
+	/// </summary>
+	/// <param name="key">取得したい反応のキー</param>
+	/// <returns>アクションがあったかどうか</returns>
+	 bool IsKey(DX_INPUT_KEY key);
+
+	 /// <summary>
+	 /// キーを押している間の反応を取得する
+	 /// </summary>
+	 /// <param name="key">取得したい反応のキー</param>
+	 bool IsKeyDown(DX_INPUT_KEY key);
 	
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		離した瞬間の反応を得る
-	//	@param[in]	key		DX_INPUT_KEY
-	//	@return		true:離した		false:離していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsKeyRelease(DX_INPUT_KEY key);
+	 /// <summary>
+	 /// キーを離した瞬間の反応を取得する
+	 /// </summary>
+	 /// <param name="key">取得したい反応のキー</param>
+	 bool IsKeyRelease(DX_INPUT_KEY key);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		押した瞬間の反応を得る
-	//	@param[in]	key		DX_INPUT_KEY
-	//	@return		true:押した		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsKeyHit(DX_INPUT_KEY key);
+	 /// <summary>
+	 /// キーを押した瞬間の反応を取得する
+	 /// </summary>
+	 /// <param name="key">取得したい反応のキー</param>
+	 bool IsKeyHit(DX_INPUT_KEY key);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスボタンへのアクション時の反応を得る
-	//	@param[in]	kind		マウスのボタンの種類
-	//	@return		true:押した		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsMouseButton(DX_MOUSE_BUTTON_KIND kind);
+	 /// <summary>
+	 /// マウスボタンへのアクション時の反応を取得する
+	 /// </summary>
+	 /// <param name="kind">マウスのボタンの種類</param>
+	 bool IsMouseButton(DX_MOUSE_BUTTON_KIND kind);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスボタンを押している間の反応を得る
-	//	@param[in]	kind		マウスのボタンの種類
-	//	@return		true:押している		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsMouseButtonDown(DX_MOUSE_BUTTON_KIND kind);
+	 /// <summary>
+	 /// マウスボタンを押している間の反応を取得する
+	 /// </summary>
+	 /// <param name="kind">マウスのボタンの種類</param>
+	 bool IsMouseButtonDown(DX_MOUSE_BUTTON_KIND kind);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスボタンを離した時の反応を得る
-	//	@param[in]	kind		マウスのボタンの種類
-	//	@return		true:離した		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsMouseButtonRelease(DX_MOUSE_BUTTON_KIND kind);
+	 /// <summary>
+	 /// マウスボタンを離した時の反応を取得する
+	 /// </summary>
+	 /// <param name="kind">マウスのボタンの種類</param>
+	 bool IsMouseButtonRelease(DX_MOUSE_BUTTON_KIND kind);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスボタンのクリックの反応を得る
-	//	@param[in]	kind		マウスのボタンの種類
-	//	@return		true:押した		false:押していない
-	//	@note		キーのhit関数と同じ効果
-	//
-	//------------------------------------------------------------------------------
-	static bool IsMouseButtonClick(DX_MOUSE_BUTTON_KIND kind);
+	 /// <summary>
+	 /// マウスボタンのクリックの反応を取得する
+	 /// </summary>
+	 /// <param name="kind">マウスのボタンの種類</param>
+	 bool IsMouseButtonClick(DX_MOUSE_BUTTON_KIND kind);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスボタンのダブルクリックの反応を得る
-	//	@param[in]	kind		マウスのボタンの種類
-	//	@return		true:押した		false:押していない
-	//
-	//------------------------------------------------------------------------------
-	static bool IsMouseButtonDoubleClick(DX_MOUSE_BUTTON_KIND kind);
+	 /// <summary>
+	 /// マウスボタンのダブルクリックの反応を取得する
+	 /// </summary>
+	 /// <param name="kind">マウスのボタンの種類</param>
+	 bool IsMouseButtonDoubleClick(DX_MOUSE_BUTTON_KIND kind);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief	マウス座標を取得
-	//	@return ウィンドウ内のマウス座標
-	//
-	//------------------------------------------------------------------------------
-	static DirectX::XMFLOAT2 GetMousePos();
+	/// <summary>
+	/// マウスホイールを前(奥)に動かした回転数を取得する
+	/// </summary>
+	/// <returns>回転数</returns>
+	int GetMouseWheelUp();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief	マウスホイールを前(奥)に動かした回転数を取得
-	//	@return	回転数
-	//
-	//------------------------------------------------------------------------------
-	static int GetMouseWheelUp();
+	/// <summary>
+	/// マウスホイールを後ろ(手前)に動かした回転数を取得する
+	/// </summary>
+	/// <returns>回転数</returns>
+	int GetMouseWheelDown();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief	マウスホイールを後ろ(手前)に動かした回転数を取得
-	//	@return	回転数
-	//
-	//------------------------------------------------------------------------------
-	static int GetMouseWheelDown();
+	/// <summary>
+	/// マウス座標を取得する
+	/// </summary>
+	/// <returns>座標</returns>
+	DirectX::XMFLOAT2 GetMousePos();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief	マウス座標を取得する
-	//	@param[out]	pPos	マウス座標
-	//
-	//------------------------------------------------------------------------------
-	static void GetMousePos(DirectX::XMINT2* pPos);
-	static void GetMousePos(DirectX::XMFLOAT2* pPos);
+	/// <summary>
+	/// マウス座標を取得する
+	/// </summary>
+	/// <param name="outPos">マウス座標を格納する</param>
+	void GetMousePos(DirectX::XMINT2* outPos);
 
+	/// <summary>
+	/// マウス座標を取得する
+	/// </summary>
+	/// <param name="outPos">マウス座標を格納する</param>
+	void GetMousePos(DirectX::XMFLOAT2* outPos);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief	クライアント領域のマウス座標を取得する
-	//	@param[out]	pPos	マウス座標
-	//
-	//------------------------------------------------------------------------------
-	static void GetMouseClientPos(DirectX::XMINT2* pPos);
-	static void GetMouseClientPos(DirectX::XMFLOAT2* pPos);
+	/// <summary>
+	/// クライアント領域のマウス座標を取得する
+	/// </summary>
+	/// <param name="outPos">マウス座標を格納する</param>
+	void GetMouseClientPos(DirectX::XMINT2* outPos);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		デバイスの入力情報を更新する
-	//	@param[in]	hWnd	ウィンドウハンドル
-	//	@param[in]	message	MSG.message(windowsのメッセージ)
-	//	@param[in]	wParam	MSG.wParam
-	//
-	//------------------------------------------------------------------------------
-	static void Update(const HWND hWnd, const unsigned int message, const WPARAM	wParam);
+	/// <summary>
+	/// クライアント領域のマウス座標を取得する
+	/// </summary>
+	/// <param name="outPos">マウス座標を格納する</param>
+	void GetMouseClientPos(DirectX::XMFLOAT2* outPos);
+
+	/// <summary>
+	/// デバイスの入力情報を更新する
+	/// </summary>
+	/// <param name="hWnd">ウィンドウハンドル</param>
+	/// <param name="message">MSG.message(windowsのメッセージ)</param>
+	/// <param name="wParam">MSG.wParam</param>
+	void Update(const HWND hWnd, const unsigned int message, const WPARAM	wParam);
 
 private:
-	static LPDIRECTINPUT8 m_pDirectInput;
-	static LPDIRECTINPUTDEVICE8 m_pDirectInputDevice;
+	friend class DX_Singleton<DX_Input>;
+	Microsoft::WRL::ComPtr<IDirectInput8> m_directInput;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> m_directInputDevice;
 
-	//	キーボードの受け付け数
-	static const int INPUT_KEY_MAX = 256;
+	static const int INPUT_KEY_MAX		= 256;
+	static const int MOUSE_BUTTON_MAX	= 3;
+
 
 	//	ボタンの数だけキーを押したかどうか
-	static bool m_bKeys[INPUT_KEY_MAX];
+	bool m_pressedKeys[INPUT_KEY_MAX];
 
 	//	過去のキーフラグ
-	static bool m_bPrevKeys[INPUT_KEY_MAX];
-
-	//	マウスのボタン数
-	static const int MOUSE_BUTTON_MAX = 3;
+	bool m_pressedPrevKeys[INPUT_KEY_MAX];
 
 	//	マウスの数だけキーを押した稼動亜ｋ
-	static int m_bMouseButtons[MOUSE_BUTTON_MAX];
+	int m_mouseButtons[MOUSE_BUTTON_MAX];
 
 	//	過去のマウスフラグ
-	static int m_bPrevMouseButtons[MOUSE_BUTTON_MAX];
+	int m_prevMouseButtons[MOUSE_BUTTON_MAX];
 
 	//	マウスホイールの回転数
-	static int m_mouseWheelRotateCount;
+	int m_mouseWheelRotateCount;
 
 	// マウスの座標
-	static DirectX::XMINT2 m_mousePos;
-	static DirectX::XMINT2 m_mouseClientPos;
+	 DirectX::XMINT2 m_mousePos;
+	 DirectX::XMINT2 m_mouseClientPos;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		キーの更新を行う
-	//
-	//------------------------------------------------------------------------------
-	static void KeyUpdate();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		マウスの更新を行う
-	//	@param[in]	hWnd	ウィンドウハンドル
-	//	@param[in]	message	DX_Input::Updateの引数をそのまま入れる
-	//	@param[in]	wParam	DX_Input::Uddateの引数をそのまま入れる
-	//
-	//------------------------------------------------------------------------------
-	static void MouseUpdate(const HWND hWnd, const unsigned int message, const WPARAM wParam);
+	 /// <summary>
+	 /// メンバ変数を初期化する
+	 /// </summary>
+	 DX_Input();
+
+
+	 /// <summary>
+	 /// キー、マウスの入力の更新する
+	 /// </summary>
+	 void KeyUpdate();
+
+	/// <summary>
+	/// マウスの更新を行う
+	/// </summary>
+	/// <param name="hWnd">ウィンドウハンドル</param>
+	/// <param name="message">MSG.message(windowsのメッセージ)</param>
+	/// <param name="wParam">MSG.wParam</param>
+	void MouseUpdate(const HWND hWnd, const unsigned int message, const WPARAM wParam);
 };
 #endif // !__DX_INPUT_H_

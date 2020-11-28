@@ -1,92 +1,55 @@
 #include	"DX_Library.h"
 
 
-//-----------------------------------------------------------------------------------------
-//
-//  メンバ変数を初期化
-//
-//-----------------------------------------------------------------------------------------
-DX_ComputeShader::DX_ComputeShader() :
-	m_pComputeShader(nullptr)
-{
-}
+/// <summary>
+/// メンバ変数を初期化
+/// </summary>
+DX_ComputeShader::DX_ComputeShader() : DX_Shader(SHADER_TYPE::COMPUTE_SHADER)
+{}
 
 
-
-//-----------------------------------------------------------------------------------------
-//
-//  実体があれば解放
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// デストラクタ
+/// </summary>
 DX_ComputeShader::~DX_ComputeShader()
 {
-	SAFE_RELEASE(m_pComputeShader);
+}
+
+/// シェーダーを利用する
+/// </summary>
+/// <param name="classInstanceCount">クラスインスタンスの数</param>
+void DX_ComputeShader::Begin(const unsigned int classInstanceCount)
+{
+	DX_System::GetInstance()->GetDeviceContext()->CSSetShader(m_conmputeShader.Get(), m_classInstance.GetAddressOf(), classInstanceCount);
 }
 
 
-
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_ComputeShader::CreateShader(const char* pFilepath)
+/// <summary>
+/// シェーダーオブジェクトを作成する
+/// </summary>
+/// <returns>成否</returns>
+bool DX_ComputeShader::CreateShaderObject()
 {
-	try{
+	auto succeed = false;
 
-		//	シェーダーファイルをコンパイルする
-		CompileFromFile(pFilepath, CS_ENTRY_POINT, CS_VERSION);
+	do
+	{
+		if (CreateClassLinkage())
+		{
+			break;
+		}
 
-		//	シェーダーオブジェクトを作成
-		CreateShaderObject();
-	}
-	catch (char* pMessage){
-		throw pMessage;
-	}
-}
+		HRESULT hr = DX_System::GetInstance()->GetDevice()->CreateComputeShader(m_bytecord->GetBufferPointer(), m_bytecord->GetBufferSize(), m_classLinkage.Get(), m_conmputeShader.GetAddressOf());
+	
+		if (DX_Debug::GetInstance()->IsFailedHresult(hr))
+		{
+			TRACE("ComputeShaderオブジェクトの作成に失敗しました。");
+			break;
+		}
 
-//-----------------------------------------------------------------------------------------
-//
-// シェーダーの使用を開始
-//
-//-----------------------------------------------------------------------------------------
-void DX_ComputeShader::Begin(ID3D11DeviceContext* pDeviceContext, const unsigned int classInstanceCount)
-{
-	pDeviceContext->CSSetShader(m_pComputeShader, &m_pClassInstance, classInstanceCount);
-}
+		succeed = true;
+	} while (false);
 
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーの利用を終える
-//
-//-----------------------------------------------------------------------------------------
-void DX_ComputeShader::End(ID3D11DeviceContext* pDeviceContext)
-{
-	pDeviceContext->CSSetShader(nullptr, nullptr, 0);
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//  シェーダーオブジェクトを作成する
-//
-//-----------------------------------------------------------------------------------------
-void DX_ComputeShader::CreateShaderObject()
-{
-	//	動的シェーダー　リンクを有効にするクラス
-	CreateClassLinkage();
-
-	//	シェーダーオブジェクトを作成
-	HRESULT l_hr = DX_System::GetInstance()->GetDevice()->CreateComputeShader(
-		m_pBytecord->GetBufferPointer(),
-		m_pBytecord->GetBufferSize(),
-		m_pClassLinkage,
-		&m_pComputeShader
-		);
-
-	//	ShaderObjectの作成に失敗した場合､バイトコードを解放する
-	if (!DX_Debug::GetInstance()->CheckHresult(l_hr)){
-		throw "ComputeShaderオブジェクトの作成に失敗しました";
-	}
-
+	return succeed;
 }
 

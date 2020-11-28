@@ -1,114 +1,97 @@
 #ifndef __DX_GRAPHICS_H_
 #define __DX_GRAPHICS_H_
 
-//****************************************************************************************************
-//
-//	Graphics
-//
-//****************************************************************************************************
-class DX_Graphics
+/// <summary>
+/// 描画の開始終了及び、モニターの詳細を管理しています
+/// </summary>
+class DX_Graphics : public DX_Singleton<DX_Graphics>
 {
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		Graphicsを初期化する
-	//
-	//------------------------------------------------------------------------------
-	static bool Initialize();
+	/// <summary>
+	/// </summary>
+	/// モニターに関する情報を取得を行う。
+	/// <returns>成否</returns>
+	bool Initialize();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画開始
-	//	@param[in]	pSwapChain DX_System::GetSwapChain()
-	//
-	//------------------------------------------------------------------------------
-	static void BeginRender(IDXGISwapChain* pSwapChain);
+	/// <summary>
+	/// 描画開始
+	/// </summary>
+	void BeginRender();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画終了
-	//	@param[in]	pSwapChain DX_System::GetSwapChain()
-	//
-	//------------------------------------------------------------------------------
-	static void EndRender(IDXGISwapChain* pSwapChain);
+	/// <summary>
+	/// 描画終了
+	/// </summary>
+	void EndRender();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		リフレッシュシートの分母を取得
-	//	@return		m_refreshRateN
-	//
-	//------------------------------------------------------------------------------
-	static unsigned int GetRefreshRateN();
+	/// <summary>
+	/// リフレッシュシートの分母を取得
+	/// </summary>
+	/// <returns>リフレッシュシートの分母</returns>
+	unsigned int GetRefreshRateN();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		リフレッシュシートの分母を取得
-	//	@return		m_refreshRateD
-	//
-	//------------------------------------------------------------------------------
-	static unsigned int GetRefreshRateD();
+	/// <summary>
+	/// リフレッシュシートの分子を取得
+	/// </summary>
+	/// <returns>リフレッシュシートの分子</returns>
+	unsigned int GetRefreshRateD();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		ビデオカードのメモリ量の取得
-	//	@return		m_videoCardMemory
-	//
-	//------------------------------------------------------------------------------
-	static unsigned int GetVieoCardMemory();
+	/// <summary>
+	/// ビデオカードのメモリ量の取得
+	/// </summary>
+	/// <returns>ビデオカードのメモリ量</returns>
+	unsigned int GetVieoCardMemory();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		ビデオカードのメモリ量の取得
-	//	@return		m_videoCardDescription
-	//
-	//------------------------------------------------------------------------------
-	static const char* GetVideoCardDescription();
+	/// <summary>
+	///　ビデオカードの名前を取得
+	/// </summary>
+	/// <returns>ビデオカードの名前</returns>
+	const char* GetVideoCardDescription();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スキャンラインオーダーを取得
-	//	@return		m_scanlineOrder
-	//
-	//------------------------------------------------------------------------------
-	static DXGI_MODE_SCANLINE_ORDER GetScanLineOrder();
+	/// <summary>
+	/// スキャンラインオーダーを取得
+	/// </summary>
+	/// <returns>スキャンラインオーダー</returns>
+	DXGI_MODE_SCANLINE_ORDER GetScanLineOrder();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		スケーリングを取得
-	//	@return		m_scaling
-	//
-	//------------------------------------------------------------------------------
-	static DXGI_MODE_SCALING GetScaling();
+	/// <summary>
+	/// スケーリングを取得
+	/// </summary>
+	/// <returns>スケーリング</returns>
+	DXGI_MODE_SCALING GetScaling();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		フォーマット取得
-	//	@return		m_format
-	//
-	//------------------------------------------------------------------------------
-	static DXGI_FORMAT	GetFortmat();
+	/// <summary>
+	/// フォーマットを取得
+	/// </summary>
+	/// <returns>フォーマット</returns>
+	DXGI_FORMAT	GetFortmat();
 
 private:
+	friend class DX_Singleton<DX_Graphics>;
 	//	画面が開かれている時だけ描画を行うためのフラグ
-	static bool m_standByMode;
+	bool m_standByMode;
 
 	//	リフレッシュシートの分母と分子
-	static unsigned int m_refreshRateN;	//	分子 nolecule
-	static unsigned int m_refreshRateD;	//	分母 denominator
+	unsigned int m_refreshRateN;	//	分子 nolecule
+	unsigned int m_refreshRateD;	//	分母 denominator
 
 	//	ビデオカードのメモリ量			
-	static unsigned int m_videoCardMemory;
+	unsigned int m_videoCardMemory;
 
 	//	ビデオカードの名前
-	static char m_videoCardDescription[128];
+	char m_videoCardDescription[128];
 
 	//	スキャンライン
-	static DXGI_MODE_SCANLINE_ORDER m_scanlineOrder;
+	DXGI_MODE_SCANLINE_ORDER m_scanlineOrder;
 
 	//	スケーリング
-	static DXGI_MODE_SCALING		m_scaling;
+	DXGI_MODE_SCALING		m_scaling;
 
 	//	フォーマット
-	static DXGI_FORMAT				m_format;
+	DXGI_FORMAT				m_format;
+
+	/// <summary>
+	/// メンバ変数の初期化を行う
+	/// </summary>
+		DX_Graphics();
 };
 #endif // !__DX_GRAPHICS_H_

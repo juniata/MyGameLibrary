@@ -106,7 +106,7 @@ FrameWork::~FrameWork()
 //	ウィンドウを初期化する
 //
 //-----------------------------------------------------------------------------------------
-bool FrameWork::Initialize()
+bool FrameWork::Initialize(const unsigned int width, const unsigned int height)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	// メモリリークチェック
@@ -116,19 +116,13 @@ bool FrameWork::Initialize()
 	DX_System::Create();
 	DX_System* pSystem = DX_System::GetInstance();
 
-	//	スクリーンサイズを設定
-	pSystem->SetScreenSize(1280, 720);
-
-	unsigned int screenWidth = pSystem->GetScreenWidth();
-	unsigned int screenHeight = pSystem->GetScreenHeight();
-
 	//	ウィンドウを作成
-	if (!CreateAppWindow("DirectX11", screenWidth, screenHeight)) {
+	if (!CreateAppWindow("DirectX11", width, height)) {
 		return false;
 	}
 
 	//	DirectXの初期化
-	if (!pSystem->Initialize(m_hWnd, m_hInstance)) {
+	if (!pSystem->Initialize(m_hWnd, m_hInstance, width, height)) {
 		return false;
 	}
 
@@ -149,7 +143,7 @@ void FrameWork::Run()
 
 	//	現在のシーンを取得
 	SceneManager::SetBootScene(new SceneMain());
-
+	
 	//	ループ処理
 	while (msg.message != WM_QUIT) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -164,7 +158,7 @@ void FrameWork::Run()
 			SceneManager::Update(m_hWnd, msg.message, msg.wParam);
 
 			// シーンの描画
-			SceneManager::Render(pSwapChain);
+			SceneManager::Render();
 
 			// ゲームエンドか？
 			if (SceneManager::IsGameEnd()) {
@@ -297,5 +291,4 @@ void FrameWork::FPSUpdate()
 	}
 
 	m_fps.deltaTime = (1.0f / DX::CAST::F(m_fps.fps));
-	DX_Debug::GetInstance()->Printf("FPS[%d] deltaTime[%f]\n", m_fps.fps, m_fps.deltaTime);
 }
