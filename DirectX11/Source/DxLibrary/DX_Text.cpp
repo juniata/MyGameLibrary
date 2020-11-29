@@ -36,10 +36,9 @@ DX_Text::DX_Text()
 /// </summary>
 DX_Text::~DX_Text()
 {
-	for (auto itr = m_fontList.begin(); itr != m_fontList.end(); ++itr)
+	for (auto itr : m_fontList)
 	{
-		delete itr->second;
-		itr->second = nullptr;
+		DELETE_OBJ(itr.second);
 	}
 
 	m_fontList.clear();
