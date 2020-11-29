@@ -237,7 +237,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t text)
 			break;
 		}
 
-		//m_textures[filepath] = fontSrv;
+		m_textures[filepath] = fontSrv;
 	} while (false);
 	
 	return fontSrv;
