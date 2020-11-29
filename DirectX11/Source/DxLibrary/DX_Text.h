@@ -29,7 +29,7 @@ private:
 	DX_Text();
 	friend class DX_Singleton<DX_Text>;
 
-	ID3D11Buffer* m_vertexBuffer;
-	ID3D11SamplerState* m_fontSampler;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_fontSampler;
 	std::map<wchar_t, DX_Font*> m_fontList;
 };

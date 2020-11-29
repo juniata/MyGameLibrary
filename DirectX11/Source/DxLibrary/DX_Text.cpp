@@ -6,7 +6,7 @@
 /// <summary>
 /// メンバ変数の初期化
 /// </summary>
-DX_Text::DX_Text() : m_vertexBuffer(nullptr), m_fontSampler(nullptr)
+DX_Text::DX_Text()
 {
 	DX_System*		system = DX_System::GetInstance();
 	ID3D11Device*	device = system->GetDevice();
@@ -89,6 +89,6 @@ void DX_Text::Print(const float x, const float y, const float width, const float
 		}
 		// TODO:なぜか毎度ＳＲＶを取得する必要がある。。なぜ？
 		m_fontList[c]->SetInfo(&c, rect);
-		m_fontList[c]->Render(&m_vertexBuffer, m_fontSampler);
+		m_fontList[c]->Render(&m_vertexBuffer, m_fontSampler.Get());
 	}
 }
