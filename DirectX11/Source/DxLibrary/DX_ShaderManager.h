@@ -204,7 +204,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	m_inputLayout2D;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	m_inputLayout3D;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	m_inputLayoutBox;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_constantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_constantBuffer;
 
 	/// <summary>
 	/// •Ï”‚Ì‰Šú‰»‚ğs‚¤
