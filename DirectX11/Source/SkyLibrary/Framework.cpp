@@ -95,7 +95,6 @@ FrameWork::~FrameWork()
 
 	//	DX_Library‚ð‰ð•ú‚·‚é
 	DX_System::Destroy();
-	DX_Debug::GetInstance()->ReportLiveDeviceObjects("DX_System::Destroy() after");
 	DX_Debug::Destroy();
 
 	UnregisterClass(m_pAppName, m_hInstance);
