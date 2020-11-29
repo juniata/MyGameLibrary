@@ -67,7 +67,7 @@ void DX_Debug::ReportLiveDeviceObjects(const char* message)
 {
 #if defined(DEBUG) || defined(_DEBUG)
 	TRACE(message)
-	m_debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_DETAIL);
+	m_debug->ReportLiveObjects(DXGI_DEBUG_D3D11, DXGI_DEBUG_RLO_ALL);
 #endif
 }
 
