@@ -19,9 +19,8 @@ public:
 	/// <summary>
 	/// フォントの情報を設定する
 	/// </summary>
-	/// <param name="msg">メッセージ</param>
 	/// <param name="rect">描画する範囲</param>
-	void SetInfo(const wchar_t* msg, const DX::tagRect& rect);
+	void SetInfo(const DX::tagRect& rect);
 
 	/// <summary>
 	/// 描画する

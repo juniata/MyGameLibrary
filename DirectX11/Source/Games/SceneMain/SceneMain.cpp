@@ -89,7 +89,7 @@ bool SceneMain::Render()
 	m_pView->Clear();
 	m_pView->SetMatrixForTheView();
 	
-	//DX_Text::GetInstance()->Print(0, 10, 20, 20, "x=%s", "‚ ");
+	DX_Text::GetInstance()->Print(0, 10, 20, 20, "x=%s", "‚ ");
 	//obj3D->Render();
 
 	return result;

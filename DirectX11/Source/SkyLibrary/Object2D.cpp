@@ -168,14 +168,14 @@ bool Object2D::Render()
 bool Object2D::LoadTexture(const char* pFilepath)
 {
 	//	テクスチャを取得
-	m_srv.Attach(DX_TextureManager::GetTexture(pFilepath));
+	m_srv.Attach(DX_TextureManager::GetInstance()->GetTexture(pFilepath));
 
 	if (nullptr == m_srv.Get()) {
 		TRACE("failed to DX_TextureManager::GetTexture(), filepath = %s", pFilepath);
 		return false;
 	}
 
-	DX_TextureManager::GetTextureSize(&m_height, &m_width, m_srv.Get());
+	DX_TextureManager::GetInstance()->GetTextureSize(&m_height, &m_width, m_srv.Get());
 
 	return true;
 }

@@ -18,7 +18,7 @@ FBXLoader::FBXLoader() :
 FBXLoader::~FBXLoader()
 {
 	for (auto mLink : m_materialLinks) {
-		DX_TextureManager::Release(mLink.second);
+		DX_TextureManager::GetInstance()->Release(mLink.second);
 	}
 	m_materialLinks.clear();
 
@@ -220,7 +220,7 @@ void FBXLoader::LoadTextures(FbxSurfaceMaterial* pMaterial)
 
 	const char* pName = pMaterial->GetName();
 	const char* pFilepath = pTexture->GetFileName();
-	m_materialLinks[pName] = DX_TextureManager::GetTexture(pFilepath);
+	m_materialLinks[pName] = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
 }
 
 /// <summary>

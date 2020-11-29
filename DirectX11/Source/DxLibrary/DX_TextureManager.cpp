@@ -4,7 +4,14 @@
 #include	<tchar.h>
 using namespace DirectX;
 
-std::map<const char*, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> DX_TextureManager::m_textures;
+
+/// <summary>
+/// マップの解放
+/// </summary>
+DX_TextureManager::~DX_TextureManager()
+{
+	m_textures.clear();
+}
 
 /// <summary>
 /// テクスチャを取得する(指定したテクスチャがなければ作成する)
@@ -14,7 +21,7 @@ std::map<const char*, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> DX_Textu
 ID3D11ShaderResourceView* DX_TextureManager::GetTexture(const char* filepath)
 {
 	ID3D11ShaderResourceView* texture = SearchTexture(filepath);
-	
+
 	if (texture)
 	{
 		texture->AddRef();
@@ -98,6 +105,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t* text)
 	{
 		if (fontSrv)
 		{
+			fontSrv->AddRef();
 			break;
 		}
 
@@ -225,10 +233,9 @@ ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t* text)
 			break;
 		}
 
-		m_textures[filepath].Attach(fontSrv);
+		m_textures[filepath] = fontSrv;
 	} while (false);
 	
-
 	return fontSrv;
 }
 

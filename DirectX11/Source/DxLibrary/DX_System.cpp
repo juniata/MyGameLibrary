@@ -27,6 +27,7 @@ DX_System::~DX_System()
 	//DX_SceneManager::Release();
 	DX_Input::Destroy();
 	DX_Text::Destroy();
+	DX_TextureManager::Destroy();
 	DX_RenderState::Destroy();
 	DX_ShaderManager::Destroy();
 	DX_Graphics::Destroy();
@@ -94,6 +95,7 @@ bool DX_System::Initialize(HWND hWnd, HINSTANCE hInst, const UINT width, const U
 			break;
 		}
 
+		DX_TextureManager::Create();
 		DX_Text::Create();
 
 		succeed = true;

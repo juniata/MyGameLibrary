@@ -74,7 +74,7 @@ void DX_Text::Print(const float x, const float y, const float width, const float
 	mbstowcs_s(&ret, msg, 256, message, _TRUNCATE);
 
 	size_t size = wcslen(msg);
-
+	DX_Font* font = nullptr;
 	for (int i = 0; i < size; ++i)
 	{
 		wchar_t c = msg[i];
@@ -90,8 +90,9 @@ void DX_Text::Print(const float x, const float y, const float width, const float
 		{
 			m_fontList[c] = new DX_Font(&c);
 		}
+		font = m_fontList[c];
 		// TODO:‚È‚º‚©–ˆ“x‚r‚q‚u‚ðŽæ“¾‚·‚é•K—v‚ª‚ ‚éBB‚È‚ºH
-		m_fontList[c]->SetInfo(&c, rect);
-		m_fontList[c]->Render(&m_vertexBuffer, m_fontSampler.Get());
+		font->SetInfo(rect);
+		font->Render(m_vertexBuffer.GetAddressOf(), m_fontSampler.Get());
 	}
 }

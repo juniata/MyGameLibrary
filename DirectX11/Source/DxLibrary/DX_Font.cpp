@@ -9,7 +9,7 @@
 DX_Font::DX_Font(const wchar_t* msg) : m_fontSrv(nullptr)
 {
 	ZeroMemory(&m_rect, sizeof(m_rect));
-	m_fontSrv = DX_TextureManager::GetFontTexture(msg);
+	m_fontSrv = DX_TextureManager::GetInstance()->GetFontTexture(msg);
 
 }
 
@@ -18,7 +18,7 @@ DX_Font::DX_Font(const wchar_t* msg) : m_fontSrv(nullptr)
 /// </summary>
 DX_Font::~DX_Font()
 {
-	DX_TextureManager::Release(m_fontSrv);
+	DX_TextureManager::GetInstance()->Release(m_fontSrv);
 }
 
 /// <summary>
@@ -26,9 +26,8 @@ DX_Font::~DX_Font()
 /// </summary>
 /// <param name="msg">メッセージ</param>
 /// <param name="rect">描画する範囲</param>
-void DX_Font::SetInfo(const wchar_t* msg, const DX::tagRect& rect)
+void DX_Font::SetInfo(const DX::tagRect& rect)
 {
-	m_fontSrv = DX_TextureManager::GetFontTexture(msg);
 	m_rect = rect;
 }
 
