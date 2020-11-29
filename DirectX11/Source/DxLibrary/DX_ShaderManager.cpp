@@ -33,7 +33,9 @@ bool DX_ShaderManager::Initialize()
 {
 	auto succeed = false;
 	
-	m_constantBuffer = DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4X4));
+	m_constantBuffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4X4)));
+	m_constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("m_constantBuffer") - 1, "m_constantBuffer");
+
 
 	do
 	{
@@ -155,7 +157,8 @@ void DX_ShaderManager::SetWorldMat(const DirectX::XMFLOAT4X4& worldMat, SHADER_T
 /// <param name="shaderType">送るシェーダーのタイプ</param>
 void DX_ShaderManager::SetInt(const unsigned int registerNum, const int value, SHADER_TYPE shaderType)
 {
-	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer = DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMINT4));
+	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
+	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMINT4)));
 
 	ID3D11DeviceContext* pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -195,7 +198,8 @@ void DX_ShaderManager::SetVector3(const unsigned int registerNum, const DirectX:
 /// <param name="shaderType">送るシェーダーのタイプ</param>
 void DX_ShaderManager::SetVector4(const unsigned int registerNum, const DirectX::XMFLOAT4& value, SHADER_TYPE shaderType)
 {
-	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer = DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4));
+	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
+	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4)));
 
 	ID3D11DeviceContext* pDeviceContext = DX_System::GetInstance()->GetDeviceContext();
 
@@ -278,8 +282,9 @@ void DX_ShaderManager::SetMatrix(ID3D11Buffer* const* ppBuffer, const unsigned i
 /// <param name="shaderType">送るシェーダーのタイプ</param>
 void DX_ShaderManager::SetMatrixResoruce(const unsigned int	registerNum, const DirectX::XMFLOAT4X4* matList, const unsigned int matCount, SHADER_TYPE shaderType)
 {
-	Microsoft::WRL::ComPtr<ID3D11Buffer>				buffer = DX_BufferCreater::CPUWriteBuffer(sizeof(DirectX::XMFLOAT4X4) * matCount);
+	Microsoft::WRL::ComPtr<ID3D11Buffer>				buffer;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	srv;
+	buffer.Attach(DX_BufferCreater::CPUWriteBuffer(sizeof(DirectX::XMFLOAT4X4) * matCount));
 
 	DX_System*				system			= DX_System::GetInstance();
 	ID3D11Device*			device			= system->GetDevice();
@@ -588,8 +593,9 @@ void DX_ShaderManager::SetVectorResource(const unsigned int registerNum, const v
 {
 	const unsigned int listSize = vecCount * elementSize;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>				buffer = DX_BufferCreater::CPUWriteBuffer(listSize);
+	Microsoft::WRL::ComPtr<ID3D11Buffer>				buffer;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	srv;
+	buffer.Attach(DX_BufferCreater::CPUWriteBuffer(listSize));
 
 	DX_System*		system = DX_System::GetInstance();
 	ID3D11Device*	device = system->GetDevice();

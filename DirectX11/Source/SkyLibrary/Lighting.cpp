@@ -122,7 +122,7 @@ bool Lighting::SetLightVertexShader()
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	buffer = DX_BufferCreater::ConstantBuffer(sizeof(vertexLighting));
+	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(vertexLighting)));
 	if (buffer.Get() == nullptr) {
 		TRACE("定数バッファの作成に失敗しました。")
 		return false;
@@ -174,7 +174,8 @@ bool Lighting::SetLightPixelShader()
 	bufferDesc.CPUAccessFlags = 0;
 
 	//	bufferを作成
-	if (!(buffer = DX_BufferCreater::ConstantBuffer(sizeof(pixelLighting)))) {
+	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(pixelLighting)));
+	if (buffer.Get() == nullptr) {
 		TRACE("定数バッファの作成に失敗しました。")
 		return false;
 	}

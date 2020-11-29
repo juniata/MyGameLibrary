@@ -34,7 +34,9 @@ View::View() :
 	//	Ž‹‘ä‚Ì–Ê‚ðì¬
 	CreateFrustum();
 
-	m_constantBuffer = DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4X4) * 3);
+	m_constantBuffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(DirectX::XMFLOAT4X4) * 3));
+	m_constantBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("m_constantBuffer") - 1, "m_constantBuffer");
+
 }
 
 

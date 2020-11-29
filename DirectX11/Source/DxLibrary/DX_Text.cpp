@@ -19,6 +19,8 @@ DX_Text::DX_Text()
 	samDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	device->CreateSamplerState(&samDesc, &m_fontSampler);
+	// TODO: なぜかExisting private data of same name with different size found!が出るので、コメントアウト
+	//m_fontSampler->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("DX_Text::m_fontSampler") - 1, "DX_Text::m_fontSampler");
 
 	//	頂点バッファを作成
 	DX::tagVertex2D vertices[] = {
@@ -28,7 +30,9 @@ DX_Text::DX_Text()
 		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
 	};
 
-	m_vertexBuffer = DX_BufferCreater::VertexBuffer(sizeof(vertices), vertices);
+	m_vertexBuffer.Attach(DX_BufferCreater::VertexBuffer(sizeof(vertices), vertices));
+	m_vertexBuffer->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("DX_Text::m_vertexBuffer") - 1, "DX_Text::m_vertexBuffer");
+
 }
 
 /// <summary>
