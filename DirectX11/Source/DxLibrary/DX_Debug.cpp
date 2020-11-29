@@ -35,6 +35,14 @@ DX_Debug::DX_Debug()
 #endif
 }
 
+/// <summary>
+/// ï¿½fï¿½oï¿½Cï¿½Xï¿½ï¿½ï¿½Ì‰ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
+/// </summary>
+DX_Debug::~DX_Debug()
+{
+	ReportLiveDeviceObjects("timing of call DX_System::~DX_System()");
+}
+
 
 /// <summary>
 /// ƒfƒoƒCƒX‚Ì¶¬“™‚ğs‚¤

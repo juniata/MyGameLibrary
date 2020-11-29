@@ -29,6 +29,11 @@ class DX_Debug : public DX_Singleton<DX_Debug>
 {
 public:
 	/// <summary>
+	/// デバイス等の解放を行う
+	/// </summary>
+	~DX_Debug();
+
+	/// <summary>
 	/// デバイスの生成等を行う
 	/// </summary>
 	void Initialize();
