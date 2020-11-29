@@ -36,7 +36,7 @@ DX_Debug::DX_Debug()
 }
 
 /// <summary>
-/// ・ｽf・ｽo・ｽC・ｽX・ｽ・ｽ・ｽﾌ会ｿｽ・ｽ・ｽ・ｽs・ｽ・ｽ
+/// デバイス等の解放を行う
 /// </summary>
 DX_Debug::~DX_Debug()
 {
