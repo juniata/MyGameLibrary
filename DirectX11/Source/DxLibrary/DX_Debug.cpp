@@ -36,7 +36,7 @@ DX_Debug::DX_Debug()
 }
 
 /// <summary>
-/// ï¿½fï¿½oï¿½Cï¿½Xï¿½ï¿½ï¿½Ì‰ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
+/// E½fE½oE½CE½XE½E½E½Ì‰ï¿½E½E½E½sE½E½
 /// </summary>
 DX_Debug::~DX_Debug()
 {
