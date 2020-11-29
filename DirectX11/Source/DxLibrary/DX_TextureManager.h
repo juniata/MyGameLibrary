@@ -35,11 +35,11 @@ public:
 	/// </summary>
 	/// <param name="text">文字</param>
 	/// <returns>指定した文字のテクスチャを取得(取得できなかった場合はnullptr)</returns>
-	ID3D11ShaderResourceView* GetFontTexture(const wchar_t* text);
+	ID3D11ShaderResourceView* GetFontTexture(const wchar_t text);
 private:
 	friend class DX_Singleton<DX_TextureManager>;
 
-	std::map<const char*, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+	std::map<std::string, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
 
 	/// <summary>
 	/// 指定したファイルパスのテクスチャをリストから探して取得する

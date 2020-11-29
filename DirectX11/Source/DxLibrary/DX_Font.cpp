@@ -6,7 +6,7 @@
 /// <summary>
 /// ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 /// </summary>
-DX_Font::DX_Font(const wchar_t* msg) : m_fontSrv(nullptr)
+DX_Font::DX_Font(const wchar_t msg) : m_fontSrv(nullptr)
 {
 	ZeroMemory(&m_rect, sizeof(m_rect));
 	m_fontSrv = DX_TextureManager::GetInstance()->GetFontTexture(msg);

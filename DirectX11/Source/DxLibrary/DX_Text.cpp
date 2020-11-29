@@ -88,7 +88,7 @@ void DX_Text::Print(const float x, const float y, const float width, const float
 		// キーがなければ生成する
 		if (!m_fontList.count(c))
 		{
-			m_fontList[c] = new DX_Font(&c);
+			m_fontList[c] = new DX_Font(c);
 		}
 		font = m_fontList[c];
 		// TODO:なぜか毎度ＳＲＶを取得する必要がある。。なぜ？

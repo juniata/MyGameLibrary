@@ -93,12 +93,16 @@ void DX_TextureManager::Release(ID3D11ShaderResourceView* texture)
 /// </summary>
 /// <param name="text">文字</param>
 /// <returns>指定した文字のテクスチャを取得(取得できなかった場合はnullptr)</returns>
-ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t* text)
+ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t text)
 {
+	setlocale(LC_ALL, "japanese");
+
 	size_t ret = 0;
+	char tochar[_MAX_PATH] = { '\0' };
+	wcstombs_s(&ret, tochar, &text, _TRUNCATE);
+
 	char filepath[_MAX_PATH] = { '\0' };
-	wcstombs_s(&ret, filepath, _MAX_PATH, text, wcslen(text));
-	
+	sprintf_s(filepath, "fontTexture[%s]", tochar);
 	ID3D11ShaderResourceView* fontSrv = SearchTexture(filepath);
 
 	do
@@ -131,7 +135,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t* text)
 		HDC		hdc = GetDC(NULL);
 		HFONT	oldFont = (HFONT)SelectObject(hdc, hFont);
 
-		wchar_t* c = const_cast<wchar_t*>(text);
+		wchar_t* c = const_cast<wchar_t*>(&text);
 		// フォントビットマップ取得
 		UINT code = (UINT)* c;
 
@@ -233,7 +237,7 @@ ID3D11ShaderResourceView* DX_TextureManager::GetFontTexture(const wchar_t* text)
 			break;
 		}
 
-		m_textures[filepath] = fontSrv;
+		//m_textures[filepath] = fontSrv;
 	} while (false);
 	
 	return fontSrv;

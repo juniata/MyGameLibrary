@@ -9,7 +9,7 @@ public:
 	/// <summary>
 	/// ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
 	/// </summary>
-	DX_Font(const wchar_t* msg);
+	DX_Font(const wchar_t msg);
 
 	/// <summary>
 	/// ƒƒ“ƒo•Ï”‚Ì‰ğ•ú
