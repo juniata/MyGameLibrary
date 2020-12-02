@@ -1,171 +1,117 @@
 #pragma once
 
-
+/// <summary>
+/// テクスチャを表示する機能を持ったクラス
+/// </summary>
 class Object2D : public GameObject
 {
 public:
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		メンバー変数の初期化
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// メンバ変数等を初期化
+	/// </summary>
 	Object2D();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		m_pShaderResourceViewを解放
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// メンバ変数等を解放
+	/// </summary>
 	virtual ~Object2D();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
-	//	@param[in]	pFilepath	テクスチャのファイルパス
-	//	@return		どちらかの作成に失敗でfalse
-	//
-	//------------------------------------------------------------------------------
-	bool Initialize(const char* pFilepath);
+	/// <summary>
+	/// テクスチャの読み込みと頂点バッファの作成を行う 
+	/// </summary>
+	/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+	/// <returns>成否</returns>
+	bool Initialize(const char* filepath);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
-	//	@param[in]	pFilepath	テクスチャのファイルパス
-	//	@param[in]	rectPos		描画するサイズ
-	//	@return		どちらかの作成に失敗でfalse
-	//
-	//------------------------------------------------------------------------------
-	bool Initialize(const char* pFilepath, const DX::tagRect& rectPos);
+	/// <summary>
+	/// 指定したサイズでテクスチャ及び頂点バッファを作成する
+	/// </summary>
+	/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+	/// <param name="rectPos">描画するサイズ</param>
+	/// <returns>成否</returns>
+	bool Initialize(const char* filepath, const DX::tagRect& rectPos);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
-	//	@param[in]	pFilepath	テクスチャのファイルパス
-	//	@param[in]	rectPos		描画するサイズ
-	//	@param[in]	uv			描画するテクスチャ座標
-	//	@return		どちらかの作成に失敗でfalse
-	//
-	//------------------------------------------------------------------------------
-	bool Initialize(const char* pFilepath, const DX::tagRect& rectPos, const DX::tagRect& uv);
+	/// <summary>
+	///  指定したサイズとUVでテクスチャ及び頂点バッファを作成する
+	/// </summary>
+	/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+	/// <param name="rectPos">描画するサイズ</param>
+	/// <param name="uv">描画するテクスチャ座標</param>
+	/// <returns>成否</returns>
+	bool Initialize(const char* filepath, const DX::tagRect& rectPos, const DX::tagRect& uv);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャの高さを取得する
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// テクスチャの高さを取得する
+	/// </summary>
+	/// <returns>テクスチャの高さ</returns>
 	unsigned int GetHeight()const;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャの幅を取得する
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// テクスチャの幅を取得する
+	/// </summary>
+	/// <returns>テクスチャの幅</returns>
 	unsigned int GetWidth()const;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画する
-	//	@return		描画に成功したかどうか
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 描画する
+	/// </summary>
+	/// <returns>成否</returns>
 	bool Render();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		複製する
-	//	@return		複製したオブジェクト
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// テクスチャを複製する
+	/// </summary>
+	/// <returns>複製したオブジェクト</returns>
 	Object2D* Clone();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		オブジェクトが複製したものかどうか
-	//	@return		オブジェクトが複製したものならtrue
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// オブジェクトが複製したものかどうかを取得する
+	/// </summary>
+	/// <returns>複製したものならtrue</returns>
 	bool IsClone() const;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		オブジェクトがオリジナルかどうか
-	//	@return		オブジェクトがオリジナルならtrue
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// オブジェクトがオリジナルかどうかを取得する
+	/// </summary>
+	/// <returns>オリジナルならtrue</returns>
 	bool IsOriginal() const;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		画面内に描画されているかどうか
-	//	@param[in]	描画されているならtrue
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// スクリーン内に描画されているかどうかを取得する
+	/// </summary>
+	/// <returns>描画されているならtrue</returns>
 	bool IsInScreen() const;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画座標を設定する
-	//	@param[in]	rect	描画範囲
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 描画座標を設定する
+	/// </summary>
+	/// <param name="rect">描画座標</param>
 	void SetRectPos(const DX::tagRect& rect);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画座標を設定する
-	//	@param[in]	left	左
-	//	@param[in]	top		上
-	//	@param[in]	right	右
-	//	@param[in]	bottom	下
-	//
-	//------------------------------------------------------------------------------
-	void SetRectPos(const float left, const float top, const float right, const float bottom);
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		UV座標を設定する
-	//	@param[in]	uv		UV座標
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// UV座標を設定する
+	/// </summary>
+	/// <param name="uv">UV座標</param>
 	void SetUV(const DX::tagRect& uv);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		UV座標を設定する
-	//	@param[in]	left	左
-	//	@param[in]	top		上
-	//	@param[in]	right	右
-	//	@param[in]	bottom	下
-	//
-	//------------------------------------------------------------------------------
-	void SetUV(const float left, const float top, const float right, const float bottom);
+	/// <summary>
+	/// 描画座標を取得する
+	/// </summary>
+	/// <returns>描画座標</returns>
+	const DX::tagRect& GetRectPos();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		描画座標を取得する
-	//	@return		描画座標
-	//
-	//------------------------------------------------------------------------------
-	DX::tagRect GetRectPos() const;
+	/// <summary>
+	/// UV座標を取得する
+	/// </summary>
+	/// <returns>UV座標</returns>
+	const DX::tagRect& GetUV();
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		UV座標を取得する
-	//	@return		UV座標
-	//
-	//------------------------------------------------------------------------------
-	DX::tagRect GetUV() const;
-
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		頂点情報を更新する
-	//	@param[in]	isLRMirror	左右反転描画するかどうか
-	//	@param[in]	isUDMirror	上下反転描画するかどうか
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 座標等を更新する
+	/// </summary>
+	/// <param name="isLRMirror">左右反転描画するかどうか</param>
+	/// <param name="isUDMirror">上下反転描画するかどうか</param>
 	void Update(const bool isLRMirror = false, const bool isUDMirror = false);
-
-	static void SetCalcRectVertex(DX::tagVertex2D** rectVertices, DX::tagRect& rectPos);
 
 protected:
 	DX::tagRect m_rectPos;
@@ -181,32 +127,26 @@ private:
 	bool m_isLRMirror;
 	bool m_isUDMirror;
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャ読み込みと頂点バッファの作成を行う。
-	//	@param[in]	pFilepath	テクスチャのファイルパス
-	//	@return		どちらかの作成に失敗でfalse
-	//
-	//------------------------------------------------------------------------------
-	bool CommonInitialize(const char* pFilepath);
+	/// <summary>
+	/// テクスチャの読み込みと頂点バッファの作成を行う 
+	/// </summary>
+	/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+	/// <returns>成否</returns>
+	bool CommonInitialize(const char* filepath);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		テクスチャを読み込む
-	//	@param[in]	pFilepath	テクスチャのファイルパス
-	//	@return		テクスチャの読み込みの成否
-	//
-	//------------------------------------------------------------------------------
-	bool LoadTexture(const char* pFilepath);
+	/// <summary>
+	/// テクスチャを読み込む
+	/// </summary>
+	/// <param name="filepath"></param>
+	/// <returns>成否</returns>
+	bool LoadTexture(const char* filepath);
 
-	//------------------------------------------------------------------------------
-	//
-	//  @brief		頂点情報を作成する
-	//	@param[in]	rectPos		画面に描画する範囲	
-	//	@param[in]	uv			描画する画像の範囲
-	//	@param[in]	isLRMirror	左右反転するかどうか
-	//	@param[in]	isUDMirror	上下反転するかどうか
-	//
-	//------------------------------------------------------------------------------
+	/// <summary>
+	/// 頂点座標を作成する
+	/// </summary>
+	/// <param name="rectPos">画面に描画する範囲</param>
+	/// <param name="uv">描画する画像の範囲</param>
+	/// <param name="isLRMirror">左右反転するかどうか</param>
+	/// <param name="isUDMirror">上下反転するかどうか</param>
 	void CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror = false, const bool isUDMirror = false);
 };

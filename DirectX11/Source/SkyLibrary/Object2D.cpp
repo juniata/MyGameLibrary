@@ -3,11 +3,9 @@
 #include "Object2D.h"
 #include	<stdio.h>
 
-//-----------------------------------------------------------------------------------------
-//
-//  メンバー変数を初期化
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// メンバ変数等を初期化
+/// </summary>
 Object2D::Object2D() :
 	m_height(0),
 	m_width(0),
@@ -17,85 +15,98 @@ Object2D::Object2D() :
 	m_isUDMirror(false)
 {}
 
-
-//-----------------------------------------------------------------------------------------
-//
-//  m_pShaderResourceViewを解放
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// メンバ変数等を解放
+/// </summary>
 Object2D::~Object2D()
 {
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	テクスチャ読み込みと頂点バッファの作成を行う。
-//
-//-----------------------------------------------------------------------------------------
-bool Object2D::CommonInitialize(const char* pFilepath)
+/// <summary>
+/// テクスチャの読み込みと頂点バッファの作成を行う 
+/// </summary>
+/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+/// <returns>成否</returns>
+bool Object2D::CommonInitialize(const char* fFilepath)
 {
-	//	頂点バッファを作成
-	DX::tagVertex2D vertices[] = {
-		/* 左下 */	DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
-		/* 左上 */	DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
-		/* 右下 */	DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
-		/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
-	};
+	bool isSucceed = false;
 
-	m_vertexBuffer.Attach(DX_BufferCreater::VertexBuffer(sizeof(vertices), vertices));
-	if (nullptr == m_vertexBuffer.Get()) {
-		TRACE("failed to DX_Buffer::CreateVertexBuffer()");
-		return false;
-	}
+	do
+	{
+		//	頂点バッファを作成
+		DX::tagVertex2D vertices[] = {
+			/* 左下 */	DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f),
+			/* 左上 */	DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f),
+			/* 右下 */	DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f),
+			/* 右上 */	DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f)
+		};
 
-	// テクスチャを読み込む
-	char texturePath[MAX_PATH] = { '\n' };
-	sprintf_s(texturePath, "%s%s", "Resource\\", pFilepath);
+		m_vertexBuffer.Attach(DX_BufferCreater::VertexBuffer(sizeof(vertices), vertices));
+		if (nullptr == m_vertexBuffer.Get()) {
+			TRACE("failed to DX_Buffer::CreateVertexBuffer()");
+			break;
+		}
 
-	return LoadTexture(texturePath);
+		// テクスチャを読み込む
+		char texturePath[MAX_PATH] = { '\n' };
+		sprintf_s(texturePath, "%s%s", "Resource\\", fFilepath);
+
+		if (LoadTexture(texturePath) == false)
+		{
+			TRACE("failed to LoadTexture()")
+			break;
+		}
+
+		isSucceed = true;
+	} while (false);
+
+	return isSucceed;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	テクスチャ読み込みと頂点バッファの作成を行う。
-//
-//-----------------------------------------------------------------------------------------
-bool Object2D::Initialize(const char* pFilepath)
+/// <summary>
+/// テクスチャの読み込みと頂点バッファの作成を行う 
+/// </summary>
+/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+/// <returns>成否</returns>
+bool Object2D::Initialize(const char* filepath)
 {
-	bool isSucceed = CommonInitialize(pFilepath);
+	bool isSucceed = CommonInitialize(filepath);
 
-	DX_System* pSystem = DX_System::GetInstance();
-	SetRectPos(0.0f, 0.0f, DX::CAST::F(pSystem->GetScreenWidth()), DX::CAST::F(pSystem->GetScreenHeight()));
-	SetUV(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height));
+	DX_System* system = DX_System::GetInstance();
+	SetRectPos(DX::tagRect(0.0f, 0.0f, DX::CAST::F(system->GetScreenWidth()), DX::CAST::F(system->GetScreenHeight())));
+	SetUV(DX::tagRect(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height)));
 	Update();
 
 	return isSucceed;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	テクスチャ読み込みと頂点バッファの作成を行う。
-//
-//-----------------------------------------------------------------------------------------
-bool Object2D::Initialize(const char* pFilepath, const DX::tagRect& rectPos)
+/// <summary>
+/// 指定したサイズでテクスチャ及び頂点バッファを作成する
+/// </summary>
+/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+/// <param name="rectPos">描画するサイズ</param>
+/// <returns>成否</returns>
+bool Object2D::Initialize(const char* filepath, const DX::tagRect& rectPos)
 {
-	bool isSucceed = CommonInitialize(pFilepath);
+	bool isSucceed = CommonInitialize(filepath);
 
 	SetRectPos(rectPos);
-	SetUV(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height));
+	SetUV(DX::tagRect(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height)));
 	Update();
 
 	return isSucceed;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	テクスチャ読み込みと頂点バッファの作成を行う。
-//
-//-----------------------------------------------------------------------------------------
-bool Object2D::Initialize(const char* pFilepath, const DX::tagRect& rectPos, const DX::tagRect& uv)
+/// <summary>
+///  指定したサイズとUVでテクスチャ及び頂点バッファを作成する
+/// </summary>
+/// <param name="filepath">テクスチャのファイルパス(/Resource/以下から)</param>
+/// <param name="rectPos">描画するサイズ</param>
+/// <param name="uv">描画するテクスチャ座標</param>
+/// <returns>成否</returns>
+bool Object2D::Initialize(const char* filepath, const DX::tagRect& rectPos, const DX::tagRect& uv)
 {
-	bool isSucceed = CommonInitialize(pFilepath);
+	bool isSucceed = CommonInitialize(filepath);
 
 	SetRectPos(rectPos);
 	SetUV(uv);
@@ -104,31 +115,29 @@ bool Object2D::Initialize(const char* pFilepath, const DX::tagRect& rectPos, con
 	return isSucceed;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  テクスチャの高さを取得する
-//
-//-----------------------------------------------------------------------------------------
+
+/// <summary>
+/// テクスチャの高さを取得する
+/// </summary>
+/// <returns>テクスチャの高さ</returns>
 unsigned int Object2D::GetHeight()const
 {
 	return m_height;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  テクスチャの幅を取得する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// テクスチャの幅を取得する
+/// </summary>
+/// <returns>テクスチャの幅</returns>
 unsigned int Object2D::GetWidth()const
 {
 	return m_width;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  全画面に描画
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 描画する
+/// </summary>
+/// <returns>成否</returns>
 bool Object2D::Render()
 {
 	auto result = true;
@@ -160,32 +169,37 @@ bool Object2D::Render()
 	return result;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//  テクスチャを読み込む
-//
-//-----------------------------------------------------------------------------------------
-bool Object2D::LoadTexture(const char* pFilepath)
+/// <summary>
+/// テクスチャを読み込む
+/// </summary>
+/// <param name="filepath"></param>
+/// <returns>成否</returns>
+bool Object2D::LoadTexture(const char* filepath)
 {
-	//	テクスチャを取得
-	m_srv = DX_TextureManager::GetInstance()->GetTexture(pFilepath);
+	auto isSucceed = false;
 
-	if (nullptr == m_srv.Get()) {
-		TRACE("failed to DX_TextureManager::GetTexture(), filepath = %s", pFilepath);
-		return false;
-	}
+	do
+	{
+		m_srv = DX_TextureManager::GetInstance()->GetTexture(filepath);
 
-	DX_TextureManager::GetInstance()->GetTextureSize(&m_height, &m_width, m_srv.Get());
+		if (nullptr == m_srv.Get()) {
+			TRACE("failed to DX_TextureManager::GetTexture(), filepath = %s", filepath);
+			break;
+		}
 
-	return true;
+		DX_TextureManager::GetInstance()->GetTextureSize(&m_height, &m_width, m_srv.Get());
+
+		isSucceed = true;
+	} while (false);
+
+	return isSucceed;
 }
 
 
-//-----------------------------------------------------------------------------------------
-//
-//	複製する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// テクスチャを複製する
+/// </summary>
+/// <returns>複製したオブジェクト</returns>
 Object2D* Object2D::Clone()
 {
 	auto pObject = new Object2D(*this);
@@ -195,39 +209,36 @@ Object2D* Object2D::Clone()
 	return pObject;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	オブジェクトが複製したものかどうか
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+	/// オブジェクトが複製したものかどうかを取得する
+	/// </summary>
+	/// <returns>複製したものならtrue</returns>
 bool Object2D::IsClone() const
 {
 	return m_isCloned;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	オブジェクトがオリジナルかどうか
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// オブジェクトがオリジナルかどうかを取得する
+/// </summary>
+/// <returns>オリジナルならtrue</returns>
 bool Object2D::IsOriginal() const
 {
-	return !m_isCloned;
+	return (m_isCloned == false);
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	画面内に描画されているかどうか
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// スクリーン内に描画されているかどうかを取得する
+/// </summary>
+/// <returns>描画されているならtrue</returns>
 bool Object2D::IsInScreen() const
 {
 	auto isInScreen = false;
 
-	DX_System* pSystem = DX_System::GetInstance();
+	DX_System* system = DX_System::GetInstance();
 
-	float height = DX::CAST::F(pSystem->GetScreenHeight());
-	float width = DX::CAST::F(pSystem->GetScreenWidth());
+	float height = DX::CAST::F(system->GetScreenHeight());
+	float width = DX::CAST::F(system->GetScreenWidth());
 
 	if (0.0f <= m_rectPos.y && m_rectPos.bottom <= height &&
 		0.0f <= m_rectPos.x && m_rectPos.right <= width)
@@ -238,81 +249,51 @@ bool Object2D::IsInScreen() const
 	return isInScreen;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	描画座標を設定する
-//
-//-----------------------------------------------------------------------------------------
+
+/// <summary>
+/// 描画座標を設定する
+/// </summary>
+/// <param name="rect">描画座標</param>
 void Object2D::SetRectPos(const DX::tagRect& rect)
 {
 	m_rectPos = rect;
 	m_isChanged = true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	描画座標を設定する
-//
-//-----------------------------------------------------------------------------------------
-void Object2D::SetRectPos(const float left, const float top, const float right, const float bottom)
-{
-	m_rectPos.left = left;
-	m_rectPos.top = top;
-	m_rectPos.right = right;
-	m_rectPos.bottom = bottom;
-	m_isChanged = true;
-}
-
-//-----------------------------------------------------------------------------------------
-//
-//	UV座標を設定する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// UV座標を設定する
+/// </summary>
+/// <param name="uv">UV座標</param>
 void Object2D::SetUV(const DX::tagRect& uv)
 {
 	m_uv = uv;
 	m_isChanged = true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	UV座標を設定する
-//
-//-----------------------------------------------------------------------------------------
-void Object2D::SetUV(const float left, const float top, const float right, const float bottom)
-{
-	m_uv.left = left;
-	m_uv.top = top;
-	m_uv.right = right;
-	m_uv.bottom = bottom;
-	m_isChanged = true;
-}
 
-//-----------------------------------------------------------------------------------------
-//
-//	描画座標を取得する
-//
-//-----------------------------------------------------------------------------------------
-DX::tagRect  Object2D::GetRectPos() const
+/// <summary>
+/// 描画座標を取得する
+/// </summary>
+/// <returns>描画座標</returns>
+const DX::tagRect& Object2D::GetRectPos()
 {
 	return m_rectPos;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	UV座標を取得する
-//
-//-----------------------------------------------------------------------------------------
-DX::tagRect  Object2D::GetUV() const
+/// <summary>
+/// UV座標を取得する
+/// </summary>
+/// <returns>UV座標</returns>
+const DX::tagRect& Object2D::GetUV()
 {
 	return m_uv;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	頂点情報を更新する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 座標等を更新する
+/// </summary>
+/// <param name="isLRMirror">左右反転描画するかどうか</param>
+/// <param name="isUDMirror">上下反転描画するかどうか</param>
 void Object2D::Update(const bool isLRMirror, const bool isUDMirror)
 {
 	if (m_isChanged || m_isLRMirror != isLRMirror || m_isUDMirror != isUDMirror)
@@ -328,58 +309,20 @@ void Object2D::Update(const bool isLRMirror, const bool isUDMirror)
 	}
 }
 
-void Object2D::SetCalcRectVertex(DX::tagVertex2D** rectVertices, DX::tagRect& rectPos)
-{
-	DX_System* system = DX_System::GetInstance();
-	ID3D11DeviceContext* deviceContext = system->GetDeviceContext();
-
-	float windowWidth	= static_cast<float>(system->GetScreenWidth());
-	float windowHeight	= static_cast<float>(system->GetScreenHeight());
-
-	//	-1.0f ~ 1.0fに座標を正規化する
-	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
-
-	DX::tagRect resultRect;
-	resultRect.left		= center.x * rectPos.x - 1.0f;
-	resultRect.right	= center.x * rectPos.w - 1.0f;
-	resultRect.bottom	= 1.0f - center.y * rectPos.h;
-	resultRect.top		= 1.0f - center.y * rectPos.y;
-
-
-	//	左
-	rectVertices[0]->pos.x = resultRect.left;
-	rectVertices[1]->pos.x = resultRect.left;
-
-	//	下の座標
-	rectVertices[0]->pos.y = resultRect.bottom;
-	rectVertices[2]->pos.y = resultRect.bottom;
-
-	//	上の座標
-	rectVertices[1]->pos.y = resultRect.top;
-	rectVertices[3]->pos.y = resultRect.top;
-
-	//	右の座標
-	rectVertices[2]->pos.x = resultRect.right;
-	rectVertices[3]->pos.x = resultRect.right;
-
-	//	z値
-	rectVertices[0]->pos.z = 0.0f;
-	rectVertices[1]->pos.z = 0.0f;
-	rectVertices[2]->pos.z = 0.0f;
-	rectVertices[3]->pos.z = 0.0f;
-}
-//-----------------------------------------------------------------------------------------
-//
-//  頂点情報を作成する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 頂点座標を作成する
+/// </summary>
+/// <param name="rectPos">画面に描画する範囲</param>
+/// <param name="uv">描画する画像の範囲</param>
+/// <param name="isLRMirror">左右反転するかどうか</param>
+/// <param name="isUDMirror">上下反転するかどうか</param>
 void Object2D::CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror, const bool isUDMirror)
 {
-	DX_System* pSystem = DX_System::GetInstance();
-	ID3D11DeviceContext* pContext = pSystem->GetDeviceContext();
+	DX_System* system = DX_System::GetInstance();
+	ID3D11DeviceContext* context = system->GetDeviceContext();
 
-	float windowWidth = DX::CAST::F(pSystem->GetScreenWidth());
-	float windowHeight = DX::CAST::F(pSystem->GetScreenHeight());
+	float windowWidth = DX::CAST::F(system->GetScreenWidth());
+	float windowHeight = DX::CAST::F(system->GetScreenHeight());
 
 	//	-1.0f ~ 1.0fに座標を正規化する
 	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
@@ -473,5 +416,5 @@ void Object2D::CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, c
 	pVertices[3].uv.x = norUV.right;
 
 	// バッファの上書き
-	pContext->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, pVertices, 0, 0);
+	context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, pVertices, 0, 0);
 }
