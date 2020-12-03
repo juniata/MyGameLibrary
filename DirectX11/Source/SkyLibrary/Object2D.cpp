@@ -204,7 +204,6 @@ Object2D* Object2D::Clone()
 {
 	auto pObject = new Object2D(*this);
 	pObject->m_isCloned = true;
-	pObject->m_vertexBuffer = m_vertexBuffer;
 
 	return pObject;
 }
