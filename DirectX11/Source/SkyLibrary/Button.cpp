@@ -73,8 +73,7 @@ bool Button::IsInRect() const
 	DirectX::XMFLOAT2 mousePos;
 	m_input->GetMouseClientPos(&mousePos);
 
-	if (m_rectPos.left <= mousePos.x && m_rectPos.right >= mousePos.x &&
-		m_rectPos.top <= mousePos.y && m_rectPos.bottom >= mousePos.y)
+	if (m_rect.left <= mousePos.x && m_rect.right >= mousePos.x && m_rect.top <= mousePos.y && m_rect.bottom >= mousePos.y)
 	{
 		isInRect = true;
 	}

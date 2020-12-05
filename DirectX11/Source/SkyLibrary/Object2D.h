@@ -86,7 +86,7 @@ public:
 	/// 描画座標を設定する
 	/// </summary>
 	/// <param name="rect">描画座標</param>
-	void SetRectPos(const DX::tagRect& rect);
+	void SetRect(const DX::tagRect& rect);
 
 	/// <summary>
 	/// UV座標を設定する
@@ -109,12 +109,10 @@ public:
 	/// <summary>
 	/// 座標等を更新する
 	/// </summary>
-	/// <param name="isLRMirror">左右反転描画するかどうか</param>
-	/// <param name="isUDMirror">上下反転描画するかどうか</param>
-	void Update(const bool isLRMirror = false, const bool isUDMirror = false);
+	void Update();
 
 protected:
-	DX::tagRect m_rectPos;
+	DX::tagRect m_rect;
 	DX::tagRect m_uv;
 
 private:
@@ -124,8 +122,6 @@ private:
 	unsigned int m_width;
 	bool m_isCloned;
 	bool m_isChanged;
-	bool m_isLRMirror;
-	bool m_isUDMirror;
 
 	/// <summary>
 	/// テクスチャの読み込みと頂点バッファの作成を行う 
@@ -144,9 +140,5 @@ private:
 	/// <summary>
 	/// 頂点座標を作成する
 	/// </summary>
-	/// <param name="rectPos">画面に描画する範囲</param>
-	/// <param name="uv">描画する画像の範囲</param>
-	/// <param name="isLRMirror">左右反転するかどうか</param>
-	/// <param name="isUDMirror">上下反転するかどうか</param>
-	void CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror = false, const bool isUDMirror = false);
+	void CreateVertex();
 };

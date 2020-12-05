@@ -10,10 +10,11 @@ Object2D::Object2D() :
 	m_height(0),
 	m_width(0),
 	m_isCloned(false),
-	m_isChanged(false),
-	m_isLRMirror(false),
-	m_isUDMirror(false)
-{}
+	m_isChanged(false)
+{
+	ZeroMemory(&m_rect, sizeof(m_rect));
+	ZeroMemory(&m_uv, sizeof(m_uv));
+}
 
 /// <summary>
 /// メンバ変数等を解放
@@ -72,8 +73,7 @@ bool Object2D::Initialize(const char* filepath)
 {
 	bool isSucceed = CommonInitialize(filepath);
 
-	DX_System* system = DX_System::GetInstance();
-	SetRectPos(DX::tagRect(0.0f, 0.0f, DX::CAST::F(system->GetScreenWidth()), DX::CAST::F(system->GetScreenHeight())));
+	SetRect(DX::tagRect(0.0f, 0.0f, DX::CAST::F(m_system->GetScreenWidth()), DX::CAST::F(m_system->GetScreenHeight())));
 	SetUV(DX::tagRect(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height)));
 	Update();
 
@@ -90,7 +90,7 @@ bool Object2D::Initialize(const char* filepath, const DX::tagRect& rectPos)
 {
 	bool isSucceed = CommonInitialize(filepath);
 
-	SetRectPos(rectPos);
+	SetRect(rectPos);
 	SetUV(DX::tagRect(0.0f, 0.0f, DX::CAST::F(m_width), DX::CAST::F(m_height)));
 	Update();
 
@@ -108,7 +108,7 @@ bool Object2D::Initialize(const char* filepath, const DX::tagRect& rectPos, cons
 {
 	bool isSucceed = CommonInitialize(filepath);
 
-	SetRectPos(rectPos);
+	SetRect(rectPos);
 	SetUV(uv);
 	Update();
 
@@ -142,12 +142,10 @@ bool Object2D::Render()
 {
 	auto result = true;
 
-	ID3D11DeviceContext* deviceContext = DX_System::GetInstance()->GetDeviceContext();
+	ID3D11DeviceContext* deviceContext = m_system->GetDeviceContext();
 
-	DX_ShaderManager* shaderManager = DX_ShaderManager::GetInstance();
-
-	DX_Shader* vertexShader = shaderManager->GetShader(SHADER_OBJECT_2D::VERTEX_SHADER);
-	DX_Shader* pixelShader = shaderManager->GetShader(SHADER_OBJECT_2D::PIXEL_SHADER);
+	DX_Shader* vertexShader = m_shaderManager->GetShader(SHADER_OBJECT_2D::VERTEX_SHADER);
+	DX_Shader* pixelShader = m_shaderManager->GetShader(SHADER_OBJECT_2D::PIXEL_SHADER);
 
 	vertexShader->Begin();
 	pixelShader->Begin();
@@ -156,10 +154,10 @@ bool Object2D::Render()
 	unsigned int offset = 0;
 
 	deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
-	deviceContext->IASetInputLayout(shaderManager->GetInputLayout2D());
+	deviceContext->IASetInputLayout(m_shaderManager->GetInputLayout2D());
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	
-	shaderManager->SetShaderResources(0, 1, m_srv.GetAddressOf(), SHADER_TYPE::PIXEL_SHADER);
+	m_shaderManager->SetShaderResources(0, 1, m_srv.GetAddressOf(), SHADER_TYPE::PIXEL_SHADER);
 
 	deviceContext->Draw(4, 0);
 
@@ -180,14 +178,14 @@ bool Object2D::LoadTexture(const char* filepath)
 
 	do
 	{
-		m_srv = DX_TextureManager::GetInstance()->GetTexture(filepath);
+		m_srv = m_textureManager->GetTexture(filepath);
 
 		if (nullptr == m_srv.Get()) {
 			TRACE("failed to DX_TextureManager::GetTexture(), filepath = %s", filepath);
 			break;
 		}
 
-		DX_TextureManager::GetInstance()->GetTextureSize(&m_height, &m_width, m_srv.Get());
+		m_textureManager->GetTextureSize(&m_width, &m_height, m_srv.Get());
 
 		isSucceed = true;
 	} while (false);
@@ -234,13 +232,10 @@ bool Object2D::IsInScreen() const
 {
 	auto isInScreen = false;
 
-	DX_System* system = DX_System::GetInstance();
+	float height = DX::CAST::F(m_system->GetScreenHeight());
+	float width = DX::CAST::F(m_system->GetScreenWidth());
 
-	float height = DX::CAST::F(system->GetScreenHeight());
-	float width = DX::CAST::F(system->GetScreenWidth());
-
-	if (0.0f <= m_rectPos.y && m_rectPos.bottom <= height &&
-		0.0f <= m_rectPos.x && m_rectPos.right <= width)
+	if (0.0f <= m_rect.y && m_rect.bottom <= height && 0.0f <= m_rect.x && m_rect.right <= width)
 	{
 		isInScreen = true;
 	}
@@ -253,9 +248,9 @@ bool Object2D::IsInScreen() const
 /// 描画座標を設定する
 /// </summary>
 /// <param name="rect">描画座標</param>
-void Object2D::SetRectPos(const DX::tagRect& rect)
+void Object2D::SetRect(const DX::tagRect& rect)
 {
-	m_rectPos = rect;
+	m_rect = rect;
 	m_isChanged = true;
 }
 
@@ -276,7 +271,7 @@ void Object2D::SetUV(const DX::tagRect& uv)
 /// <returns>描画座標</returns>
 const DX::tagRect& Object2D::GetRectPos()
 {
-	return m_rectPos;
+	return m_rect;
 }
 
 /// <summary>
@@ -291,128 +286,59 @@ const DX::tagRect& Object2D::GetUV()
 /// <summary>
 /// 座標等を更新する
 /// </summary>
-/// <param name="isLRMirror">左右反転描画するかどうか</param>
-/// <param name="isUDMirror">上下反転描画するかどうか</param>
-void Object2D::Update(const bool isLRMirror, const bool isUDMirror)
+void Object2D::Update()
 {
-	if (m_isChanged || m_isLRMirror != isLRMirror || m_isUDMirror != isUDMirror)
+	if (m_isChanged)
 	{
-		ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
-
-		//	頂点情報を作成
-		CreateVertex(m_rectPos, m_uv, isLRMirror, isUDMirror);
+		CreateVertex();
 
 		m_isChanged = false;
-		m_isLRMirror = isLRMirror;
-		m_isUDMirror = isUDMirror;
 	}
 }
 
 /// <summary>
 /// 頂点座標を作成する
 /// </summary>
-/// <param name="rectPos">画面に描画する範囲</param>
-/// <param name="uv">描画する画像の範囲</param>
-/// <param name="isLRMirror">左右反転するかどうか</param>
-/// <param name="isUDMirror">上下反転するかどうか</param>
-void Object2D::CreateVertex(const DX::tagRect& rectPos, const DX::tagRect& uv, const bool isLRMirror, const bool isUDMirror)
+void Object2D::CreateVertex()
 {
-	DX_System* system = DX_System::GetInstance();
-	ID3D11DeviceContext* context = system->GetDeviceContext();
+	ID3D11DeviceContext* context = m_system->GetDeviceContext();
 
-	float windowWidth = DX::CAST::F(system->GetScreenWidth());
-	float windowHeight = DX::CAST::F(system->GetScreenHeight());
+	float windowWidth	= DX::CAST::F(m_system->GetScreenWidth());
+	float windowHeight	= DX::CAST::F(m_system->GetScreenHeight());
 
 	//	-1.0f ~ 1.0fに座標を正規化する
 	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
 
 	DX::tagRect norRectPos;
-	norRectPos.left = center.x * rectPos.x - 1.0f;
-	norRectPos.right = center.x * rectPos.w - 1.0f;
-	norRectPos.bottom = 1.0f - center.y * rectPos.h;
-	norRectPos.top = 1.0f - center.y * rectPos.y;
-
+	norRectPos.left		= center.x * m_rect.x - 1.0f;
+	norRectPos.right	= center.x * m_rect.w - 1.0f;
+	norRectPos.bottom	= 1.0f - center.y * m_rect.h;
+	norRectPos.top		= 1.0f - center.y * m_rect.y;
 
 
 	//	UV座標を0.0f ~ 1.0fに正規化する
 	DirectX::XMFLOAT2 centerUV(1.0f / DX::CAST::F(m_width), 1.0f / DX::CAST::F(m_height));
 
 	DX::tagRect norUV;
+	norUV.left		= centerUV.x * m_uv.left;
+	norUV.top		= centerUV.y * m_uv.top;
+	norUV.right		= centerUV.x * m_uv.right;
+	norUV.bottom	= centerUV.y * m_uv.bottom;
 
-	//	上下左右反転するかどうか
-	if (isLRMirror && isUDMirror) {
-		norUV.left = centerUV.x * uv.w;
-		norUV.top = centerUV.y * uv.h;
-		norUV.right = centerUV.x * uv.x;
-		norUV.bottom = centerUV.y * uv.y;
-	}
-	else {
+	DX::tagVertex2D pVertices[] =
+	{
+		// 左下
+		{DirectX::XMFLOAT3(norRectPos.left, norRectPos.bottom, 0.0f), DirectX::XMFLOAT2(norUV.left, norUV.bottom) },
 
-		// 左右反転するかどうか
-		if (isLRMirror) {
-			norUV.left = centerUV.x * uv.w;
-			norUV.top = centerUV.y * uv.y;
-			norUV.right = centerUV.x * uv.x;
-			norUV.bottom = centerUV.y * uv.h;
-		}
-		//	上下反転するかどうか
-		else if (isUDMirror) {
-			norUV.left = centerUV.x * uv.x;
-			norUV.top = centerUV.y * uv.h;
-			norUV.right = centerUV.x * uv.w;
-			norUV.bottom = centerUV.y * uv.y;
-		}
-		//	なんもしない場合
-		else {
-			norUV.left = centerUV.x * uv.x;
-			norUV.top = centerUV.y * uv.y;
-			norUV.right = centerUV.x * uv.w;
-			norUV.bottom = centerUV.y * uv.h;
-		}
-	}
-
-	//	頂点情報
-	DX::tagVertex2D pVertices[4];
-
-	//	描画座標を設定する
-	//	左の座標
-	pVertices[0].pos.x = norRectPos.left;
-	pVertices[1].pos.x = norRectPos.left;
-
-	//	下の座標
-	pVertices[0].pos.y = norRectPos.bottom;
-	pVertices[2].pos.y = norRectPos.bottom;
-
-	//	上の座標
-	pVertices[1].pos.y = norRectPos.top;
-	pVertices[3].pos.y = norRectPos.top;
-
-	//	右の座標
-	pVertices[2].pos.x = norRectPos.right;
-	pVertices[3].pos.x = norRectPos.right;
-
-	//	z値
-	pVertices[0].pos.z = 0.0f;
-	pVertices[1].pos.z = 0.0f;
-	pVertices[2].pos.z = 0.0f;
-	pVertices[3].pos.z = 0.0f;
-
-	//	UV座標を設定する
-	//	左の座標
-	pVertices[0].uv.x = norUV.left;
-	pVertices[1].uv.x = norUV.left;
-
-	//	下の座標
-	pVertices[0].uv.y = norUV.bottom;
-	pVertices[2].uv.y = norUV.bottom;
-
-	//	上の座標
-	pVertices[1].uv.y = norUV.top;
-	pVertices[3].uv.y = norUV.top;
-
-	//	右の座標
-	pVertices[2].uv.x = norUV.right;
-	pVertices[3].uv.x = norUV.right;
+		// 左上
+		{DirectX::XMFLOAT3(norRectPos.left, norRectPos.top, 0.0f), DirectX::XMFLOAT2(norUV.left, norUV.top) },
+		
+		// 右下
+		{DirectX::XMFLOAT3(norRectPos.right, norRectPos.bottom, 0.0f), DirectX::XMFLOAT2(norUV.right, norUV.bottom) },
+		
+		// 右上
+		{DirectX::XMFLOAT3(norRectPos.right, norRectPos.top, 0.0f), DirectX::XMFLOAT2(norUV.right, norUV.top) }
+	};
 
 	// バッファの上書き
 	context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, pVertices, 0, 0);
