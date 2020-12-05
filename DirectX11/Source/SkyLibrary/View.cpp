@@ -172,6 +172,8 @@ void View::SetMatrixForTheView()
 
 	//	s—ñ‚ð‘—‚é
 	DX_ShaderManager::GetInstance()->SetMatrix(m_constantBuffer.GetAddressOf(), 0, mat, 1, SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetVector3(3, m_pos, SHADER_TYPE::VERTEX_SHADER);
+	DX_ShaderManager::GetInstance()->SetVector3(3, m_pos, SHADER_TYPE::PIXEL_SHADER);
 }
 
 //-----------------------------------------------------------------------------------------
