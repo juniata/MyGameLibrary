@@ -18,12 +18,12 @@ cbuffer WorldMatCBuffer : register(b1) {
 //-------------------------------------------------------------
 //	ライティング情報
 //-------------------------------------------------------------
-cbuffer Lighting : register(b3) {
+cbuffer Lighting : register(b2) {
 	struct tagLight {
 		float4 ambient;
 		float4 diffuse;
 		float3 pos;
-		float3 padding;
+		float padding;
 	}g_light;
 };
 
@@ -31,7 +31,7 @@ cbuffer Lighting : register(b3) {
 //-------------------------------------------------------------
 //	カメラ情報
 //-------------------------------------------------------------
-cbuffer View : register(b4) {
+cbuffer View : register(b3) {
 	struct tagView {
 		float3 pos;
 		float1 padding;
@@ -44,8 +44,8 @@ cbuffer View : register(b4) {
 struct VS_INPUT
 {
 	float4 pos		: POSITION;
-	float4 color	: COLOR;
 	float3 normal	: NORMAL;
+	float4 color	: COLOR;
 };
 
 //-------------------------------------------------------------
@@ -59,7 +59,6 @@ struct VS_OUT
 	float3 wPos		: POSITION0;
 	float3 wNormal	: NORMAL1;
 };
-
 
 //-------------------------------------------------------------
 //	頂点シェーダー処理
