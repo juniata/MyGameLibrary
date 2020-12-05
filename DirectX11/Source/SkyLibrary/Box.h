@@ -4,7 +4,7 @@
 /// <summary>
 /// ³•ûŒ`‚Ìƒ‚ƒfƒ‹‚ğˆµ‚¤
 /// </summary>
-class Box
+class Box : public GameObject
 {
 public:
 	/// <summary>

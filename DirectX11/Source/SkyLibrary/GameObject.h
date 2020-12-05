@@ -3,8 +3,13 @@
 class GameObject
 {
 public:
-	GameObject() {};
+	GameObject();
 	virtual ~GameObject() {};
-	virtual void Initialize() {}
-	virtual void Destroy() {}
+	virtual bool Initialize();
+	virtual bool Destroy();
+
+protected:
+	DX_System* m_system;
+	DX_Input* m_input;
+	DX_ShaderManager* m_shaderManager;
 };

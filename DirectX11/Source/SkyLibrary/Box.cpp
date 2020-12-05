@@ -136,12 +136,10 @@ void Box::Update()
 /// </summary>
 void Box::Render()
 {
-	DX_System* system = DX_System::GetInstance();
-	ID3D11DeviceContext* deviceContext = system->GetDeviceContext();
+	ID3D11DeviceContext* deviceContext = m_system->GetDeviceContext();
 
-	DX_ShaderManager* shaderManager = DX_ShaderManager::GetInstance();
-	DX_Shader* vertexShader = shaderManager->GetShader(SHADER_BOX::VERTEX_SHADER);
-	DX_Shader* pixelShader	= shaderManager->GetShader(SHADER_BOX::PIXEL_SHADER);
+	DX_Shader* vertexShader = m_shaderManager->GetShader(SHADER_BOX::VERTEX_SHADER);
+	DX_Shader* pixelShader	= m_shaderManager->GetShader(SHADER_BOX::PIXEL_SHADER);
 
 	vertexShader->Begin();
 	pixelShader->Begin();
@@ -151,10 +149,10 @@ void Box::Render()
 
 	deviceContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 	deviceContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R16_UINT, 0);
-	deviceContext->IASetInputLayout(shaderManager->GetInputLayoutBox());
+	deviceContext->IASetInputLayout(m_shaderManager->GetInputLayoutBox());
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	shaderManager->SetWorldMat(m_worldMat, SHADER_TYPE::VERTEX_SHADER);
+	m_shaderManager->SetWorldMat(m_worldMat, SHADER_TYPE::VERTEX_SHADER);
 
 	deviceContext->DrawIndexed(36, 0, 0);
 
