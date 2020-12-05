@@ -1,108 +1,122 @@
 #include "SkyLibrary.h"
 
-
-//-----------------------------------------------------------------------------------------
-//
-//	変数の初期化とバッファの作成
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 変数等を初期化する
+/// </summary>
 Box::Box() :
 	m_pos(0.0f, 0.0f, 0.0f),
 	m_scale(1.0f, 1.0f, 1.0f),
 	m_angle(0.0f, 0.0f, 0.0f),
 	m_isChanged(true),
 	m_isCloned(false),
-	m_pastRaypickIndexk(-1)
+	m_pastRaypickIndex(-1)
 {
+	unsigned short indices[] =
+	{
+		// 前面
+		0,1,3,
+		1,2,3,
+
+		// 右面
+		1,5,2,
+		5,6,2,
+
+		// 後面
+		5,4,6,
+		4,7,6,
+
+		// 上面
+		4,5,0,
+		5,1,0,
+
+		// 左面
+		4,0,7,
+		0,3,7,
+
+		// 下面
+		3,2,7,
+		2,6,7
+	};
+	memcpy(m_indices, indices, sizeof(indices));
+
 	Update();
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	解放処理
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 解放処理
+/// </summary>
 Box::~Box()
 {}
 
-//-----------------------------------------------------------------------------------------
-//
-//	バッファを作成する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// バッファ等の作成を行う
+/// </summary>
+/// <returns>成否</returns>
 bool Box::Initialize()
 {
 	return CreateBuffer();
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	座標を設定
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 座標を設定する
+/// </summary>
+/// <param name="pos">座標</param>
 void Box::SetPos(const DirectX::XMFLOAT3& pos)
 {
 	m_pos = pos;
 	m_isChanged = true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	大きさを設定
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 大きさを設定する
+/// </summary>
+/// <param name="scale">大きさ</param>
 void Box::SetScale(const DirectX::XMFLOAT3& scale)
 {
 	m_scale = scale;
 	m_isChanged = true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	向きを設定
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 向きを設定する
+/// </summary>
+/// <param name="angle">向き</param>
 void Box::SetAngle(const DirectX::XMFLOAT3& angle)
 {
 	m_angle = angle;
 	m_isChanged = true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	座標を取得
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 座標を取得する
+/// </summary>
+/// <returns>座標</returns>
 DirectX::XMFLOAT3 Box::GetPos() const
 {
 	return m_pos;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	向きを取得
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 向きを取得する
+/// </summary>
+/// <returns>向き</returns>
 DirectX::XMFLOAT3 Box::GetAngle() const
 {
 	return m_angle;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	大きさを取得
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 大きさを取得する
+/// </summary>
+/// <returns>大きさ</returns>
 DirectX::XMFLOAT3 Box::GetScale() const
 {
 	return m_scale;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	座標等を更新する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 座標等を更新する
+/// </summary>
 void Box::Update()
 {
 	if (m_isChanged)
@@ -117,11 +131,9 @@ void Box::Update()
 	}
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	描画する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 描画する
+/// </summary>
 void Box::Render()
 {
 	DX_System* system = DX_System::GetInstance();
@@ -151,11 +163,10 @@ void Box::Render()
 }
 
 
-//-----------------------------------------------------------------------------------------
-//
-//	複製する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 複製する
+/// </summary>
+/// <returns>複製したオブジェクト</returns>
 Box* Box::Clone()
 {
 	auto pBox = new Box(*this);
@@ -164,32 +175,30 @@ Box* Box::Clone()
 	return pBox;
 }
 
-
-//------------------------------------------------------------------------------
-//
-//  オブジェクトが複製したものかどうか
-//
-//------------------------------------------------------------------------------
+/// <summary>
+/// オブジェクトが複製したものかどうかを取得する
+/// </summary>
+/// <returns>複製したものかどうか</returns>
 bool Box::IsClone() const
 {
 	return m_isCloned;
 }
 
-//------------------------------------------------------------------------------
-//
-//  オブジェクトがオリジナルかどうか
-//
-//------------------------------------------------------------------------------
+/// オブジェクトがオリジナルかどうかを取得する
+/// </summary>
+/// <returns>オリジナルかどうか</returns>
 bool Box::IsOriginal() const
 {
 	return !m_isCloned;
 }
 
-//------------------------------------------------------------------------------
-//
-//  レイキャスト判定
-//
-//------------------------------------------------------------------------------
+/// /// <summary>
+/// レイキャスト判定
+/// </summary>
+/// <param name="pos">判定を取りたいオブジェクトの座標</param>
+/// <param name="vec">判定を取りたいオブジェクトのベクトル</param>
+/// <param name="distance">レイの長さ</param>
+/// <returns>あたったかどうか</returns>
 bool Box::RayCast(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& vec, const float distance)
 {
 	auto ret = false;
@@ -201,17 +210,13 @@ bool Box::RayCast(const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& vec, co
 	return ret;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	頂点バッファ等を作成する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// バッファを作成する
+/// </summary>
+/// <returns>作成できたかどうか</returns>
 bool Box::CreateBuffer()
 {
-	const int VERTEX_NUM = 8;
-
-	DX::tagObjectVertext pVertices[VERTEX_NUM];
-	ZeroMemory(pVertices, sizeof(pVertices));
+	DX::tagObjectVertext pVertices[VERTEX_COUNT];
 
 	// 前
 	// 左上
@@ -256,58 +261,19 @@ bool Box::CreateBuffer()
 	pVertices[7].pos.z = 0.5f;
 
 	// 白色
-	for (int i = 0; i < VERTEX_NUM; ++i) {
-		pVertices[i].color = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 0.6f);
+	for (int i = 0; i < VERTEX_COUNT; ++i) {
+		pVertices[i].color = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 	}
 
 	// 法線を計算
 	CreateNormal(pVertices);
-
-	// TODO:CreateNormalないで行うとエラーになる。アドレスの関係？
-	for (int i = 0; i < VERTEX_NUM; ++i)
-	{
-		DirectX::XMStoreFloat3(&pVertices[i].normal, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&pVertices[i].normal)));
-		
-	}
-	// 頂点法線を計算
-	// 頂点法線を格納
-	// ジオメトリで面法制を計算　ライティングを行う
-
-	// インデックスを設定
-	unsigned short pIndices[] =
-	{
-		// 前面
-		0,1,3,
-		1,2,3,
-
-		// 右面
-		1,5,2,
-		5,6,2,
-
-		// 後面
-		5,4,6,
-		4,7,6,
-
-		// 上面
-		4,5,0,
-		5,1,0,
-
-		// 左面
-		4,0,7,
-		0,3,7,
-
-		// 下面
-		3,2,7,
-		2,6,7
-	};
-
 
 	m_vertexBuffer.Attach(DX_BufferCreater::VertexBuffer(sizeof(pVertices), pVertices));
 	if (nullptr == m_vertexBuffer) {
 		return false;
 	}
 
-	m_indexBuffer.Attach(DX_BufferCreater::IndexBuffer(sizeof(pIndices), pIndices));
+	m_indexBuffer.Attach(DX_BufferCreater::IndexBuffer(sizeof(m_indices), m_indices));
 	if (nullptr == m_indexBuffer) {
 		return false;
 	}
@@ -320,42 +286,12 @@ bool Box::CreateBuffer()
 	return true;
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	面法線を作成する
-//
-//-----------------------------------------------------------------------------------------
-void Box::CreateNormal(DX::tagObjectVertext* pVertex)
+/// <summary>
+/// 法線を作成する
+/// </summary>
+/// <param name="pVertices">頂点情報</param>
+void Box::CreateNormal(DX::tagObjectVertext* pVertices)
 {
-	// インデックスを設定
-	unsigned short pIndices[] =
-	{
-		// 前面
-		0,1,3,
-		1,2,3,
-
-		// 右面
-		1,5,2,
-		5,6,2,
-
-		// 後面
-		5,4,6,
-		4,7,6,
-
-		// 上面
-		4,5,0,
-		5,1,0,
-
-		// 左面
-		4,0,7,
-		0,3,7,
-
-		// 下面
-		3,2,7,
-		2,6,7
-	};
-
-
 	DirectX::XMVECTOR p0, p1, p2;
 	DirectX::XMFLOAT3 faceN;
 
@@ -363,51 +299,50 @@ void Box::CreateNormal(DX::tagObjectVertext* pVertex)
 	int index1 = 0;
 	int index2 = 0;
 
-	for (int i = 0; i < 36; i += 3)
+	for (int i = 0; i < INDEX_COUNT; i += 3)
 	{
 		// 面法線を作成する
-		index0 = pIndices[i];
-		index1 = pIndices[i + 1];
-		index2 = pIndices[i + 2];
+		index0 = m_indices[i];
+		index1 = m_indices[i + 1];
+		index2 = m_indices[i + 2];
 
-
-		p0 = DirectX::XMLoadFloat3(&pVertex[index0].pos);
-		p1 = DirectX::XMLoadFloat3(&pVertex[index1].pos);
-		p2 = DirectX::XMLoadFloat3(&pVertex[index2].pos);
+		p0 = DirectX::XMLoadFloat3(&pVertices[index0].pos);
+		p1 = DirectX::XMLoadFloat3(&pVertices[index1].pos);
+		p2 = DirectX::XMLoadFloat3(&pVertices[index2].pos);
 
 		CalcFaceNormal(faceN, p0, p1, p2);
 
 		// 面法線を頂点法線に加算していく。
-		AddFaceNormal(pVertex[index0].normal, pVertex[index0].normal, faceN);
-		AddFaceNormal(pVertex[index1].normal, pVertex[index1].normal, faceN);
-		AddFaceNormal(pVertex[index2].normal, pVertex[index2].normal, faceN);
-
+		AddFaceNormal(pVertices[index0].normal, pVertices[index0].normal, faceN);
+		AddFaceNormal(pVertices[index1].normal, pVertices[index1].normal, faceN);
+		AddFaceNormal(pVertices[index2].normal, pVertices[index2].normal, faceN);
 	}
 
-	//DirectX::XMVECTOR nor;
-	//for (int i = 0; i < 36; ++i)
-	//{
-	//	nor = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&pVertex[i].normal));
-	//	DirectX::XMStoreFloat3(&pVertex[i].normal, nor);
-	//}
+	for (int i = 0; i < 12; ++i)
+	{
+		DirectX::XMStoreFloat3(&pVertices[i].normal, DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&pVertices[i].normal)));
+	}
 }
 
 
-//-----------------------------------------------------------------------------------------
-//
-//	三角形の面法線を算出する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 面法線を算出する
+/// </summary>
+/// <param name="faceV">算出した面法線が格納される</param>
+/// <param name="p0">頂点0の座標</param>
+/// <param name="p1">頂点1の座標</param>
+/// <param name="p2">頂点2の座標</param>
 void Box::CalcFaceNormal(DirectX::XMFLOAT3& faceV, const DirectX::XMVECTOR& p0, const DirectX::XMVECTOR& p1, const DirectX::XMVECTOR& p2)
 {
-	DirectX::XMStoreFloat3(&faceV, DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p1))));
+	DirectX::XMStoreFloat3(&faceV, DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(p1, p0), DirectX::XMVectorSubtract(p2, p0))));
 }
 
-//-----------------------------------------------------------------------------------------
-//
-//	頂点法線に面法線を加算する
-//
-//-----------------------------------------------------------------------------------------
+/// <summary>
+/// 算出した面法線を、頂点の法線に加算していく
+/// </summary>
+/// <param name="outVf">面法線が格納される</param>
+/// <param name="vN">頂点法線</param>
+/// <param name="faceN">面法線</param>
 void Box::AddFaceNormal(DirectX::XMFLOAT3& outVf, const DirectX::XMFLOAT3& vN, const DirectX::XMFLOAT3& faceN)
 {
 	DirectX::XMStoreFloat3(&outVf, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&vN), DirectX::XMLoadFloat3(&faceN)));
