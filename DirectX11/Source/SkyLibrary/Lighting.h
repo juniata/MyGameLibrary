@@ -1,20 +1,13 @@
 #pragma once
 
-//	頂点シェーダーで行うライティング情報
-struct tagVertexLighting {
+//	ライティング情報
+struct tagLighting {
 	DirectX::XMFLOAT4 ambient;
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT3 lightPos;
 	float padding;	//	16byte alignment
 };
 
-//	ピクセルシェーダーで行うlighting情報
-struct tagPixelLighting {
-	DirectX::XMFLOAT4 ambient;
-	DirectX::XMFLOAT4 diffuse;
-	DirectX::XMFLOAT3 lightPos;
-	float padding;		//	16byte alignment
-};
 //****************************************************************************************************
 //
 //	Lighting
@@ -87,10 +80,7 @@ public:
 	static bool SetLightPixelShader();
 
 private:
-	static DirectX::XMFLOAT4 m_ambient;		//	拡散光
-	static DirectX::XMFLOAT4 m_diffuse;		//	環境光
-	static DirectX::XMFLOAT4 m_specular;	//	反射光
-	static DirectX::XMFLOAT3 m_lightPos;	//	ライトの座標
+	static tagLighting m_lightInfo;
 
 	//------------------------------------------------------------------------------
 	//

@@ -5,10 +5,7 @@
 //  staticメンバ変数
 //
 //-----------------------------------------------------------------------------------------
-DirectX::XMFLOAT4 Lighting::m_ambient;
-DirectX::XMFLOAT4 Lighting::m_diffuse;
-DirectX::XMFLOAT4 Lighting::m_specular;
-DirectX::XMFLOAT3 Lighting::m_lightPos;
+tagLighting Lighting::m_lightInfo;
 
 //-----------------------------------------------------------------------------------------
 //
@@ -17,12 +14,22 @@ DirectX::XMFLOAT3 Lighting::m_lightPos;
 //-----------------------------------------------------------------------------------------
 void Lighting::Initialize()
 {
+#if defined(DEBUG) || defined(_DEBUG)
+	//	16byte alignment check
+	bool is16ByteAlignment = sizeof(m_lightInfo) % 16 != 0;
+	if (is16ByteAlignment) {
+		TRACE("16で割り切れません")
+	}
+#endif
+
+	ZeroMemory(&m_lightInfo, sizeof(m_lightInfo));
+
 	//	環境光を設定
 	SetAmbient(DirectX::XMFLOAT3(0.25f, 0.25f, 0.25f));
 	//SetAmbient(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	//	拡散光を設定
-	SetDiffuse(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+	SetDiffuse(DirectX::XMFLOAT3(0.8f, 0.6f, 0.7f));
 
 	//	反射光を設定
 	SetSpecular(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
@@ -42,10 +49,10 @@ void Lighting::Initialize()
 //-----------------------------------------------------------------------------------------
 void Lighting::SetAmbient(const DirectX::XMFLOAT3& ambient)
 {
-	m_ambient.x = ambient.x;
-	m_ambient.y = ambient.y;
-	m_ambient.z = ambient.z;
-	m_ambient.w = 1.0f;
+	m_lightInfo.ambient.x = ambient.x;
+	m_lightInfo.ambient.y = ambient.y;
+	m_lightInfo.ambient.z = ambient.z;
+	m_lightInfo.ambient.w = 1.0f;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -55,10 +62,10 @@ void Lighting::SetAmbient(const DirectX::XMFLOAT3& ambient)
 //-----------------------------------------------------------------------------------------
 void Lighting::SetDiffuse(const DirectX::XMFLOAT3& diffuse)
 {
-	m_diffuse.x = diffuse.x;
-	m_diffuse.y = diffuse.y;
-	m_diffuse.z = diffuse.z;
-	m_diffuse.w = 1.0f;
+	m_lightInfo.diffuse.x = diffuse.x;
+	m_lightInfo.diffuse.y = diffuse.y;
+	m_lightInfo.diffuse.z = diffuse.z;
+	m_lightInfo.diffuse.w = 1.0f;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -68,11 +75,10 @@ void Lighting::SetDiffuse(const DirectX::XMFLOAT3& diffuse)
 //-----------------------------------------------------------------------------------------
 void Lighting::SetSpecular(const DirectX::XMFLOAT3& specular)
 {
-	m_specular.x = specular.x;
-	m_specular.y = specular.y;
-	m_specular.z = specular.z;
-	m_specular.w = 1.0f;
-
+	/*m_lightInfo.specular.x = specular.x;
+	m_lightInfo.specular.y = specular.y;
+	m_lightInfo.specular.z = specular.z;
+	m_lightInfo.specular.w = 1.0f;*/
 }
 
 
@@ -83,7 +89,7 @@ void Lighting::SetSpecular(const DirectX::XMFLOAT3& specular)
 //-----------------------------------------------------------------------------------------
 void Lighting::SetLightPos(const DirectX::XMFLOAT3& pos)
 {
-	m_lightPos = pos;
+	m_lightInfo.lightPos = pos;
 }
 
 
@@ -94,48 +100,29 @@ void Lighting::SetLightPos(const DirectX::XMFLOAT3& pos)
 //-----------------------------------------------------------------------------------------
 bool Lighting::SetLightVertexShader()
 {
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
+	auto succeed = false;
 
-	//	ローカル変数
-	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
-	D3D11_BUFFER_DESC			bufferDesc = { NULL };
+	do
+	{
+		ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
-	//	頂点シェーダーに送る情報
-	tagVertexLighting vertexLighting;
-	vertexLighting.ambient	= m_ambient;
-	vertexLighting.diffuse	= m_diffuse;
-	vertexLighting.lightPos = m_lightPos;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
 
-#if defined(DEBUG) || defined(_DEBUG)
-	//	16byte alignment check
-	bool is16ByteAlignment = sizeof(vertexLighting) % 16 != 0;
-	if (is16ByteAlignment) {
-		TRACE("16で割り切れません")
-		return false;
-	}
-#endif
+		buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(m_lightInfo)));
+		if (buffer.Get() == nullptr) {
+			TRACE("定数バッファの作成に失敗しました。")
+			break;
+		}
 
-	//	定数バッファを作成
-	bufferDesc.ByteWidth = sizeof(tagVertexLighting);
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+		pContext->UpdateSubresource(buffer.Get(), 0, nullptr, &m_lightInfo, 0, 0);
 
-	//	bufferを作成
-	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(vertexLighting)));
-	if (buffer.Get() == nullptr) {
-		TRACE("定数バッファの作成に失敗しました。")
-		return false;
-	}
+		DX_ShaderManager::GetInstance()->SetConstantBuffers(2, 1, buffer.GetAddressOf(), SHADER_TYPE::VERTEX_SHADER);
 
-	//	updateSubResource
-	pContext->UpdateSubresource(buffer.Get(), 0, nullptr, &vertexLighting, 0, 0);
+		succeed = true;
 
-	//	PSに送る
-	bool isSucceed = true;
-	DX_ShaderManager::GetInstance()->SetConstantBuffers(3, 1, &buffer, SHADER_TYPE::VERTEX_SHADER);
+	} while (false);
 
-	return isSucceed;
+	return succeed;
 }
 
 
@@ -146,46 +133,26 @@ bool Lighting::SetLightVertexShader()
 //-----------------------------------------------------------------------------------------
 bool Lighting::SetLightPixelShader()
 {
-	ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
+	auto succeed = false;
 
-	//	ローカル変数
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	buffer;
-	D3D11_BUFFER_DESC						bufferDesc = { NULL };
+	do
+	{
+		ID3D11DeviceContext* pContext = DX_System::GetInstance()->GetDeviceContext();
 
-	//	頂点シェーダーに送る情報
-	tagPixelLighting pixelLighting;
-	pixelLighting.ambient = m_ambient;
-	pixelLighting.diffuse = m_diffuse;
-	pixelLighting.lightPos = m_lightPos;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
 
-#if defined(DEBUG) || defined(_DEBUG)
-	//	16byte alignment check
-	bool is16ByteAlignment = sizeof(pixelLighting) % 16 != 0;
-	if  (is16ByteAlignment) {
-		TRACE("16で割り切れません")
-		return false;
-	}
-#endif
+		buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(m_lightInfo)));
+		if (buffer.Get() == nullptr) {
+			TRACE("定数バッファの作成に失敗しました。")
+			break;
+		}
 
-	//	定数バッファを作成
-	bufferDesc.ByteWidth = sizeof(tagPixelLighting);
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
+		pContext->UpdateSubresource(buffer.Get(), 0, nullptr, &m_lightInfo, 0, 0);
 
-	//	bufferを作成
-	buffer.Attach(DX_BufferCreater::ConstantBuffer(sizeof(pixelLighting)));
-	if (buffer.Get() == nullptr) {
-		TRACE("定数バッファの作成に失敗しました。")
-		return false;
-	}
+		DX_ShaderManager::GetInstance()->SetConstantBuffers(2, 1, buffer.GetAddressOf(), SHADER_TYPE::PIXEL_SHADER);
 
-	//	updateSubResource
-	pContext->UpdateSubresource(buffer.Get(), 0, nullptr, &pixelLighting, 0, 0);
+		succeed = true;
+	} while (false);
 
-	//	PSに送る
-	bool isSucceed = true;
-	DX_ShaderManager::GetInstance()->SetConstantBuffers(0, 1, buffer.GetAddressOf(), SHADER_TYPE::PIXEL_SHADER);
-
-	return isSucceed;
+	return succeed;
 }
