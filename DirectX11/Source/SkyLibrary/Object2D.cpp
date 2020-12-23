@@ -10,7 +10,10 @@ Object2D::Object2D() :
 	m_height(0),
 	m_width(0),
 	m_isCloned(false),
-	m_isChanged(false)
+	m_isChanged(false),
+	m_pos(DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f)),
+	m_scale(DirectX::XMFLOAT2(1.0f,1.0f)),
+	m_angle(0.0f)
 {
 	ZeroMemory(&m_rect, sizeof(m_rect));
 	ZeroMemory(&m_uv, sizeof(m_uv));
@@ -245,12 +248,50 @@ bool Object2D::IsInScreen() const
 
 
 /// <summary>
-/// 描画座標を設定する
+/// 描画するオブジェクトのサイズを設定する
 /// </summary>
 /// <param name="rect">描画座標</param>
 void Object2D::SetRect(const DX::tagRect& rect)
 {
 	m_rect = rect;
+	m_isChanged = true;
+}
+
+/// <summary>
+/// 座標を設定
+/// </summary>
+/// <param name="pos">座標</param>
+void Object2D::SetPos(const DirectX::XMFLOAT3& pos)
+{
+	m_pos = pos;
+	m_isChanged = true;
+}
+
+/// <summary>
+/// 大きさを設定する(描画するオブジェクトの大きさに対して掛け算する)
+/// </summary>
+/// <param name="scale"></param>
+void Object2D::SetScale(const DirectX::XMFLOAT2& scale)
+{
+	m_scale = scale;
+	m_isChanged = true;
+}
+
+/// <summary>
+/// 画像の向きの設定する
+/// </summary>
+/// <param name="val">向きを設定</param>
+/// <param name="isAngle">falseならラジアン、trueなら度数で設定</param>
+void Object2D::SetAngle(const float val, bool isAngle)
+{
+	if (isAngle)
+	{
+		m_angle = val * (DirectX::XM_PI / 180.0f);
+	}
+	else
+	{
+		m_angle = val;
+	}
 	m_isChanged = true;
 }
 
@@ -290,16 +331,16 @@ void Object2D::Update()
 {
 	if (m_isChanged)
 	{
-		CreateVertex();
+		UpdateVertexBuffer();
 
 		m_isChanged = false;
 	}
 }
 
 /// <summary>
-/// 頂点座標を作成する
+/// 頂点バッファを更新する
 /// </summary>
-void Object2D::CreateVertex()
+void Object2D::UpdateVertexBuffer()
 {
 	ID3D11DeviceContext* context = m_system->GetDeviceContext();
 
@@ -309,23 +350,28 @@ void Object2D::CreateVertex()
 	//	-1.0f ~ 1.0fに座標を正規化する
 	DirectX::XMFLOAT2 center(1.0f / (windowWidth * 0.5f), 1.0f / (windowHeight * 0.5f));
 
-	DX::tagRect norRectPos;
-	norRectPos.left		= center.x * m_rect.x - 1.0f;
-	norRectPos.right	= center.x * m_rect.w - 1.0f;
-	norRectPos.bottom	= 1.0f - center.y * m_rect.h;
-	norRectPos.top		= 1.0f - center.y * m_rect.y;
-
-
+	// 正規化した座標
+	DX::tagRect norRectPos = 
+	{
+		center.x * m_rect.x - 1.0f,
+		1.0f - center.y * m_rect.y,
+		center.x * m_rect.w - 1.0f,
+		1.0f - center.y * m_rect.h
+	};
+	
 	//	UV座標を0.0f ~ 1.0fに正規化する
 	DirectX::XMFLOAT2 centerUV(1.0f / DX::CAST::F(m_width), 1.0f / DX::CAST::F(m_height));
 
-	DX::tagRect norUV;
-	norUV.left		= centerUV.x * m_uv.left;
-	norUV.top		= centerUV.y * m_uv.top;
-	norUV.right		= centerUV.x * m_uv.right;
-	norUV.bottom	= centerUV.y * m_uv.bottom;
+	// 正規化したUV座標
+	DX::tagRect norUV =
+	{
+		centerUV.x * m_uv.left,
+		centerUV.y * m_uv.top,
+		centerUV.x * m_uv.right,
+		centerUV.y * m_uv.bottom
+	};
 
-	DX::tagVertex2D pVertices[] =
+	DX::tagVertex2D vertices[] =
 	{
 		// 左下
 		{DirectX::XMFLOAT3(norRectPos.left, norRectPos.bottom, 0.0f), DirectX::XMFLOAT2(norUV.left, norUV.bottom) },
@@ -340,6 +386,21 @@ void Object2D::CreateVertex()
 		{DirectX::XMFLOAT3(norRectPos.right, norRectPos.top, 0.0f), DirectX::XMFLOAT2(norUV.right, norUV.top) }
 	};
 
+	const float originX = 0.5f * (vertices[0].pos.x + vertices[3].pos.x);
+	const float originY = 0.5f * (vertices[0].pos.y + vertices[1].pos.y);
+	DirectX::XMVECTOR scalling		= DirectX::XMVectorSet(m_scale.x, m_scale.y, 1.0f, 0.0f);
+	DirectX::XMVECTOR origin		= DirectX::XMVectorSet(originX, originY, 0.0f, 0.0f);
+	DirectX::XMVECTOR translation	= DirectX::XMVectorSet(m_pos.x * (2.0f / windowWidth), -m_pos.y * (2.0f / windowHeight), m_pos.z, 1.0f);
+	DirectX::XMMATRIX transform		= DirectX::XMMatrixAffineTransformation2D(scalling, origin, m_angle, translation);
+	
+	DirectX::XMVECTOR pos;
+	for (auto& v : vertices)
+	{
+		pos = DirectX::XMLoadFloat3(&v.pos);
+		pos = DirectX::XMVector3TransformCoord(pos, transform);
+		DirectX::XMStoreFloat3(&v.pos, pos);
+	}	
+	
 	// バッファの上書き
-	context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, pVertices, 0, 0);
+	context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, vertices, 0, 0);
 }

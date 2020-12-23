@@ -83,10 +83,29 @@ public:
 	bool IsInScreen() const;
 
 	/// <summary>
-	/// 描画座標を設定する
+	/// 描画するオブジェクトのサイズを設定する
 	/// </summary>
 	/// <param name="rect">描画座標</param>
 	void SetRect(const DX::tagRect& rect);
+
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="pos">座標</param>
+	void SetPos(const DirectX::XMFLOAT3& pos);
+	
+	/// <summary>
+	/// 大きさを設定する(描画するオブジェクトの大きさに対して掛け算する)
+	/// </summary>
+	/// <param name="scale"></param>
+	void SetScale(const DirectX::XMFLOAT2& scale);
+
+	/// <summary>
+	/// 画像の向きの設定する
+	/// </summary>
+	/// <param name="val">向きを設定</param>
+	/// <param name="isAngle">falseならラジアン、trueなら度数で設定</param>
+	void SetAngle(const float val, bool isAngle = false);
 
 	/// <summary>
 	/// UV座標を設定する
@@ -114,6 +133,9 @@ public:
 protected:
 	DX::tagRect m_rect;
 	DX::tagRect m_uv;
+	DirectX::XMFLOAT3 m_pos;
+	DirectX::XMFLOAT2 m_scale;
+	float m_angle;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer>				m_vertexBuffer;
@@ -138,7 +160,7 @@ private:
 	bool LoadTexture(const char* filepath);
 
 	/// <summary>
-	/// 頂点座標を作成する
+	/// 頂点バッファを更新する
 	/// </summary>
-	void CreateVertex();
+	void UpdateVertexBuffer();
 };
